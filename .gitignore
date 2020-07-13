@@ -96,6 +96,10 @@ build/Release
 node_modules/
 jspm_packages/
 
+# images
+public/profileImages/*
+!public/profileImages/default.png
+
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
