@@ -1,0 +1,14 @@
+<%- include("partials/header") -%>
+<%- include("partials/navbar-login") -%>
+<form action="/register" method="post">
+    <input type="text" name="username" placeholder="Username" pattern="[a-zA-Z0-9\-_\.]+" title="Username can only contain upper and lower case letters, numbers, ., _ and -"/> id="" />
+    <input type="email" name="email" placeholder="Email Address" id="" />
+    <input type="password" name="password" placeholder="Password" id=""
+    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+    title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"/>
+    <input type="submit" value="Submit">
+    <% if(locals.errorMsg) {%>
+        <p class="text-danger"><%=errorMsg%></p>
+    <%}%>
+</form>
+<%- include("partials/footer") -%>

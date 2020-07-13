@@ -1,0 +1,21 @@
+<%- include("partials/header") -%>
+<%- include("partials/navbar") -%>
+
+<form action="/profile/updateName" method="post">
+    <input type="text" name="displayName" id="" value="<%=user.displayName%>">
+    <input type="submit" value="change">
+    <% if(locals.userMessage) {%>
+        <p class="text-danger"><%=userMessage%></p>
+    <%}%>
+</form>
+
+<form action="/profile/updateImage" method="post" enctype="multipart/form-data">
+    <input type="file" accept="image/jpeg, image/png" name="profile" >
+    <input type="submit" value="upload">
+    <% if(locals.imageMessage) {%>
+        <p class="text-danger"><%=imageMessage%></p>
+    <%}%>
+</form>
+
+<!-- add a modal popup for deleting account - https://www.w3schools.com/howto/howto_css_modals.asp -->
+<%- include("partials/footer") -%>

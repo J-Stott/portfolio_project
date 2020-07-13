@@ -1,0 +1,25 @@
+.navbar-profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    border: 3px solid #FFFFFF;
+}
+
+.navbar .dropdown-menu {
+    background-color: #343A40;
+    color: #ffffff;
+  }
+
+.navbar .dropdown:hover{
+    background-color: #51565c;
+}
+
+  .navbar .dropdown.show a { 
+    background-color: #343A40;
+    color: #ffffff;
+  }
+
+  .navbar .dropdown.show a:hover { 
+    background-color: #51565c;
+    color: #ffffff;
+  }

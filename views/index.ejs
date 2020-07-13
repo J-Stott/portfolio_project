@@ -1,0 +1,4 @@
+<%- include("partials/header") -%>
+<%- user !== null ? include("partials/navbar") : include("partials/navbar-login") -%>
+<h1>Hello <%= user !== null ? user.displayName : "World" %></h1>
+<%- include("partials/footer") -%>
