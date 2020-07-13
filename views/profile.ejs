@@ -1,21 +1,70 @@
 <%- include("partials/header") -%>
 <%- include("partials/navbar") -%>
+<div class="container">
+    <div class="profile-container">
 
-<form action="/profile/updateName" method="post">
-    <input type="text" name="displayName" id="" value="<%=user.displayName%>">
-    <input type="submit" value="change">
-    <% if(locals.userMessage) {%>
-        <p class="text-danger"><%=userMessage%></p>
-    <%}%>
-</form>
+        <h2 class="pb-4">Profile Settings</h2>
+        
+        <div class="profile-section">
+            <div class="row">
+                <div class="col-md-5 d-flex flex-column align-items-center">
+                    <h4 class="profile-section-heading">Profile Picture</h4>
+                    <img class="profile-picture mb-2" src="<%=user.profileImg%>" alt="profile" />
+                </div>
 
-<form action="/profile/updateImage" method="post" enctype="multipart/form-data">
-    <input type="file" accept="image/jpeg, image/png" name="profile" >
-    <input type="submit" value="upload">
-    <% if(locals.imageMessage) {%>
-        <p class="text-danger"><%=imageMessage%></p>
-    <%}%>
-</form>
+                <div class="col-md-7 d-flex justify-content-md-start justify-content-center">
+                    <form class="profile-image-margin"action="/profile/updateImage" method="post" enctype="multipart/form-data">
+                        <input type="file" accept="image/jpeg, image/png" name="profile" >
+                        <input type="submit" value="upload">
+                        <% if(locals.imageMessage) {%>
+                            <p class="warning-text"><%=imageMessage%></p>
+                        <%}%>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+
+            <div class="row">
+                <div class="col-md-5 d-flex justify-content-center">
+                    <h5 class="profile-section-heading">Display Name</h5>
+                </div>
+
+                <div class="col-md-7 d-flex justify-content-md-start justify-content-center">
+                    <form class="display-name-margin" action="/profile/updateName" method="post">
+                        <div class="form-row align-items-center">
+                            <div class="col-auto my-1">
+                                <input class="form-control" type="text" name="displayName" id="" value="<%=user.displayName%>">
+                            </div>
+                            <div class="col-auto my-1">
+                                <input type="submit" value="change">
+                            </div>
+                        </div>
+                        <p>Can alter the casing of your display name only</p>
+                        <% if(locals.userMessage) {%>
+                            <p class="warning-text"><%=userMessage%></p>
+                        <%}%>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+
+            <div class="row">
+                <div class="col-md-5 d-flex justify-content-center align-items-center">
+                    <h5 >Delete Account</h5>
+                </div>
+
+                <div class="col-md-7 d-flex justify-content-md-start justify-content-center">
+                    <button class="btn btn-danger" id="delete_account">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- add a modal popup for deleting account - https://www.w3schools.com/howto/howto_css_modals.asp -->
 <%- include("partials/footer") -%>

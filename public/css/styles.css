@@ -1,25 +1,88 @@
+body{
+  background-color: #464b52;
+  color: #ffffff;
+}
+
+.navbar-expand > .container{
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
 .navbar-profile-img {
-    width: 40px;
-    height: 40px;
-    border-radius: 100%;
-    border: 3px solid #FFFFFF;
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  border: 3px solid #ffffff;
 }
 
 .navbar .dropdown-menu {
-    background-color: #343A40;
-    color: #ffffff;
-  }
-
-.navbar .dropdown:hover{
-    background-color: #51565c;
+  background-color: #343a40;
+  color: #ffffff;
 }
 
-  .navbar .dropdown.show a { 
-    background-color: #343A40;
-    color: #ffffff;
-  }
+.navbar .dropdown:hover {
+  background-color: #51565c;
+}
 
-  .navbar .dropdown.show a:hover { 
-    background-color: #51565c;
-    color: #ffffff;
+.navbar .dropdown.show a {
+  background-color: #343a40;
+  color: #ffffff;
+}
+
+.navbar .dropdown.show a:hover {
+  background-color: #51565c;
+  color: #ffffff;
+}
+
+.profile-container {
+  padding-top: 5rem;
+}
+
+.profile-section{
+  border: 1px solid #76797c;
+  border-radius: 3px;
+  color: #ffffff;
+  background-color: #51565c;
+  padding: 10px 0;
+  margin-bottom: 1rem;
+}
+
+.profile-section p{
+  margin-bottom: 0;
+}
+
+.profile-section-heading{
+  margin: 1rem;
+}
+
+.display-name-margin{
+  margin-top: 0.5rem;
+}
+
+.profile-picture{
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+  border: 4px solid #ffffff;
+}
+
+.profile-image-margin{
+  margin-top: 5rem;
+}
+
+@media screen and (max-width: 768px) {
+  .profile-image-margin {
+    margin-top: 1rem;
   }
+}
+
+@media screen and (max-width: 576px) {
+  .navbar-expand > .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.warning-text{
+  color: #ff4949
+}

@@ -1,13 +1,16 @@
 <%- include("partials/header") -%>
 <%- include("partials/navbar-login") -%>
-<form action="/login" method="post">
-    <input type="text" name="username" placeholder="Username or Email" id="" />
-    <input type="password" name="password" placeholder="Password" id="" />
-    <label for="remember">Remember Me</label>
-    <input type="checkbox" name="remember" id="">
-    <input type="submit" value="Submit">
-    <% if(locals.errorMsg) {%>
-        <p class="text-danger"><%=errorMsg%></p>
-    <%}%>
-</form>
+<div class="container">
+    <form action="/login" method="post">
+        <input type="text" name="username" placeholder="Username or Email" id="" />
+        <input type="password" name="password" placeholder="Password" id="" />
+        <label for="remember">Remember Me</label>
+        <input type="checkbox" name="remember" id="">
+        <input type="submit" value="Submit">
+        <% if(locals.errorMsg) {%>
+            <p class="text-danger"><%=errorMsg%></p>
+        <%}%>
+    </form>
+</div>
+
 <%- include("partials/footer") -%>
