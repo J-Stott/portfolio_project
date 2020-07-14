@@ -3,6 +3,12 @@ body{
   color: #ffffff;
 }
 
+/*general style*/
+.content-container {
+  padding-top: 6rem;
+}
+
+/*navbar styles*/
 .navbar-expand > .container{
   padding-left: 15px;
   padding-right: 15px;
@@ -34,9 +40,7 @@ body{
   color: #ffffff;
 }
 
-.profile-container {
-  padding-top: 5rem;
-}
+/*profile styles*/
 
 .profile-section{
   border: 1px solid #76797c;
@@ -70,6 +74,33 @@ body{
   margin-top: 5rem;
 }
 
+.warning-text{
+  color: #ff4949
+}
+
+/*modal stuff*/
+
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 2; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.8); 
+}
+
+.modal-content {
+  background-color: #51565c;
+  margin: 450px auto; 
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%; 
+}
+
+/*media queries*/
 @media screen and (max-width: 768px) {
   .profile-image-margin {
     margin-top: 1rem;
@@ -81,30 +112,4 @@ body{
     padding-left: 0;
     padding-right: 0;
   }
-}
-
-.warning-text{
-  color: #ff4949
-}
-
-/*modal stuff*/
-
-.modal {
-  display: none; 
-  position: fixed; 
-  z-index: 1; 
-  left: 0;
-  top: 0;
-  width: 100%; 
-  height: 100%; 
-  background-color: rgb(0,0,0); 
-  background-color: rgba(0,0,0,0.6); 
-}
-
-.modal-content {
-  background-color: #51565c;
-  margin: 450px auto; 
-  padding: 20px;
-  border: 1px solid #888;
-  width: 60%; 
 }

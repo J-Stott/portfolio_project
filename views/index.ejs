@@ -1,6 +1,8 @@
 <%- include("partials/header") -%>
 <%- user !== null ? include("partials/navbar") : include("partials/navbar-login") -%>
 <div class="container">
-    <h1>Hello <%= user !== null ? user.displayName : "World" %></h1>
+    <div class="content-container">
+        <h1>Hello <%= user !== null ? user.displayName : "World" %></h1>
+    </div>
 </div>
 <%- include("partials/footer") -%>
