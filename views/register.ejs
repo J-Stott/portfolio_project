@@ -2,17 +2,32 @@
 <%- include("partials/navbar-login") -%>
 <div class="container">
     <div class="content-container">
-        <form action="/register" method="post">
-            <input type="text" name="username" placeholder="Username" pattern="[a-zA-Z0-9\-_\.]+" title="Username can only contain upper and lower case letters, numbers, ., _ and -" id="" />
-            <input type="email" name="email" placeholder="Email Address" id="" />
-            <input type="password" name="password" placeholder="Password" id=""
-            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
-            title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"/>
-            <input type="submit" value="Submit">
-            <% if(locals.errorMsg) {%>
-                <p class="text-danger"><%=errorMsg%></p>
-            <%}%>
-        </form>
+
+        <div class="login-wrapper">
+            <h3>Register</h3>
+            <form action="/register" method="post">
+                <div class="form-row align-items-center">
+                    <div class="col-12 my-1">
+                        <input class="form-control" type="text" name="username" placeholder="Username" pattern="[a-zA-Z0-9\-_\.]+" title="Username can only contain upper and lower case letters, numbers, ., _ and -" id="" />
+                    </div>
+                    <div class="col-12 my-1">
+                        <input class="form-control" type="email" name="email" placeholder="Email Address" autocomplete="off" id="" />
+                    </div>
+                    <div class="col-12 my-1">
+                        <input class="form-control" type="password" name="password" placeholder="Password" id=""
+                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                        title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"/>
+                    </div>
+                    <div class="col-12 my-1">
+                        <button type="submit" class="btn btn-light">Register</button>
+                    </div>
+                </div>
+
+                <% if(locals.errorMsg) {%>
+                    <p class="warning-text"><%=errorMsg%></p>
+                <%}%>
+            </form>
+        </div>
     </div>
 </div>
 <%- include("partials/footer") -%>

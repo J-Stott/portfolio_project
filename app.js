@@ -80,6 +80,7 @@ app.post("/login", function (req, res, next) {
                         req.session.cookie.expires = false; //expires at end of session
                     }
 
+                    req.user = user;
                     console.log("success");
                     return res.redirect("/");
                 }

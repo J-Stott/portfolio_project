@@ -37,7 +37,16 @@ body{
 
 .navbar .dropdown.show a:hover {
   background-color: #51565c;
-  color: #ffffff;
+}
+
+/*login styles*/
+.login-wrapper{
+  border: 1px solid #76797c;
+  border-radius: 3px;
+  background-color: #51565c;
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 /*profile styles*/

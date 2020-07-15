@@ -2,16 +2,30 @@
 <%- include("partials/navbar-login") -%>
 <div class="container">
     <div class="content-container">
-        <form action="/login" method="post">
-            <input type="text" name="username" placeholder="Username or Email" id="" />
-            <input type="password" name="password" placeholder="Password" id="" />
-            <label for="remember">Remember Me</label>
-            <input type="checkbox" name="remember" id="">
-            <input type="submit" value="Submit">
-            <% if(locals.errorMsg) {%>
-                <p class="text-danger"><%=errorMsg%></p>
-            <%}%>
-        </form>
+        <div class="login-wrapper">
+            <h3>Login</h3>
+            <form action="/login" method="post">
+                <div class="form-row align-items-center">
+                    <div class="col-12 my-1">
+                        <input class="form-control" type="text" name="username" placeholder="Username or Email" id="" />
+                    </div>
+                    <div class="col-12 my-1">
+                        <input class="form-control" type="password" name="password" placeholder="Password" id="" />
+                    </div>
+                    <div class="col-12 my-1">
+                        <input type="checkbox" name="remember" id="">
+                        <label for="remember">Remember Me</label>
+                    </div>
+                    <div class="col-12 my-1">
+                        <button type="submit" class="btn btn-light">Login</button>
+                    </div>
+                </div>
+
+                <% if(locals.errorMsg) {%>
+                    <p class="warning-text"><%=errorMsg%></p>
+                <%}%>
+            </form>
+        </div>
     </div>
 </div>
 
