@@ -1,0 +1,111 @@
+<%- include("partials/header") -%>
+<%- include("partials/navbar") -%>
+<div class="container">
+    <div class="content-container">
+        <div class="review-wrapper wrapper-style">
+            <h3>Create Your Review</h3>
+            <form action="/review" method="post">
+                <div class="form-row align-items-center">
+                    <div class="col-12 my-1">
+                        <input class="form-control" type="text" name="game" placeholder="Game Title" id="" />
+                    </div>
+                    <div class="col-12 my-1">
+                        <input class="form-control" type="text" name="title" placeholder="Review Title" id="" />
+                    </div>
+                    <div class="col-12 my-1">
+                        <textarea class="form-control" placeholder="Review Content" rows="20"></textarea>
+                    </div>
+                    <div class="col-12 my-1">
+                        <h4>Ratings</h4>
+                        <div class="row row-cols-lg-5 row-cols-md-3 row-cols-2">
+                            <div class="col">
+                                <h5>Gameplay</h5>
+                                <div class="float-left">
+                                    <input class="star star-5" id="g-star-5" type="radio" value="5" name="gameplay"/>
+                                    <label class="star star-5" for="g-star-5"></label>
+                                    <input class="star star-4" id="g-star-4" type="radio" value="4" name="gameplay"/>
+                                    <label class="star star-4" for="g-star-4"></label>
+                                    <input class="star star-3" id="g-star-3" type="radio" value="3" name="gameplay"/>
+                                    <label class="star star-3" for="g-star-3"></label>
+                                    <input class="star star-2" id="g-star-2" type="radio" value="2" name="gameplay"/>
+                                    <label class="star star-2" for="g-star-2"></label>
+                                    <input class="star star-1" id="g-star-1" type="radio" value="1" name="gameplay"/>
+                                    <label class="star star-1" for="g-star-1"></label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h5>Visuals</h5>
+                                <div class="float-left">
+                                    <input class="star star-5" id="v-star-5" type="radio" value="5" name="visuals"/>
+                                    <label class="star star-5" for="v-star-5"></label>
+                                    <input class="star star-4" id="v-star-4" type="radio" value="4" name="visuals"/>
+                                    <label class="star star-4" for="v-star-4"></label>
+                                    <input class="star star-3" id="v-star-3" type="radio" value="3" name="visuals"/>
+                                    <label class="star star-3" for="v-star-3"></label>
+                                    <input class="star star-2" id="v-star-2" type="radio" value="2" name="visuals"/>
+                                    <label class="star star-2" for="v-star-2"></label>
+                                    <input class="star star-1" id="v-star-1" type="radio" value="1" name="visuals"/>
+                                    <label class="star star-1" for="v-star-1"></label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h5>Sound</h5>
+                                <div class="float-left">
+                                    <input class="star star-5" id="s-star-5" type="radio" value="5" name="sound"/>
+                                    <label class="star star-5" for="s-star-5"></label>
+                                    <input class="star star-4" id="s-star-4" type="radio" value="4" name="sound"/>
+                                    <label class="star star-4" for="s-star-4"></label>
+                                    <input class="star star-3" id="s-star-3" type="radio" value="3" name="sound"/>
+                                    <label class="star star-3" for="s-star-3"></label>
+                                    <input class="star star-2" id="s-star-2" type="radio" value="2" name="sound"/>
+                                    <label class="star star-2" for="s-star-2"></label>
+                                    <input class="star star-1" id="s-star-1" type="radio" value="1" name="sound"/>
+                                    <label class="star star-1" for="s-star-1"></label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h5>Story</h5>
+                                <div class="float-left">
+                                    <input class="star star-5" id="st-star-5" type="radio" value="5" name="story"/>
+                                    <label class="star star-5" for="st-star-5"></label>
+                                    <input class="star star-4" id="st-star-4" type="radio" value="4" name="story"/>
+                                    <label class="star star-4" for="st-star-4"></label>
+                                    <input class="star star-3" id="st-star-3" type="radio" value="3" name="story"/>
+                                    <label class="star star-3" for="st-star-3"></label>
+                                    <input class="star star-2" id="st-star-2" type="radio" value="2" name="story"/>
+                                    <label class="star star-2" for="st-star-2"></label>
+                                    <input class="star star-1" id="st-star-1" type="radio" value="1" name="story"/>
+                                    <label class="star star-1" for="st-star-1"></label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h5>Overall</h5>
+                                <div class="float-left">
+                                    <input class="star star-5" id="o-star-5" type="radio" value="5" name="overall"/>
+                                    <label class="star star-5" for="o-star-5"></label>
+                                    <input class="star star-4" id="o-star-4" type="radio" value="4" name="overall"/>
+                                    <label class="star star-4" for="o-star-4"></label>
+                                    <input class="star star-3" id="o-star-3" type="radio" value="3" name="overall"/>
+                                    <label class="star star-3" for="o-star-3"></label>
+                                    <input class="star star-2" id="o-star-2" type="radio" value="2" name="overall"/>
+                                    <label class="star star-2" for="o-star-2"></label>
+                                    <input class="star star-1" id="o-star-1" type="radio" value="1" name="overall"/>
+                                    <label class="star star-1" for="o-star-1"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 my-1">
+                        <button type="submit" class="btn btn-light px-5">Post</button>
+                    </div>
+                </div>
+
+                <% if(locals.errorMsg) {%>
+                    <p class="warning-text"><%=errorMsg%></p>
+                <%}%>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include("partials/footer") -%>

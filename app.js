@@ -4,8 +4,10 @@ const User = require("./backend/models/user");
 const app = require("./backend/components/express_app");
 const passport = require("passport");
 const profile = require("./backend/routes/profile");
+const review = require("./backend/routes/review");
 
 app.use("/profile", profile);
+app.use("/review", review);
 
 //routes
 app.get("/", function (req, res) {
