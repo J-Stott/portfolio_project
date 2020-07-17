@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const passport = require("passport");
 const User = require("../models/user");
 const fs = require("fs");
 const path = require("path");
@@ -23,6 +24,11 @@ router.get("/", function (req, res) {
         if (req.session.imageMessage !== null) {
             data.imageMessage = req.session.imageMessage;
             req.session.imageMessage = null;
+        }
+
+        if (req.session.passwordMessage !== null) {
+            data.passwordMessage = req.session.passwordMessage;
+            req.session.passwordMessage = null;
         }
 
         res.render("profile", data);
@@ -91,6 +97,27 @@ router.post("/updateName", function (req, res) {
         }
 
 
+    } else {
+        res.redirect("/login");
+    }
+});
+
+
+//clear out all user data
+router.post("/updatePassword", function (req, res) {
+
+    if(req.isAuthenticated()){
+        User.findOne({_id: req.user._id}, function(err, user){
+            user.changePassword(req.body.oldPassword, req.body.newPassword, function(err){
+                if(err){
+                    console.log(err);
+                    req.session.passwordMessage = "Your old password is incorrect";
+                    res.redirect("/profile");
+                } else {
+                    res.redirect("/profile");
+                }
+            })
+        })
     } else {
         res.redirect("/login");
     }

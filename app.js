@@ -5,9 +5,11 @@ const app = require("./backend/components/express_app");
 const passport = require("passport");
 const profile = require("./backend/routes/profile");
 const review = require("./backend/routes/review");
+const Latest = require("./backend/models/latest");
+const Review = require("./backend/models/review");
 
 app.use("/profile", profile);
-app.use("/review", review);
+app.use("/reviews", review);
 
 //routes
 app.get("/", function (req, res) {
@@ -19,7 +21,22 @@ app.get("/", function (req, res) {
         console.log(user);
     }
 
-    res.render("index", { user: user });
+    Latest.find({}).populate({
+        path: "review", 
+        populate: {
+            path: "author",
+            model: "User",
+            select: {"_id": 1, "displayName": 1, "profileImg": 1}
+        }}).exec(function(err, docs){
+
+        const reviews = docs.map((doc) => {
+            return doc.review;
+        });
+
+        console.log(reviews);
+
+        res.render("index", { user: user, reviews: reviews.reverse() });
+    });
 });
 
 app.get("/register", function (req, res) {
@@ -82,8 +99,7 @@ app.post("/login", function (req, res, next) {
                     }
 
                     req.user = user;
-                    console.log("success");
-                    return res.redirect("/");
+                    res.redirect("/");
                 }
             });
         }

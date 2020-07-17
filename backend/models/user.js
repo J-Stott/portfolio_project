@@ -7,7 +7,9 @@ const userSchema = new mongoose.Schema({
     username: { type : String , unique : true, required : true, dropDups: true },
     displayName: { type : String },
     email: { type : String , unique : true, required : true, dropDups: true },
-    profileImg: {type: String, default: "/profileImages/default.png"}
+    profileImg: {type: String, default: "/profileImages/default.png"},
+    bio: {type: String},
+    userReviews: [{type: mongoose.Schema.Types.ObjectId, ref: "Review" }]
 });
 
 userSchema.plugin(passportLocalMongoose, {

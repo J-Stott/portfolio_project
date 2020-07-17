@@ -2,23 +2,20 @@ const mongoose = require("mongoose");
 
 //setup user schema
 const reviewSchema = new mongoose.Schema({
-    authorData: { 
-        authorName: { type : String },
-        authorProfileImg: { type : String }
-    },
     gameData: { 
         gameTitle: { type : String },
         gameImg: { type : String }
     },
     ratings: {
-        graphics: { type : Number },
         gameplay: { type : Number },
-        music: { type : Number },
+        visuals: { type : Number },
+        audio: { type : Number },
         story: { type : Number },
         overall: { type : Number },
     },
-    heading: {type : String},
+    title: {type : String},
     content: {type : String},
+    author: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
 });
 
 

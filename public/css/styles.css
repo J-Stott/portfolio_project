@@ -45,6 +45,7 @@ body{
   background-color: #51565c;
 }
 
+
 /*login styles*/
 .login-wrapper{
   padding: 20px;
@@ -53,9 +54,14 @@ body{
 }
 
 /*review styles*/
+
 .review-wrapper{
   padding: 20px;
   margin: 0 auto;
+}
+
+.light {
+  border-color: #8a8f92;
 }
 
 /*profile styles*/
@@ -86,7 +92,7 @@ body{
 }
 
 .profile-image-margin{
-  margin-top: 5rem;
+  margin-top: 3rem;
 }
 
 .warning-text{
@@ -137,7 +143,7 @@ input.star {
 label.star {
   float: right;
   font-size: 20px;
-  color: #76797c;
+  color: #8a8f92;
   transition: all .2s;
   cursor: pointer;
 }
@@ -162,6 +168,14 @@ label.star:hover {
 }
 
 label.star:before {
-  content: '\f006';
+  content: '\f005';
   font-family: FontAwesome;
+}
+
+.star-highlight{
+  color: #ffdd44;
+}
+
+.star-lowlight{
+  color: #8a8f92;
 }
