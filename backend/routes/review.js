@@ -119,14 +119,25 @@ router.post("/:reviewId/edit", function (req, res) {
     if (req.isAuthenticated()) {
         const reviewId = req.params.reviewId;
 
-        Review.findOne({ _id: reviewId, author: req.user._id }, function (err, review) {
+        Review.updateOne({ _id: reviewId, author: req.user._id }, {
+            gameData: {
+                gameTitle: req.body.game,
+            }, 
+            title: req.body.title, 
+            content: req.body.content, 
+            ratings: {
+                //if user hasn't entered a rating, presume 0
+                gameplay: "gameplay" in req.body ? Number(req.body.gameplay) : 0,
+                visuals: "visuals" in req.body ? Number(req.body.visuals) : 0,
+                audio: "audio" in req.body ? Number(req.body.audio) : 0,
+                story: "story" in req.body ? Number(req.body.story) : 0,
+                overall: "overall" in req.body ? Number(req.body.overall) : 0,
+            },
+        }, function (err) {
             if (err) {
                 console.log(err);
-                res.redirect("/");
-            } else if (!review) {
-                res.redirect("/");
             } else {
-                res.render("edit", { user: req.user, reviewData: review });
+                res.redirect("/");
             }
         });
     } else {
@@ -147,15 +158,15 @@ router.post("/:reviewId/delete", function (req, res) {
                 } else {
 
                     //find in the latests if it exists and remove
-                    Latest.deleteOne({review: reviewId}, function(err){
-                        if(err){
+                    Latest.deleteOne({ review: reviewId }, function (err) {
+                        if (err) {
                             console.log(err);
                         }
                     });
 
                     //remove review ID from the user's review collection
-                    User.updateOne({_id: req.user._id }, { $pull: { userReviews: { $in: reviewId } }}).exec(function(err){
-                        if(err){
+                    User.updateOne({ _id: req.user._id }, { $pull: { userReviews: { $in: reviewId } } }).exec(function (err) {
+                        if (err) {
                             console.log(err)
                         } else {
                             res.redirect("/");
