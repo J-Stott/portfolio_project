@@ -13,7 +13,7 @@
                     </div>
                     <div class="col-lg-10 col-md-9 col-8">
                         <h1><%=review.gameData.gameTitle%></h1>
-                        <h5>By <%=review.author.displayName%></h5>
+                        <h5>By <a class="user-link" href="/users/<%=review.author.displayName%>"><%=review.author.displayName%></a></h5>
                         <div class="stars">
                             <%for(let i = 0; i < review.ratings.overall; i++){%>
                                 <i class="far fa-star star-highlight"></i>
@@ -33,7 +33,7 @@
                 </div>
                 <div class="row ">
                     <div class="col-12 d-flex justify-content-end">
-                        <a class="btn btn-outline-light" href="/review/create">Read Review</a>
+                        <a class="btn btn-outline-light" href="/reviews/<%=review._id%>">Read Review</a>
                     </div>
                 </div>
             </div>

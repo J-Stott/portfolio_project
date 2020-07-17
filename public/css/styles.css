@@ -99,6 +99,15 @@ body{
   color: #ff4949
 }
 
+.user-link{
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.user-link:hover{
+  color: #ffffff;
+}
+
 /*modal stuff*/
 
 .modal {

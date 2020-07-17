@@ -13,7 +13,7 @@ router.get("/create", function (req, res) {
             user: user
         }
 
-        res.render("review", data);
+        res.render("create", data);
 
     } else {
         res.redirect("/login");
@@ -23,10 +23,10 @@ router.get("/create", function (req, res) {
 router.post("/create", function (req, res) {
     if (req.isAuthenticated()) {
 
-        User.findOne({_id: req.user.id}, function(err, user){
+        User.findOne({ _id: req.user.id }, function (err, user) {
             const newReview = new Review({
                 author: user._id,
-                gameData: { 
+                gameData: {
                     gameTitle: req.body.game,
                 },
                 ratings: {
@@ -41,9 +41,9 @@ router.post("/create", function (req, res) {
                 content: req.body.content,
             });
 
-            
-            newReview.save(function(err, review){
-                if(err){
+
+            newReview.save(function (err, review) {
+                if (err) {
                     console.log(err);
                 } else {
                     //if successful, add the id to the latest reviews collection
@@ -53,9 +53,9 @@ router.post("/create", function (req, res) {
 
                     user.userReviews.push(reviewId);
                     user.save();
-                  
-                    Latest.create({review: reviewId}, function(err){
-                        if(err) {
+
+                    Latest.create({ review: reviewId }, function (err) {
+                        if (err) {
                             console.log(err);
                         } else {
                             res.redirect("/");
@@ -65,6 +65,104 @@ router.post("/create", function (req, res) {
             });
         });
 
+    } else {
+        res.redirect("/login");
+    }
+});
+
+router.get("/:reviewId", function (req, res) {
+
+    const reviewId = req.params.reviewId;
+
+    Review.findOne({ _id: reviewId })
+        .populate({ path: "author" })
+        .exec(function (err, review) {
+            if (err) {
+                console.log(err);
+            } else if (!review) {
+                res.redirect("/");
+            } else {
+
+                let user = null;
+
+                if (req.isAuthenticated()) {
+                    user = req.user;
+                }
+
+                res.render("review", { user: user, review: review });
+            }
+        });
+});
+
+router.get("/:reviewId/edit", function (req, res) {
+
+    if (req.isAuthenticated()) {
+        const reviewId = req.params.reviewId;
+
+        Review.findOne({ _id: reviewId, author: req.user._id }, function (err, review) {
+            if (err) {
+                console.log(err);
+                res.redirect("/");
+            } else if (!review) {
+                res.redirect("/");
+            } else {
+                res.render("edit", { user: req.user, reviewData: review });
+            }
+        });
+    } else {
+        res.redirect("/login");
+    }
+});
+
+router.post("/:reviewId/edit", function (req, res) {
+
+    if (req.isAuthenticated()) {
+        const reviewId = req.params.reviewId;
+
+        Review.findOne({ _id: reviewId, author: req.user._id }, function (err, review) {
+            if (err) {
+                console.log(err);
+                res.redirect("/");
+            } else if (!review) {
+                res.redirect("/");
+            } else {
+                res.render("edit", { user: req.user, reviewData: review });
+            }
+        });
+    } else {
+        res.redirect("/login");
+    }
+});
+
+router.post("/:reviewId/delete", function (req, res) {
+
+    if (req.isAuthenticated()) {
+        const reviewId = req.params.reviewId;
+
+        //remove only if the author ids match
+        Review.deleteOne({ _id: reviewId, author: req.user._id },
+            function (err) {
+                if (err) {
+                    console.log(err);
+                } else {
+
+                    //find in the latests if it exists and remove
+                    Latest.deleteOne({review: reviewId}, function(err){
+                        if(err){
+                            console.log(err);
+                        }
+                    });
+
+                    //remove review ID from the user's review collection
+                    User.updateOne({_id: req.user._id }, { $pull: { userReviews: { $in: reviewId } }}).exec(function(err){
+                        if(err){
+                            console.log(err)
+                        } else {
+                            res.redirect("/");
+                        }
+                    });
+                }
+            });
     } else {
         res.redirect("/login");
     }

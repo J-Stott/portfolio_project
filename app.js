@@ -5,11 +5,13 @@ const app = require("./backend/components/express_app");
 const passport = require("passport");
 const profile = require("./backend/routes/profile");
 const review = require("./backend/routes/review");
+const user = require("./backend/routes/user");
 const Latest = require("./backend/models/latest");
 const Review = require("./backend/models/review");
 
 app.use("/profile", profile);
 app.use("/reviews", review);
+app.use("/users", user);
 
 //routes
 app.get("/", function (req, res) {

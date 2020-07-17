@@ -1,0 +1,98 @@
+<%- include("partials/header") -%>
+<%- include("partials/navbar") -%>
+<div class="container">
+    <div class="content-container">
+        <div class="review-wrapper wrapper-style">
+            <h3>Create Your Review</h3>
+            <form action="/reviews/<%=reviewData._id%>/edit" method="post">
+                <div class="form-row align-items-center">
+                    <div class="col-12 my-1">
+                        <input class="form-control" type="text" name="game" autocomplete="off" placeholder="Game Title" value="<%=reviewData.gameData.gameTitle%>" id="" required/>
+                    </div>
+                    <div class="col-12 my-1">
+                        <input class="form-control" type="text" name="title" autocomplete="off" placeholder="Review Title" id="" value="<%=reviewData.title%>" required/>
+                    </div>
+                    <div class="col-12 my-1">
+                        <textarea class="form-control" name="content" placeholder="Review Content" rows="20" required><%=reviewData.content%></textarea>
+                    </div>
+                    <div class="col-12 my-1">
+                        <h4>Ratings</h4>
+                        <div class="row row-cols-lg-5 row-cols-md-3 row-cols-2">
+                            <div class="col">
+                                <h5>Gameplay</h5>
+                                <div class="float-left">
+                                    <% for(let i = 5; i >= 1; i--){%>
+                                        <input class="star star-<%=i%>" id="g-star-<%=i%>" type="radio" value="<%=i%>" name="gameplay" 
+                                        <%if(i == reviewData.ratings.gameplay){%>
+                                            checked
+                                        <%}%>/>
+                                        <label class="star star-<%=i%>" for="g-star-<%=i%>"></label>
+                                    <%}%>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h5>Visuals</h5>
+                                <div class="float-left">
+                                    <% for(let i = 5; i >= 1; i--){%>
+                                        <input class="star star-<%=i%>" id="v-star-<%=i%>" type="radio" value="<%=i%>" name="visuals" 
+                                        <%if(i == reviewData.ratings.visuals){%>
+                                            checked
+                                        <%}%>/>
+                                        <label class="star star-<%=i%>" for="v-star-<%=i%>"></label>
+                                    <%}%>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h5>Audio</h5>
+                                <div class="float-left">
+                                    <% for(let i = 5; i >= 1; i--){%>
+                                        <input class="star star-<%=i%>" id="a-star-<%=i%>" type="radio" value="<%=i%>" name="audio" 
+                                        <%if(i == reviewData.ratings.audio){%>
+                                            checked
+                                        <%}%>/>
+                                        <label class="star star-<%=i%>" for="a-star-<%=i%>"></label>
+                                    <%}%>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h5>Story</h5>
+                                <div class="float-left">
+                                    <% for(let i = 5; i >= 1; i--){%>
+                                        <input class="star star-<%=i%>" id="st-star-<%=i%>" type="radio" value="<%=i%>" name="story" 
+                                        <%if(i == reviewData.ratings.story){%>
+                                            checked
+                                        <%}%>/>
+                                        <label class="star star-<%=i%>" for="st-star-<%=i%>"></label>
+                                    <%}%>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h5>Overall</h5>
+                                <div class="float-left">
+
+                                    <% for(let i = 5; i >= 1; i--){%>
+                                        <input class="star star-<%=i%>" id="o-star-<%=i%>" type="radio" value="<%=i%>" name="overall" 
+                                        <%if(i == reviewData.ratings.overall){%>
+                                            checked
+                                        <%}%>/>
+                                        <label class="star star-<%=i%>" for="o-star-<%=i%>"></label>
+                                    <%}%>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 my-1">
+                        <button type="submit" class="btn btn-light px-5">Post</button>
+                    </div>
+                </div>
+
+                <% if(locals.errorMsg) {%>
+                    <p class="warning-text"><%=errorMsg%></p>
+                <%}%>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include("partials/footer") -%>

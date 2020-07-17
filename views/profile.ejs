@@ -38,7 +38,8 @@
                         <div class="form-row align-items-center justify-content-md-start justify-content-center">
                             <div class="col-10 my-1">
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="inputGroupFile01" accept="image/jpeg, image/png" name="profile"
+                                    <input type="file" class="custom-file-input" id="inputGroupFile01"
+                                        accept="image/jpeg, image/png" name="profile"
                                         aria-describedby="inputGroupFileAddon01">
                                     <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
                                 </div>
@@ -68,15 +69,15 @@
                         <div class="form-row align-items-center justify-content-md-start justify-content-center">
                             <div class="col-10 my-1">
                                 <input class="form-control" type="text" name="displayName" id="" value="<%=user.displayName%>">
-                            </div>
-                            <div class="col-10 my-1">
-                                <button type="submit" class="btn btn-light form-control">Change</button>
-                            </div>
-                            <div class="col-10 my-1 d-flex justify-content-md-start justify-content-center">
-                                <p>Can alter the casing of your display name only</p>
-                                <% if(locals.userMessage) {%>
-                                <p class="warning-text"><%=userMessage%></p>
-                                <%}%>
+                        </div>
+                        <div class="col-10 my-1">
+                            <button type="submit" class="btn btn-light form-control">Change</button>
+                        </div>
+                        <div class="col-10 my-1 d-flex justify-content-md-start justify-content-center">
+                            <p>Can alter the casing of your display name only</p>
+                            <% if(locals.userMessage) {%>
+                            <p class="warning-text"><%=userMessage%></p>
+                            <%}%>
                             </div>
 
                         </div>
@@ -110,8 +111,8 @@
                             </div>
                         </div>
                         <% if(locals.passwordMessage) {%>
-                        <p class="warning-text"><%=passwordMessage%></p>
-                        <%}%>
+                            <p class="warning-text"><%=passwordMessage%></p>
+                            <%}%>
                     </form>
                 </div>
             </div>
