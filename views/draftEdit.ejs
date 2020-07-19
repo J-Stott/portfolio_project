@@ -4,8 +4,12 @@
     <div class="content-container">
         <div class="review-wrapper wrapper-style">
             <h3>Create Your Review</h3>
-            <form action="/reviews/<%=reviewData._id%>/edit" method="post">
+            <form action="/reviews/create" method="post">
                 <div class="form-row align-items-center">
+
+                    <!--keep draft id incase user wants to post their review. Then we can remove it from the user's draft pool-->
+
+                    <input type="hidden" name="draftId" value="<%=draftId%>"/>
 
                     <div class="col-12 my-1">
                         <input class="form-control" type="text" name="game" autocomplete="off" placeholder="Game Title" value="<%=reviewData.gameData.gameTitle%>" id="" required/>
@@ -84,6 +88,7 @@
                         </div>
                     </div>
                     <div class="col-12 my-1 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-light px-5 mr-2" formaction="/drafts/<%=reviewData._id%>/edit">Draft</button>
                         <button type="submit" class="btn btn-light px-5">Post</button>
                     </div>
                 </div>

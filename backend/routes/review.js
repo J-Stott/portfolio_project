@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const Review = require("../models/review");
 const Latest = require("../models/latest");
 const User = require("../models/user");
+const settings = require("../../settings");
 
 
 router.get("/create", function (req, res) {
@@ -24,7 +25,7 @@ router.post("/create", function (req, res) {
     if (req.isAuthenticated()) {
 
         User.findOne({ _id: req.user.id }, function (err, user) {
-            const newReview = new Review({
+            const newReview = new Review.review({
                 author: user._id,
                 gameData: {
                     gameTitle: req.body.game,
@@ -54,12 +55,40 @@ router.post("/create", function (req, res) {
                     user.userReviews.push(reviewId);
                     user.save();
 
-                    Latest.create({ review: reviewId }, function (err) {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            res.redirect("/");
+                    //remove draft from user and drafts collection
+                    if(req.body.draftId !== null){
+                        Review.draft.deleteOne({_id: req.body.draftId}, function(err){
+                            if(err){
+                                console.log(err);
+                            } else {
+                                console.log("draft removed");
+                            }
+                        });
+
+                        //remove draft ID from the user's review collection
+                        User.updateOne({ _id: req.user._id }, { $pull: { userDrafts: { $in: req.body.draftId } } }).exec(function (err) {
+                            if (err) {
+                                console.log(err)
+                            }
+                        });
+                    }
+
+                    Latest.find({}, function (err, latests) {
+
+                        if(latests.length >= settings.LATESTS_MAX_LENGTH){
+                            //remove any old latest posts
+                            for(let i = 0; i < (latests.length + 1) - settings.LATESTS_MAX_LENGTH; i++){
+                                latests[i].remove(function(err){
+                                });
+                            }
                         }
+                        
+                        let latest = new Latest({review: reviewId});
+                        latest.save(function(err){
+                            if(!err){
+                                res.redirect("/");
+                            }
+                        });
                     });
                 }
             });
@@ -74,7 +103,7 @@ router.get("/:reviewId", function (req, res) {
 
     const reviewId = req.params.reviewId;
 
-    Review.findOne({ _id: reviewId })
+    Review.review.findOne({ _id: reviewId })
         .populate({ path: "author" })
         .exec(function (err, review) {
             if (err) {
@@ -99,7 +128,7 @@ router.get("/:reviewId/edit", function (req, res) {
     if (req.isAuthenticated()) {
         const reviewId = req.params.reviewId;
 
-        Review.findOne({ _id: reviewId, author: req.user._id }, function (err, review) {
+        Review.review.findOne({ _id: reviewId, author: req.user._id }, function (err, review) {
             if (err) {
                 console.log(err);
                 res.redirect("/");
@@ -119,7 +148,7 @@ router.post("/:reviewId/edit", function (req, res) {
     if (req.isAuthenticated()) {
         const reviewId = req.params.reviewId;
 
-        Review.updateOne({ _id: reviewId, author: req.user._id }, {
+        Review.review.updateOne({ _id: reviewId, author: req.user._id }, {
             gameData: {
                 gameTitle: req.body.game,
             }, 
@@ -151,7 +180,7 @@ router.post("/:reviewId/delete", function (req, res) {
         const reviewId = req.params.reviewId;
 
         //remove only if the author ids match
-        Review.deleteOne({ _id: reviewId, author: req.user._id },
+        Review.review.deleteOne({ _id: reviewId, author: req.user._id },
             function (err) {
                 if (err) {
                     console.log(err);

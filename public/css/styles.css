@@ -64,11 +64,15 @@ body{
   border-color: #8a8f92;
 }
 
+.review-content {
+  white-space: pre-wrap;
+}
+
 /*profile styles*/
 
 .profile-section{
   color: #ffffff;
-  padding: 10px 0;
+  padding: 10px 20px;
   margin-bottom: 1rem;
 }
 

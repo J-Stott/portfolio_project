@@ -11,7 +11,7 @@
                         be reversed.</p>
                     <div class="row">
                         <div class="col-md-6 d-flex justify-content-center pb-md-0 pb-2">
-                            <form action="/profile/delete" method="post">
+                            <form action="/profile/<%=user.displayName%>/delete" method="post">
                                 <button class="btn btn-danger" type="submit">Delete Account</button>
                             </form>
                         </div>
@@ -25,111 +25,115 @@
 
         <h2 class="pb-4">Profile Settings</h2>
 
+        <!-- Profile image -->
         <div class="profile-section wrapper-style">
             <div class="row">
-                <div class="col-md-5 d-flex flex-column align-items-center">
-                    <h4 class="profile-section-heading">Profile Picture</h4>
-                    <img class="profile-picture mb-2" src="<%=user.profileImg%>" alt="profile" />
-                </div>
-
-                <div class="col-md-7">
-                    <form class="profile-image-margin" action="/profile/updateImage" method="post"
-                        enctype="multipart/form-data">
-                        <div class="form-row align-items-center justify-content-md-start justify-content-center">
-                            <div class="col-10 my-1">
-                                <div class="custom-file">
+                <div class="col-md-12">
+                    <form action="/profile/<%=user.displayName%>/updateImage" method="post"
+                    enctype="multipart/form-data">
+                        <div class="form-row justify-content-start">
+                            <div class="col-md-5 d-flex flex-column align-items-center">
+                                <h4 class="profile-section-heading">Profile Picture</h4>
+                                <img class="profile-picture mb-2" src="<%=user.profileImg%>" alt="profile" />
+                            </div>
+                            <div class="col-md-7 my-1">
+                                <div class="custom-file profile-image-margin">
                                     <input type="file" class="custom-file-input" id="inputGroupFile01"
                                         accept="image/jpeg, image/png" name="profile"
                                         aria-describedby="inputGroupFileAddon01">
                                     <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
                                 </div>
+                                <button type="submit" class="btn btn-light form-control mt-2">Upload</button>
+                                <% if(locals.imageMessage) {%>
+                                <p class="warning-text"><%=imageMessage%></p>
+                                <%}%>
                             </div>
-                            <div class="col-10 my-1">
-                                <button type="submit" class="btn btn-light form-control">Upload</button>
-                            </div>
-
-                            <% if(locals.imageMessage) {%>
-                            <p class="warning-text"><%=imageMessage%></p>
-                            <%}%>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
+        <!-- Personal Info -->
         <div class="profile-section wrapper-style">
-
             <div class="row">
-                <div class="col-md-5 d-flex justify-content-center">
-                    <h5 class="profile-section-heading">Display Name</h5>
-                </div>
-
-                <div class="col-md-7">
-                    <form class="display-name-margin" action="/profile/updateName" method="post">
-                        <div class="form-row align-items-center justify-content-md-start justify-content-center">
-                            <div class="col-10 my-1">
+                <div class="col-12">
+                    <form class="display-name-margin" action="/profile/<%=user.displayName%>/updateInfo" method="post">
+                        <div class="form-row">
+                            <div class="col-md-5 d-flex justify-content-center">
+                                <h5 class="profile-section-heading">Display Name</h5>
+                            </div>
+                            <div class="col-md-7 my-1">
                                 <input class="form-control" type="text" name="displayName" id="" value="<%=user.displayName%>">
-                        </div>
-                        <div class="col-10 my-1">
-                            <button type="submit" class="btn btn-light form-control">Change</button>
-                        </div>
-                        <div class="col-10 my-1 d-flex justify-content-md-start justify-content-center">
-                            <p>Can alter the casing of your display name only</p>
-                            <% if(locals.userMessage) {%>
-                            <p class="warning-text"><%=userMessage%></p>
-                            <%}%>
+                                <p>Can alter the casing of your display name only</p>
+                                <% if(locals.userMessage) {%>
+                                <p class="warning-text"><%=userMessage%></p>
+                                <%}%>
                             </div>
-
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-5 d-flex justify-content-center">
+                                <h5 class="profile-section-heading">Personal Bio</h5>
+                            </div>
+                            <div class="col-md-7 my-1">
+                                <textarea class="form-control" name="bio" id="" maxlength="300"><%=user.bio%></textarea>
+                                <p class="mb-2">Max character limit: 300</p>
+                                <button type="submit" class="btn btn-light form-control">Update</button>
+                            </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
+        <!-- Password -->
         <div class="profile-section wrapper-style">
-
             <div class="row">
-                <div class="col-md-5 d-flex justify-content-center">
-                    <h5 class="profile-section-heading">Change Password</h5>
-                </div>
+                <div class="col-12">
+                    <form class="display-name-margin" action="/profile/<%=user.displayName%>/updatePassword" method="post">
+                        <div class="form-row">
+                            <div class="col-md-5 d-flex justify-content-center">
+                                <h5 class="profile-section-heading">Change Password</h5>
+                            </div>
+                            <div class="col-md-7 my-1">
+                                <input class="form-control mb-2" placeholder="Old Password" type="password" name="oldPassword"
+                                id="" required />
 
-                <div class="col-md-7 ">
-                    <form class="display-name-margin" action="/profile/updatePassword" method="post">
-                        <div class="form-row align-items-center justify-content-md-start justify-content-center">
-                            <div class="col-10 my-1">
-                                <input class="form-control" placeholder="Old Password" type="password" name="oldPassword" id="" required />
-                            </div>
-                            <div class="col-10 my-1">
-                                <input class="form-control" placeholder="New Password" type="password" name="newPassword" id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
-                                title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters" required/>
-                            </div>
-                            <div class="col-10 my-1">
-                                <input class="form-control" placeholder="Confirm Password" type="password" name="newPasswordConfirm" id="password-confirm" required>
-                            </div>
-                            <div class="col-10 my-1">
+                                <input class="form-control mb-2" placeholder="New Password" type="password" name="newPassword"
+                                id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                required />
+
+                                <input class="form-control mb-2" placeholder="Confirm Password" type="password"
+                                name="newPasswordConfirm" id="password-confirm" required>
+
                                 <button type="submit" class="btn btn-light form-control">Change Password</button>
+
+                                <% if(locals.passwordMessage) {%>
+                                    <p class="warning-text"><%=passwordMessage%></p>
+                                <%}%>
                             </div>
                         </div>
-                        <% if(locals.passwordMessage) {%>
-                            <p class="warning-text"><%=passwordMessage%></p>
-                            <%}%>
                     </form>
                 </div>
             </div>
         </div>
 
         <div class="profile-section wrapper-style">
-
             <div class="row">
-                <div class="col-md-5 d-flex justify-content-center align-items-center">
-                    <h5>Delete Account</h5>
-                </div>
-
-                <div class="col-md-7 d-flex justify-content-md-start justify-content-center">
-                    <button class="btn btn-danger" id="delete_account">Delete Account</button>
+                <div class="col-md-12">
+                    <div class="form-row justify-content-start">
+                        <div class="col-md-5 d-flex flex-column align-items-center">
+                            <h4 class="profile-section-heading">Delete Account</h4>
+                        </div>
+                        <div class="col-md-7 my-1 d-flex align-items-center">
+                            <button class="btn btn-danger form-control" id="delete">Delete Account</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 

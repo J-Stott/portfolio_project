@@ -3,7 +3,44 @@
 
 <div class="container">
     <div class="content-container">
-        
+        <h1 class="mb-4"><%=profileData.displayName%>'s Profile</h1>
+        <% profileData.userReviews.forEach((review) => {%>
+            <div class="review-wrapper wrapper-style mb-4">
+                <div class="row">
+                    <div class="col-lg-2 col-md-3 col-4 d-flex justify-content-center">
+                        <img class="profile-picture mb-2" src="<%=profileData.profileImg%>" alt="profile" />
+                    </div>
+                    <div class="col-lg-10 col-md-9 col-8">
+                        <h1><%=review.gameData.gameTitle%></h1>
+                        <div class="stars">
+                            <%for(let i = 0; i < review.ratings.overall; i++){%>
+                                <i class="far fa-star star-highlight"></i>
+                            <%}%>
+                            <%for(let i = 0; i < 5 - review.ratings.overall; i++){%>
+                                <i class="far fa-star star-lowlight"></i>
+                            <%}%>
+                        </div>
+                    </div>
+                </div>
+                <hr class="light" />
+                <div class="row">
+                    <div class="col-12">
+                        <h2><%=review.title%></h2>
+
+                        <%if(review.content.length > 300){%>
+                            <p class="review-content"><%=review.content.slice(0, 300)%> ...</p>
+                            <%}else{%>
+                                <p class="review-content"><%=review.content%></p>
+                            <%}%>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-12 d-flex justify-content-end">
+                        <a class="btn btn-outline-light" href="/reviews/<%=review._id%>">Read Review</a>
+                    </div>
+                </div>
+            </div>
+        <%});%>
 
     </div>
 </div>

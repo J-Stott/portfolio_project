@@ -6,12 +6,14 @@ const passport = require("passport");
 const profile = require("./backend/routes/profile");
 const review = require("./backend/routes/review");
 const user = require("./backend/routes/user");
+const draft = require("./backend/routes/draft");
 const Latest = require("./backend/models/latest");
 const Review = require("./backend/models/review");
 
 app.use("/profile", profile);
 app.use("/reviews", review);
 app.use("/users", user);
+app.use("/drafts", draft);
 
 //routes
 app.get("/", function (req, res) {
@@ -60,7 +62,8 @@ app.post("/register", function (req, res) {
             return res.render("register", { errorMsg: "Username or Email is already in use." })
         } else {
             passport.authenticate("local")(req, res, function () {
-                res.redirect("/profile");
+                const username = req.user.displayName;
+                res.redirect(`/profile/${username}`);
             });
         }
     });

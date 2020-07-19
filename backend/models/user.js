@@ -9,7 +9,9 @@ const userSchema = new mongoose.Schema({
     email: { type : String , unique : true, required : true, dropDups: true },
     profileImg: {type: String, default: "/profileImages/default.png"},
     bio: {type: String},
-    userReviews: [{type: mongoose.Schema.Types.ObjectId, ref: "Review" }]
+    userReviews: [{type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
+    userDrafts: [{type: mongoose.Schema.Types.ObjectId, ref: "Draft" }],
+    isAdmin: {type: Boolean, default: false }
 });
 
 userSchema.plugin(passportLocalMongoose, {

@@ -1,7 +1,7 @@
 var modal = document.querySelector("#myModal");
 
 // Get the button that opens the modal
-var btn = document.querySelector("#delete_account");
+var btn = document.querySelector("#delete");
 
 var cancelButton = document.querySelector("#close");
 console.log(cancelButton);

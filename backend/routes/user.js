@@ -22,6 +22,8 @@ router.get("/:username", function (req, res) {
                     user = req.user;
                 }
 
+                console.log(profile);
+
                 res.render("user", {user: user, profileData: profile});
             }
     });
