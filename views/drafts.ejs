@@ -4,15 +4,13 @@
 <div class="container">
     <div class="content-container">
         <h1 class="mb-4">Your Drafts</h1>
+
+        <%if(drafts.length > 0){%>
         <% drafts.forEach((draft) => {%>
             <div class="review-wrapper wrapper-style mb-4">
                 <div class="row">
-                    <div class="col-lg-2 col-md-3 col-4 d-flex justify-content-center">
-                        <img class="profile-picture mb-2" src="<%=user.profileImg%>" alt="profile" />
-                    </div>
-                    <div class="col-lg-10 col-md-9 col-8">
+                    <div class="col-12">
                         <h1><%=draft.gameData.gameTitle%></h1>
-                        <h5>By <a class="user-link" href="/users/<%=user.displayName%>"><%=user.displayName%></a></h5>
                         <div class="stars">
                             <%for(let i = 0; i < draft.ratings.overall; i++){%>
                                 <i class="far fa-star star-highlight"></i>
@@ -37,11 +35,15 @@
                 </div>
                 <div class="row ">
                     <div class="col-12 d-flex justify-content-end">
+                        <a class="btn btn-danger mr-2" href="/drafts/<%=draft._id%>/delete">Delete Draft</a>
                         <a class="btn btn-outline-light" href="/drafts/<%=draft._id%>/edit">Edit Draft</a>
                     </div>
                 </div>
             </div>
         <%});%>
+        <%} else {%>
+            <p>You have no drafts</p>
+        <%}%>
     </div>
 </div>
 <%- include("partials/footer") -%>

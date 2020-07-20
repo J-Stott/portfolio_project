@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
 const User = require("../models/user");
 const Review = require("../models/review");
 const Latest = require("../models/latest");
@@ -18,19 +17,20 @@ function checkMatch(userData, username){
     return false;
 }
 
-router.get("/:username", function (req, res) {
-    if (req.isAuthenticated()) {
-        const username = _.toLower(req.params.username);
-        const user = req.user;
+router.get("/:username", async function (req, res) {
 
-        if(!checkMatch(user, username)){
-            res.redirect("/");
-        } else {
+    try {
+        if (req.isAuthenticated()) {
+            const username = _.toLower(req.params.username);
+            const user = req.user;
+    
+            if(!checkMatch(user, username)){
+                res.redirect("/");
+            } else {
+    
+                let foundUser = await User.findOne({username: username}).exec();
 
-            User.findOne({username: username}, function(err, foundUser){
-                if(err){
-                    console.log(err);
-                } else if (!foundUser){
+                if (!foundUser){
                     res.redirect("/");
                 } else {
                     const data = {
@@ -54,98 +54,101 @@ router.get("/:username", function (req, res) {
             
                     res.render("profile", data);
                 }
-            });
-        }
-    } else {
-        res.redirect("/login");
-    }
-});
-
-router.post("/:username/updateImage", upload.single("profile"), function (req, res) {
-    if (req.isAuthenticated()) {
-        const username = _.toLower(req.params.username);
-        const user = req.user;
-        //check if we have been given an appropriate file
-
-        if(!checkMatch(user, username)){
-            res.redirect("/");
-        } else {
-
-            if (!req.file) {
-                req.session.imageMessage = "Please provide a valid file. (.jpeg/.png)";
-                res.redirect(`/profile/${username}`);
-            } else {
-                //update user profile path
-                const file = req.file;
-                User.findOne({username: username}, function (err, foundUser) {
-
-                    foundUser.profileImg = "/profileImages/" + file.filename;
-                    foundUser.save(function (err) {
-                        if (err) {
-                            console.log(err)
-                        } else {
-                            res.redirect(`/profile/${username}`);
-                        }
-                    })
-                });
             }
+        } else {
+            res.redirect("/login");
         }
-
-    } else {
-        res.redirect("/login");
+    } catch(err) {
+        console.log(err);
     }
+    
 });
 
-router.post("/:username/updateInfo", function (req, res) {
-    if (req.isAuthenticated()) {
-        const username = _.toLower(req.params.username);
-        const user = req.user;
-
-        if(!checkMatch(user, username)){
-            res.redirect("/");
+router.post("/:username/updateImage", upload.single("profile"), async function (req, res) {
+    try {
+        if (req.isAuthenticated()) {
+            const username = _.toLower(req.params.username);
+            const user = req.user;
+            //check if we have been given an appropriate file
+    
+            if(!checkMatch(user, username)){
+                res.redirect("/");
+            } else {
+    
+                if (!req.file) {
+                    req.session.imageMessage = "Please provide a valid file. (.jpeg/.png)";
+                    res.redirect(`/profile/${username}`);
+                } else {
+                    //update user profile path
+                    const file = req.file;
+                    let foundUser = await User.findOne({username: username}).exec(); 
+    
+                    foundUser.profileImg = "/profileImages/" + file.filename;
+                    await foundUser.save();
+                    res.redirect(`/profile/${username}`);
+                }
+            }
+    
         } else {
+            res.redirect("/login");
+        }
+    } catch(err) {
+        console.log(err);
+    }
 
-            const displayName = req.body.displayName;
-            const bio = req.body.bio;
+});
 
-            User.findOne({username: username}, function (err, foundUser) {
+router.post("/:username/updateInfo", async function (req, res) {
+    try {
+        if (req.isAuthenticated()) {
+            const username = _.toLower(req.params.username);
+            const user = req.user;
+    
+            if(!checkMatch(user, username)){
+                res.redirect("/");
+            } else {
+    
+                const displayName = req.body.displayName;
+                const bio = req.body.bio;
+    
+                let foundUser = await User.findOne({username: username}).exec(); 
+
                 //double check they have given us an appropriate name
                 const lowerCaseUser = _.toLower(foundUser.displayName);
                 const lowerFormName = _.toLower(displayName);
-
+    
                 if (lowerCaseUser !== lowerFormName) {
                     req.session.userMessage = "Entered name does not match your username";
                     res.redirect(`/profile/${username}`);
                 } else {
                     foundUser.displayName = displayName;
                     foundUser.bio = bio;
-                    foundUser.save(function (err) {
-                        if (err) {
-                            console.log(err)
-                        } else {
-                            res.redirect(`/profile/${username}`);
-                        }
-                    });
+                    await foundUser.save();
                 }
-            });
+            }   
+        } else {
+            res.redirect("/login");
         }
-    } else {
-        res.redirect("/login");
+    } catch(err) {
+        console.log(err);
     }
+    
 });
 
 
 //clear out all user data
-router.post("/:username/updatePassword", function (req, res) {
+router.post("/:username/updatePassword", async function (req, res) {
 
-    if(req.isAuthenticated()){
-        const username = _.toLower(req.params.username);
-        const user = req.user;
+    try {
+        if(req.isAuthenticated()){
+            const username = _.toLower(req.params.username);
+            const user = req.user;
+    
+            if(!checkMatch(user, username)){
+                res.redirect("/");
+            } else {
+                let foundUser = await User.findOne({username: username}).exec();
 
-        if(!checkMatch(user, username)){
-            res.redirect("/");
-        } else {
-            User.findOne({username: username}, function(err, foundUser){
                 foundUser.changePassword(req.body.oldPassword, req.body.newPassword, function(err){
                     if(err){
                         console.log(err);
@@ -154,26 +157,31 @@ router.post("/:username/updatePassword", function (req, res) {
                     } else {
                         res.redirect(`/profile/${username}`);
                     }
-                })
-            })
+                });
+            }
+            
+        } else {
+            res.redirect("/login");
         }
-    } else {
-        res.redirect("/login");
+    } catch(err) {
+        console.log(err);
     }
+
 });
 
 //clear out all user data
-router.post("/:username/delete", function (req, res) {
-    if (req.isAuthenticated()) {
-        const username = _.toLower(req.params.username);
-        const user = req.user;
-
-        if(!checkMatch(user, username)){
-            res.redirect("/");
-        } else {
-
-            User.findOne({username: username}, function(err, foundUser){
-                //remove profile image
+router.post("/:username/delete", async function (req, res) {
+    try {
+        if (req.isAuthenticated()) {
+            const username = _.toLower(req.params.username);
+            const user = req.user;
+    
+            if(!checkMatch(user, username)){
+                res.redirect("/");
+            } else {
+    
+                let foundUser = await User.findOne({username: username}).exec(); 
+                    
                 if (foundUser.profileImg !== settings.DEFAULT_PROFILE_IMG) {
                     const fileName = path.join(__dirname, "public", user.profileImg);
 
@@ -183,40 +191,24 @@ router.post("/:username/delete", function (req, res) {
                         }
                     });
                 }
-
+    
                 //find in the latests if it exists and remove
-                Latest.deleteMany({ review: {$in: foundUser.userReviews} }, function (err) {
-                    if (err) {
-                        console.log(err);
-                    }
-                });
+                await Latest.deleteMany({ review: {$in: foundUser.userReviews} }).exec();
 
-                Review.review.deleteMany({_id: {$in: foundUser.userReviews}}, function(err){
-                    if(err){
-                        console.log(err);
-                    }
-                });
+                await Review.review.deleteMany({_id: {$in: foundUser.userReviews}}).exec();
 
-                Review.draft.deleteMany({_id: {$in: foundUser.userDrafts}}, function(err){
-                    if(err){
-                        console.log(err);
-                    }
-                });
-            });
+                await Review.draft.deleteMany({_id: {$in: foundUser.userDrafts}}).exec();
+               
+                await User.deleteOne({username: username}).exec();
 
-
-
-            User.deleteOne({username: username}, function (err) {
-                if (err) {
-                    console.log(err)
-                } else {
-                    res.redirect("/");
-                }
-            });
+                res.redirect("/");
+            }
+    
+        } else {
+            res.redirect("/login");
         }
-
-    } else {
-        res.redirect("/login");
+    } catch(err) {
+        console.log(err);
     }
 });
 

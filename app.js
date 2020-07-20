@@ -16,32 +16,35 @@ app.use("/users", user);
 app.use("/drafts", draft);
 
 //routes
-app.get("/", function (req, res) {
+app.get("/", async function (req, res) {
 
-    let user = null;
+    try {
+        let user = null;
 
-    if (req.isAuthenticated()) {
-        user = req.user;
-        console.log(user);
-    }
+        if (req.isAuthenticated()) {
+            user = req.user;
+            console.log(user);
+        }
 
-    Latest.find({}).populate({
-        path: "review", 
-        populate: {
-            path: "author",
-            model: "User",
-            select: {"_id": 1, "displayName": 1, "profileImg": 1}
-        }}).exec(function(err, docs){
+        let docs = await Latest.find({}).populate({
+            path: "review", 
+            populate: {
+                path: "author",
+                model: "User",
+                select: {"_id": 1, "displayName": 1, "profileImg": 1}
+            }}).exec();
 
         const reviews = docs.map((doc) => {
             return doc.review;
         });
 
-        console.log(reviews);
-
         res.render("index", { user: user, reviews: reviews.reverse() });
-    });
+    } catch(err) {
+        console.log(err);
+    }
+    
 });
+
 
 app.get("/register", function (req, res) {
     res.render("register");
