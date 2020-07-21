@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 //setup user schema
-const reviewSchema = new mongoose.Schema({
+const draftSchema = new mongoose.Schema({
     gameData: { 
         gameTitle: { type : String },
         gameImg: { type : String }
@@ -16,12 +16,9 @@ const reviewSchema = new mongoose.Schema({
     title: {type : String},
     content: {type : String},
     author: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
-    created: {type: Date, default: Date.now},
-    reactions: {type: mongoose.Schema.Types.ObjectId, ref: "Reaction"}
+    created: {type: Date, default: Date.now}
 });
 
+const Draft = mongoose.model("Draft", draftSchema);
 
-const Review = mongoose.model("Review", reviewSchema);
-
-
-module.exports = Review;
+module.exports = Draft;

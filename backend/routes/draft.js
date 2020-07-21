@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const Review = require("../models/review");
+const Draft = require("../models/draft");
 const User = require("../models/user");
 const settings = require("../../settings");
 const _ = require("lodash");
@@ -35,7 +35,7 @@ router.post("/create", async function (req, res) {
 
             let user = await User.findOne({ _id: req.user.id }).exec();
     
-            const newDraft = new Review.draft({
+            const newDraft = new Draft({
                 author: user._id,
                 gameData: {
                     gameTitle: req.body.game,
@@ -76,7 +76,7 @@ router.get("/:draftId/edit", async function (req, res) {
         if (req.isAuthenticated()) {
             const draftId = req.params.draftId;
     
-            let draft = await Review.draft.findOne({ _id: draftId, author: req.user._id }).exec();
+            let draft = await Draft.findOne({ _id: draftId, author: req.user._id }).exec();
 
             if(!draft){
                 res.redirect("/");
@@ -98,7 +98,7 @@ router.post("/:draftId/edit", async function (req, res) {
         if (req.isAuthenticated()) {
             const draftId = req.params.draftId;
     
-            await Review.draft.updateOne({ _id: draftId, author: req.user._id }, {
+            await Draft.updateOne({ _id: draftId, author: req.user._id }, {
                 gameData: {
                     gameTitle: req.body.game,
                 }, 
@@ -131,7 +131,7 @@ router.get("/:draftId/delete", async function (req, res) {
             const draftId = req.params.draftId;
 
             //remove only if the author ids match
-            let draftDelete = Review.draft.deleteOne({ _id: draftId, author: req.user._id }).exec();
+            let draftDelete = Draft.deleteOne({ _id: draftId, author: req.user._id }).exec();
 
             let userUpdate = User.updateOne({ _id: req.user._id }, { $pull: { userDrafts: { $in: draftId } } }).exec();
 

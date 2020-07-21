@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/user");
 const Review = require("../models/review");
 const Latest = require("../models/latest");
+const Draft = require("../models/draft");
 const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
@@ -114,10 +115,11 @@ router.post("/:username/updateInfo", async function (req, res) {
                 let foundUser = await User.findOne({username: username}).exec(); 
 
                 //double check they have given us an appropriate name
-                const lowerCaseUser = _.toLower(foundUser.displayName);
                 const lowerFormName = _.toLower(displayName);
+
+                console.log(foundUser.username, "-", lowerFormName);
     
-                if (lowerCaseUser !== lowerFormName) {
+                if (foundUser.username !== lowerFormName) {
                     req.session.userMessage = "Entered name does not match your username";
                     res.redirect(`/profile/${username}`);
                 } else {
@@ -195,9 +197,9 @@ router.post("/:username/delete", async function (req, res) {
                 //find in the latests if it exists and remove
                 await Latest.deleteMany({ review: {$in: foundUser.userReviews} }).exec();
 
-                await Review.review.deleteMany({_id: {$in: foundUser.userReviews}}).exec();
+                await Review.deleteMany({_id: {$in: foundUser.userReviews}}).exec();
 
-                await Review.draft.deleteMany({_id: {$in: foundUser.userDrafts}}).exec();
+                await Draft.deleteMany({_id: {$in: foundUser.userDrafts}}).exec();
                
                 await User.deleteOne({username: username}).exec();
 

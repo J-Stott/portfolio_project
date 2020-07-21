@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
 const Review = require("../models/review");
+const Draft = require("../models/draft");
 const Latest = require("../models/latest");
 const User = require("../models/user");
+const Reaction = require("../models/reaction");
 const settings = require("../../settings");
 
 
@@ -28,7 +29,10 @@ router.post("/create", async function (req, res) {
 
             let user = await User.findOne({ _id: req.user.id }).exec();
 
-            const newReview = new Review.review({
+            const newReaction = new Reaction();
+            let reactions = await newReaction.save();
+
+            const newReview = new Review({
                 author: user._id,
                 gameData: {
                     gameTitle: req.body.game,
@@ -43,18 +47,21 @@ router.post("/create", async function (req, res) {
                 },
                 title: req.body.title,
                 content: req.body.content,
+                reactions: reactions._id,
             });
-    
-    
+
             let review = await newReview.save();
             const reviewId = review._id;
+
+            reactions.review = reviewId;
+            reactions.save();
 
             user.userReviews.push(reviewId);
             user.save();
     
             //remove draft from user and drafts collection
             if(req.body.draftId !== null){
-                let draftDelete = Review.draft.deleteOne({_id: req.body.draftId}).exec();
+                let draftDelete = Draft.deleteOne({_id: req.body.draftId}).exec();
 
                 //remove draft ID from the user's review collection
                 let userUpdate = User.updateOne({ _id: req.user._id }, { $pull: { userDrafts: { $in: req.body.draftId } } }).exec();
@@ -85,9 +92,15 @@ router.post("/create", async function (req, res) {
 router.get("/:reviewId", async function (req, res) {
     try{
         const reviewId = req.params.reviewId;
-        let review = await Review.review.findOne({ _id: reviewId })
-        .populate({ path: "author" })
+        //get all reactions and the specific reaction from the logged in user, if any
+        let review = await Review.findOne({ _id: reviewId })
+        .populate({ path: "author", select: ["_id", "profileImg", "displayName"]})
+        .populate({path: "reactions", select: "reaction -_id", populate:{
+            path: "userReactions", select: "userReaction", match: { user: req.user._id }
+        }, })
         .exec();
+
+        console.log(review);
 
         if (!review) {
             res.redirect("/");
@@ -109,7 +122,7 @@ router.get("/:reviewId/edit", async function (req, res) {
         if (req.isAuthenticated()) {
             const reviewId = req.params.reviewId;
     
-            let review = await Review.review.findOne({ _id: reviewId, author: req.user._id }).exec(); 
+            let review = await Review.findOne({ _id: reviewId, author: req.user._id }).exec(); 
             if (!review) {
                 res.redirect("/");
             } else {
@@ -130,7 +143,7 @@ router.post("/:reviewId/edit", async function (req, res) {
         if (req.isAuthenticated()) {
             const reviewId = req.params.reviewId;
     
-            await Review.review.updateOne({ _id: reviewId, author: req.user._id }, {
+            await Review.updateOne({ _id: reviewId, author: req.user._id }, {
                 gameData: {
                     gameTitle: req.body.game,
                 }, 
@@ -161,15 +174,17 @@ router.post("/:reviewId/delete", async function (req, res) {
     try {
         if (req.isAuthenticated()) {
             const reviewId = req.params.reviewId;
-    
-            //remove only if the author ids match
-            let reviewDelete = Review.review.deleteOne({ _id: reviewId, author: req.user._id }).exec();
+
+            let reviewDelete = Review.deleteOne({ _id: reviewId, author: req.user._id }).exec();
+
+            let reactionDelete = Reaction.deleteOne({ review: reviewId}).exec();
 
             let latestDelete = Latest.deleteOne({ review: reviewId }).exec();
 
             let userUpdate = User.updateOne({ _id: req.user._id }, { $pull: { userReviews: { $in: reviewId } } }).exec();
 
             await reviewDelete;
+            await reactionDelete;
             await latestDelete;
             await userUpdate;
             

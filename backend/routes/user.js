@@ -10,7 +10,7 @@ router.get("/:username", async function (req, res) {
         console.log(username);
 
         let profile = await User.findOne({username: username})
-        .populate({path: "userReviews"})
+        .populate({path: "userReviews", select:["_id", "gameData", "ratings", "title", "content"]})
         .exec();
 
         if(!profile){
