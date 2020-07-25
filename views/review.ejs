@@ -116,18 +116,37 @@
                     </div>
                 </div>
             </div>
+            
             <div class="row ">
-                <div class="col-12 d-flex justify-content-end mt-3">
-                    <%if(user !== null && String(review.author._id) == String(user._id)){%>
-                        <a class="btn btn-outline-light mr-2" href="/reviews/<%=review._id%>/edit">Edit</a>
-                        <button class="btn btn-danger" type="submit" id="delete">Delete Review</button>
-                    <%}%>
+                <div class="col-12 d-flex justify-content-md-end justify-content-center mt-3">
+                     <button class="btn btn-light" id="informative" name="informative" <%if(user === null || String(review.author._id) == String(user._id)){%>
+                        disabled
+                    <%}%>>Informative: <span id="inform-span"><%=review.reactions.reaction.informative%></span></button>
+
+                     <button class="btn btn-light ml-2" id="funny" name="funny" <%if(user === null || String(review.author._id) == String(user._id)){%>
+                        disabled
+                    <%}%>>Funny: <span id="funny-span"><%=review.reactions.reaction.funny%></span></button>
+
+                     <button class="btn btn-light ml-2" id="troll" name="troll" <%if(user === null || String(review.author._id) == String(user._id)){%>
+                        disabled
+                    <%}%>>Troll: <span id="troll-span"><%=review.reactions.reaction.troll%></span></button>
                 </div>
             </div>
+                
+            <%if(user !== null && String(review.author._id) == String(user._id)){%>
+            <div class="row ">
+                <div class="col-12 d-flex justify-content-end mt-3">
+                    
+                        <a class="btn btn-outline-light mr-2" href="/reviews/<%=review._id%>/edit">Edit</a>
+                        <button class="btn btn-danger" type="submit" id="delete">Delete Review</button>
+                </div>
+            </div>
+            <%}%>
         </div>
 
     </div>
 </div>
 
+<script type="text/javascript" src="/js/ratings.js"></script>
 <script type="text/javascript" src="/js/modal.js"></script>
 <%- include("partials/footer") -%>

@@ -214,4 +214,27 @@ router.post("/:reviewId/delete", async function (req, res) {
 
 });
 
+//delete review, related reaction, remove from latests and user's created reviews
+router.post("/:reviewId/:reactionName", async function (req, res) {
+
+    try {
+        if (req.isAuthenticated()) {
+            const reviewId = req.params.reviewId;
+            const reactionName = req.params.reactionName;
+            
+            const response = {
+                id: reviewId,
+                reaction: reactionName,
+            }
+
+            res.status(200).send(response);
+        } else {
+            res.redirect("/login");
+        }
+    } catch(err) {
+        console.log(err);
+    }
+
+});
+
 module.exports = router;
