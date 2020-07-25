@@ -1,28 +1,31 @@
-const ratingButtons = [];
+const ratingInfo = [];
 const ratings = ["informative", "funny", "troll"];
 
-function getURL(button){
+function getURL(buttonName){
     let path = window.location.pathname;
-    let buttonName = button.name;
     return `${path}/${buttonName}`;
 }
 
 ratings.forEach((ratingName) => {
-    ratingButtons.push(document.querySelector(`#${ratingName}`));
+    ratingInfo.push({
+        button: document.querySelector(`#${ratingName}`),
+        span: document.querySelector(`#${ratingName}-span`),
+    });
 });
 
-console.log(ratingButtons);
+console.log(ratingInfo);
 
-ratingButtons.forEach(function(button) {
-    button.addEventListener("click", function(){
-        console.log(getURL(button));
+ratingInfo.forEach(function(info) {
+    info.button.addEventListener("click", function(){
+        const buttonName = info.button.name;
+        console.log(getURL(buttonName));
         axios({
-            url: getURL(button),
+            url: getURL(buttonName),
             method: 'POST'
           })
             .then(response => {
                 const responseData = response.data;
-                console.log(responseData);
+                info.span.innerText = responseData[buttonName];
             })
             .catch(err => {
                 console.error(err);

@@ -53,15 +53,15 @@
             <div class="row ">
                 <div class="col-12">
                     <h3>Ratings</h3>
-                    <div class="row row-cols-lg-5 row-cols-md-3 row-cols-2">
+                    <div class="row row-cols-xl-5 row-cols-lg-3 row-cols-md-3 row-cols-2">
                         <div class="col">
                             <h5>Gameplay</h5>
                             <div class="stars">
                                 <%for(let i = 0; i < review.ratings.gameplay; i++){%>
-                                    <i class="far fa-star star-highlight"></i>
+                                    <i class="far fa-star star-highlight star-size"></i>
                                 <%}%>
                                 <%for(let i = 0; i < 5 - review.ratings.gameplay; i++){%>
-                                    <i class="far fa-star star-lowlight"></i>
+                                    <i class="far fa-star star-lowlight star-size"></i>
                                 <%}%>
                             </div>
                         </div>
@@ -70,10 +70,10 @@
                             <h5>Visuals</h5>
                             <div class="stars">
                                 <%for(let i = 0; i < review.ratings.visuals; i++){%>
-                                    <i class="far fa-star star-highlight"></i>
+                                    <i class="far fa-star star-highlight star-size"></i>
                                 <%}%>
                                 <%for(let i = 0; i < 5 - review.ratings.visuals; i++){%>
-                                    <i class="far fa-star star-lowlight"></i>
+                                    <i class="far fa-star star-lowlight star-size"></i>
                                 <%}%>
                             </div>
                         </div>
@@ -82,10 +82,10 @@
                             <h5>Audio</h5>
                             <div class="stars">
                                 <%for(let i = 0; i < review.ratings.audio; i++){%>
-                                    <i class="far fa-star star-highlight"></i>
+                                    <i class="far fa-star star-highlight star-size"></i>
                                 <%}%>
                                 <%for(let i = 0; i < 5 - review.ratings.audio; i++){%>
-                                    <i class="far fa-star star-lowlight"></i>
+                                    <i class="far fa-star star-lowlight star-size"></i>
                                 <%}%>
                             </div>
                         </div>
@@ -94,10 +94,10 @@
                             <h5>Story</h5>
                             <div class="stars">
                                 <%for(let i = 0; i < review.ratings.story; i++){%>
-                                    <i class="far fa-star star-highlight"></i>
+                                    <i class="far fa-star star-highlight star-size"></i>
                                 <%}%>
                                 <%for(let i = 0; i < 5 - review.ratings.story; i++){%>
-                                    <i class="far fa-star star-lowlight"></i>
+                                    <i class="far fa-star star-lowlight star-size"></i>
                                 <%}%>
                             </div>
                         </div>
@@ -106,10 +106,10 @@
                             <h5>Overall</h5>
                             <div class="stars">
                                 <%for(let i = 0; i < review.ratings.overall; i++){%>
-                                    <i class="far fa-star star-highlight"></i>
+                                    <i class="far fa-star star-highlight star-size"></i>
                                 <%}%>
                                 <%for(let i = 0; i < 5 - review.ratings.overall; i++){%>
-                                    <i class="far fa-star star-lowlight"></i>
+                                    <i class="far fa-star star-lowlight star-size"></i>
                                 <%}%>
                             </div>
                         </div>
@@ -121,7 +121,7 @@
                 <div class="col-12 d-flex justify-content-md-end justify-content-center mt-3">
                      <button class="btn btn-light" id="informative" name="informative" <%if(user === null || String(review.author._id) == String(user._id)){%>
                         disabled
-                    <%}%>>Informative: <span id="inform-span"><%=review.reactions.reaction.informative%></span></button>
+                    <%}%>>Informative: <span id="informative-span"><%=review.reactions.reaction.informative%></span></button>
 
                      <button class="btn btn-light ml-2" id="funny" name="funny" <%if(user === null || String(review.author._id) == String(user._id)){%>
                         disabled
@@ -135,7 +135,7 @@
                 
             <%if(user !== null && String(review.author._id) == String(user._id)){%>
             <div class="row ">
-                <div class="col-12 d-flex justify-content-end mt-3">
+                <div class="col-12 d-flex justify-content-md-end justify-content-center mt-3">
                     
                         <a class="btn btn-outline-light mr-2" href="/reviews/<%=review._id%>/edit">Edit</a>
                         <button class="btn btn-danger" type="submit" id="delete">Delete Review</button>

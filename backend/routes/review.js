@@ -1,11 +1,25 @@
 const express = require("express");
 const router = express.Router();
+const _ = require("lodash")
 const Review = require("../models/review");
 const Draft = require("../models/draft");
 const Latest = require("../models/latest");
 const User = require("../models/user");
 const Reaction = require("../models/reaction");
 const settings = require("../../settings");
+
+function getUserReaction(reaction, user){
+    console.log(reaction);
+    let userReaction = reaction.userReactions.find((data) =>{
+        return String(data.user) === String(user._id);
+    });
+
+    if(userReaction === undefined){
+        return null;
+    }
+
+    return userReaction;
+}
 
 //review creation page
 router.get("/create", function (req, res) {
@@ -30,9 +44,11 @@ router.post("/create", async function (req, res) {
 
             let user = await User.findOne({ _id: req.user.id }).exec();
 
+            //create new reaction
             const newReaction = new Reaction();
             let reactions = await newReaction.save();
 
+            //create new review
             const newReview = new Review({
                 author: user._id,
                 gameData: {
@@ -54,10 +70,12 @@ router.post("/create", async function (req, res) {
             let review = await newReview.save();
             const reviewId = review._id;
 
+            //link review to reaction
             reactions.review = reviewId;
             reactions.save();
 
-            user.userReviews.push(reviewId);
+            //link review to user
+            user.userReviews.unshift(reviewId);
             user.save();
     
             //remove draft from user and drafts collection
@@ -97,22 +115,10 @@ router.get("/:reviewId", async function (req, res) {
         let populateOptions = {path: "reactions", select: "reaction -_id"};
         //get all reactions and the specific reaction from the logged in user, if any
 
-        if(req.isAuthenticated()){
-            populateOptions.populate = {
-                path: "userReactions", 
-                select: "userReaction", 
-                match: { 
-                    user: req.user._id 
-                }
-            };
-        }
-
         let review = await Review.findOne({ _id: reviewId })
         .populate({ path: "author", select: ["_id", "profileImg", "displayName"]})
         .populate(populateOptions)
         .exec();
-        
-        console.log(review);
 
         if (!review) {
             res.redirect("/");
@@ -221,10 +227,44 @@ router.post("/:reviewId/:reactionName", async function (req, res) {
         if (req.isAuthenticated()) {
             const reviewId = req.params.reviewId;
             const reactionName = req.params.reactionName;
+
+            let reaction = await Reaction.findOne({review: reviewId},"reaction userReactions")
+            .exec();
+
+            //check that a reaction exists for the logged in user
+            let userReaction = getUserReaction(reaction, req.user);
+            
+            if(userReaction === null){
+                //create users reaction, bump appropriate reaction and save
+                userReaction = { 
+                    user: req.user._id,
+                    userReaction: {
+                        informative: 0,
+                        funny: 0,
+                        troll: 0,
+                    }
+                };
+
+                userReaction.userReaction[reactionName] = 1;
+                reaction.userReactions.unshift(userReaction);
+                reaction.reaction[reactionName]++;
+                await reaction.save();
+            } else {
+
+                if(userReaction.userReaction[reactionName] == 0){
+                    reaction.reaction[reactionName]++;
+                    userReaction.userReaction[reactionName] = 1;
+                    await reaction.save();
+                } else {
+                    reaction.reaction[reactionName]--;
+                    userReaction.userReaction[reactionName] = 0;
+                    await reaction.save();
+                }
+            }
             
             const response = {
-                id: reviewId,
-                reaction: reactionName,
+                [reactionName]: reaction.reaction[reactionName],
+                userReactions: userReaction,
             }
 
             res.status(200).send(response);

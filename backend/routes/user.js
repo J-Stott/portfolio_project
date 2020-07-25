@@ -11,7 +11,8 @@ router.get("/:username", async function (req, res) {
         console.log(username);
 
         let profile = await User.findOne({username: username})
-        .populate({path: "userReviews", select:["_id", "gameData", "ratings", "title", "content"]})
+        .populate({path: "userReviews", select:["_id", "gameData", "ratings", "title", "content", "created"]})
+        .sort("-userReviews.created")
         .exec();
 
         if(!profile){
@@ -24,7 +25,6 @@ router.get("/:username", async function (req, res) {
             }
 
             console.log(profile);
-
             res.render("user", {user: user, profileData: profile});
         }
     } catch(err) {

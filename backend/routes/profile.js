@@ -28,7 +28,7 @@ function checkAndSetErrorMessage(session, data, key){
 
 function deleteProfileImage(foundUser) {
     if (foundUser.profileImg !== settings.DEFAULT_PROFILE_IMG) {
-        const fileName = path.join(__dirname, "public", user.profileImg);
+        const fileName = path.join(settings.PROJECT_DIR, "public", foundUser.profileImg);
 
         fs.unlink(fileName, (err) => {
             if (err) {
@@ -140,6 +140,7 @@ router.post("/:username/updateInfo", async function (req, res) {
                     foundUser.displayName = displayName;
                     foundUser.bio = bio;
                     await foundUser.save();
+                    res.redirect(`/profile/${username}`);
                 }
             }   
         } else {

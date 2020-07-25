@@ -155,7 +155,7 @@ input.star {
 
 label.star {
   float: right;
-  font-size: 20px;
+  font-size: 25px;
   color: #8a8f92;
   transition: all .2s;
   cursor: pointer;
@@ -191,4 +191,8 @@ label.star:before {
 
 .star-lowlight{
   color: #8a8f92;
+}
+
+.star-size{
+  font-size: 25px;
 }
