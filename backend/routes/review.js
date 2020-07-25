@@ -7,7 +7,7 @@ const User = require("../models/user");
 const Reaction = require("../models/reaction");
 const settings = require("../../settings");
 
-
+//review creation page
 router.get("/create", function (req, res) {
     if (req.isAuthenticated()) {
         const user = req.user;
@@ -22,6 +22,7 @@ router.get("/create", function (req, res) {
     }
 });
 
+//create new review, new reaction set for that review, push review id to user account
 router.post("/create", async function (req, res) {
 
     try {
@@ -89,17 +90,28 @@ router.post("/create", async function (req, res) {
     }
 });
 
+//show review
 router.get("/:reviewId", async function (req, res) {
     try{
         const reviewId = req.params.reviewId;
+        let populateOptions = {path: "reactions", select: "reaction -_id"};
         //get all reactions and the specific reaction from the logged in user, if any
+
+        if(req.isAuthenticated()){
+            populateOptions.populate = {
+                path: "userReactions", 
+                select: "userReaction", 
+                match: { 
+                    user: req.user._id 
+                }
+            };
+        }
+
         let review = await Review.findOne({ _id: reviewId })
         .populate({ path: "author", select: ["_id", "profileImg", "displayName"]})
-        .populate({path: "reactions", select: "reaction -_id", populate:{
-            path: "userReactions", select: "userReaction", match: { user: req.user._id }
-        }, })
+        .populate(populateOptions)
         .exec();
-
+        
         console.log(review);
 
         if (!review) {
@@ -116,6 +128,7 @@ router.get("/:reviewId", async function (req, res) {
     }
 });
 
+//edit reviews
 router.get("/:reviewId/edit", async function (req, res) {
 
     try {
@@ -137,6 +150,7 @@ router.get("/:reviewId/edit", async function (req, res) {
 
 });
 
+//update review
 router.post("/:reviewId/edit", async function (req, res) {
 
     try {
@@ -169,12 +183,14 @@ router.post("/:reviewId/edit", async function (req, res) {
 
 });
 
+//delete review, related reaction, remove from latests and user's created reviews
 router.post("/:reviewId/delete", async function (req, res) {
 
     try {
         if (req.isAuthenticated()) {
             const reviewId = req.params.reviewId;
 
+            //removes review and all review related data from other collections
             let reviewDelete = Review.deleteOne({ _id: reviewId, author: req.user._id }).exec();
 
             let reactionDelete = Reaction.deleteOne({ review: reviewId}).exec();

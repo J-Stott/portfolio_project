@@ -18,6 +18,26 @@ function checkMatch(userData, username){
     return false;
 }
 
+//checks if an error message exists and adds it to data sent to rendered page
+function checkAndSetErrorMessage(session, data, key){
+    if (session[key] !== null) {
+        data[key] = session[key];
+        session[key] = null;
+    }
+}
+
+function deleteProfileImage(foundUser) {
+    if (foundUser.profileImg !== settings.DEFAULT_PROFILE_IMG) {
+        const fileName = path.join(__dirname, "public", user.profileImg);
+
+        fs.unlink(fileName, (err) => {
+            if (err) {
+                console.error(err);
+            }
+        });
+    }
+}
+
 router.get("/:username", async function (req, res) {
 
     try {
@@ -38,20 +58,9 @@ router.get("/:username", async function (req, res) {
                         user: user
                     }
 
-                    if (req.session.userMessage !== null) {
-                        data.userMessage = req.session.userMessage;
-                        req.session.userMessage = null;
-                    }
-            
-                    if (req.session.imageMessage !== null) {
-                        data.imageMessage = req.session.imageMessage;
-                        req.session.imageMessage = null;
-                    }
-            
-                    if (req.session.passwordMessage !== null) {
-                        data.passwordMessage = req.session.passwordMessage;
-                        req.session.passwordMessage = null;
-                    }
+                    checkAndSetErrorMessage(req.session, data, "userMessage");
+                    checkAndSetErrorMessage(req.session, data, "imageMessage");
+                    checkAndSetErrorMessage(req.session, data, "passwordMessage");
             
                     res.render("profile", data);
                 }
@@ -65,6 +74,7 @@ router.get("/:username", async function (req, res) {
     
 });
 
+//updates user avatar provided they have sent a valid file
 router.post("/:username/updateImage", upload.single("profile"), async function (req, res) {
     try {
         if (req.isAuthenticated()) {
@@ -83,6 +93,9 @@ router.post("/:username/updateImage", upload.single("profile"), async function (
                     //update user profile path
                     const file = req.file;
                     let foundUser = await User.findOne({username: username}).exec(); 
+
+                    //delete their previous image from the server
+                    deleteProfileImage(foundUser);
     
                     foundUser.profileImg = "/profileImages/" + file.filename;
                     await foundUser.save();
@@ -99,6 +112,7 @@ router.post("/:username/updateImage", upload.single("profile"), async function (
 
 });
 
+//updates user profile information
 router.post("/:username/updateInfo", async function (req, res) {
     try {
         if (req.isAuthenticated()) {
@@ -184,15 +198,7 @@ router.post("/:username/delete", async function (req, res) {
     
                 let foundUser = await User.findOne({username: username}).exec(); 
                     
-                if (foundUser.profileImg !== settings.DEFAULT_PROFILE_IMG) {
-                    const fileName = path.join(__dirname, "public", user.profileImg);
-
-                    fs.unlink(fileName, (err) => {
-                        if (err) {
-                            console.error(err);
-                        }
-                    });
-                }
+                deleteProfileImage(foundUser);
     
                 //find in the latests if it exists and remove
                 await Latest.deleteMany({ review: {$in: foundUser.userReviews} }).exec();

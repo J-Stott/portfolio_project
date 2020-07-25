@@ -1,11 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
 const Draft = require("../models/draft");
 const User = require("../models/user");
-const settings = require("../../settings");
-const _ = require("lodash");
 
+//get a users saved drafts
 router.get("/:username", async function (req, res) {
 
     try {
@@ -28,6 +26,7 @@ router.get("/:username", async function (req, res) {
     } 
 });
 
+//create a new draft and save it off
 router.post("/create", async function (req, res) {
 
     try{
@@ -70,6 +69,7 @@ router.post("/create", async function (req, res) {
 
 });
 
+//edit a particular draft
 router.get("/:draftId/edit", async function (req, res) {
 
     try{
@@ -92,6 +92,7 @@ router.get("/:draftId/edit", async function (req, res) {
     }
 });
 
+//save an edited draft
 router.post("/:draftId/edit", async function (req, res) {
 
     try{
@@ -124,7 +125,8 @@ router.post("/:draftId/edit", async function (req, res) {
 
 });
 
-router.get("/:draftId/delete", async function (req, res) {
+//delete a particular draft
+router.post("/:draftId/delete", async function (req, res) {
 
     try {
         if (req.isAuthenticated()) {

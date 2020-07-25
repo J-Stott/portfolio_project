@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const session = require("express-session");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const mongoStore = require('connect-mongo')(session);
 
 //connect to db
@@ -19,6 +20,8 @@ mongoose.set('useCreateIndex', true);
 const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(cors());
 app.use(express.static("public"));
 app.set("port", process.env.PORT || 3000);
 

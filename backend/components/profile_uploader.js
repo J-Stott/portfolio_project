@@ -17,6 +17,7 @@ var storage = multer.diskStorage({
     }
 });
 
+//filter by png, and jpegs only
 const upload = multer({
     storage: storage,
     fileFilter: function(req, file, cb){

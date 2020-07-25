@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
     isAdmin: {type: Boolean, default: false }
 });
 
+//allow user to also use email to login
 userSchema.plugin(passportLocalMongoose, {
     usernameQueryFields: ["email"],
     usernameLowerCase: true

@@ -1,8 +1,9 @@
 const express = require("express");
-const User = require("../models/user");
 const router = express.Router();
+const User = require("../models/user");
 const _ = require("lodash");
 
+//show user's profile page
 router.get("/:username", async function (req, res) {
 
     try {

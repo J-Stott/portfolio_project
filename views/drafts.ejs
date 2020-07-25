@@ -35,7 +35,10 @@
                 </div>
                 <div class="row ">
                     <div class="col-12 d-flex justify-content-end">
-                        <a class="btn btn-danger mr-2" href="/drafts/<%=draft._id%>/delete">Delete Draft</a>
+                        <form action="/drafts/<%=draft._id%>/delete" method="post">
+                            <button class="btn btn-danger mr-2" type="submit">Delete Draft</button>
+                        </form>
+
                         <a class="btn btn-outline-light" href="/drafts/<%=draft._id%>/edit">Edit Draft</a>
                     </div>
                 </div>
