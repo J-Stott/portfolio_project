@@ -68,6 +68,10 @@ body{
   white-space: pre-wrap;
 }
 
+.rating-size{
+  font-size: 24px;
+}
+
 /*profile styles*/
 
 .profile-section{
@@ -195,4 +199,12 @@ label.star:before {
 
 .star-size{
   font-size: 25px;
+}
+
+/* game art styles */
+
+.game-art {
+  width: 198px;
+  height: auto;
+  border: 3px solid #FFFFFF;
 }

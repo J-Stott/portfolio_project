@@ -5,12 +5,14 @@ const profile = require("./backend/routes/profile");
 const review = require("./backend/routes/review");
 const user = require("./backend/routes/user");
 const draft = require("./backend/routes/draft");
+const games = require("./backend/routes/game.js");
 
 app.use("/", home);
 app.use("/profile", profile);
 app.use("/reviews", review);
 app.use("/users", user);
 app.use("/drafts", draft);
+app.use("/games", games);
 
 app.listen(app.get("port"), function () {
     console.log("app listening on port " + app.get("port"));

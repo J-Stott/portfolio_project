@@ -34,25 +34,7 @@ router.post("/create", async function (req, res) {
 
             let user = await User.findOne({ _id: req.user.id }).exec();
     
-            const newDraft = new Draft({
-                author: user._id,
-                gameData: {
-                    gameTitle: req.body.game,
-                },
-                ratings: {
-                    //if user hasn't entered a rating, presume 0
-                    gameplay: "gameplay" in req.body ? Number(req.body.gameplay) : 0,
-                    visuals: "visuals" in req.body ? Number(req.body.visuals) : 0,
-                    audio: "audio" in req.body ? Number(req.body.audio) : 0,
-                    story: "story" in req.body ? Number(req.body.story) : 0,
-                    overall: "overall" in req.body ? Number(req.body.overall) : 0,
-                },
-                title: req.body.title,
-                content: req.body.content,
-            });
-    
-    
-            let draft = await newDraft.save();
+            const draft = await Draft.createDraft(user, req);
 
             const draftId = draft._id;
     
@@ -76,7 +58,7 @@ router.get("/:draftId/edit", async function (req, res) {
         if (req.isAuthenticated()) {
             const draftId = req.params.draftId;
     
-            let draft = await Draft.findOne({ _id: draftId, author: req.user._id }).exec();
+            let draft = await Draft.model.findOne({ _id: draftId, author: req.user._id }).exec();
 
             if(!draft){
                 res.redirect("/");
@@ -99,21 +81,7 @@ router.post("/:draftId/edit", async function (req, res) {
         if (req.isAuthenticated()) {
             const draftId = req.params.draftId;
     
-            await Draft.updateOne({ _id: draftId, author: req.user._id }, {
-                gameData: {
-                    gameTitle: req.body.game,
-                }, 
-                title: req.body.title, 
-                content: req.body.content, 
-                ratings: {
-                    //if user hasn't entered a rating, presume 0
-                    gameplay: "gameplay" in req.body ? Number(req.body.gameplay) : 0,
-                    visuals: "visuals" in req.body ? Number(req.body.visuals) : 0,
-                    audio: "audio" in req.body ? Number(req.body.audio) : 0,
-                    story: "story" in req.body ? Number(req.body.story) : 0,
-                    overall: "overall" in req.body ? Number(req.body.overall) : 0,
-                },
-            }).exec();
+            await Draft.updateDraft(draftId, req);
 
             res.redirect(`/drafts/${req.user.displayName}`);
         } else {
@@ -133,7 +101,7 @@ router.post("/:draftId/delete", async function (req, res) {
             const draftId = req.params.draftId;
 
             //remove only if the author ids match
-            let draftDelete = Draft.deleteOne({ _id: draftId, author: req.user._id }).exec();
+            let draftDelete = Draft.model.deleteOne({ _id: draftId, author: req.user._id }).exec();
 
             let userUpdate = User.updateOne({ _id: req.user._id }, { $pull: { userDrafts: { $in: draftId } } }).exec();
 

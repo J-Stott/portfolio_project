@@ -5,27 +5,27 @@
     <div class="content-container">
         <div class="review-wrapper wrapper-style mb-4">
             <div class="row">
-                <div class="col-lg-2 col-md-3 col-4 d-flex flex-column align-items-center">
+                <div class="col-lg-4 col-md-4 col-6 d-flex flex-column align-items-center">
                     <div>
-                        <img class="profile-picture mb-2" src="<%=profileData.profileImg%>" alt="profile" />
+                        <img class="game-art" class="mb-2" src="<%=gameData.image%>" alt="profile" />
                     </div>
 
-                    <p>Reviews: <%= profileData.userReviews.length%></p>
+                    <p>Reviews: <%= gameData.numReviews%></p>
                 </div>
-                <div class="col-lg-10 col-md-9 col-8 pt-3">
-                    <h3>About <%=profileData.displayName%></h3>
-                    <p><%=profileData.bio%></p>
+                <div class="col-lg-8 col-md-8 col-6">
+                    <h3><%=gameData.displayName%></h3>
+                    <p class="review-content"><%=gameData.summary%></p>
                 </div>
             </div>
         </div>
 
-        <h2 class="mb-4"><%=profileData.displayName%>'s Reviews</h2>
-
-        <% profileData.userReviews.forEach((review) => {%>
+        <h2 class="mb-4">Reviews of <%=gameData.displayName%></h2>
+        <% if(locals.reviews) {%>
+        <% reviews.forEach((review) => {%>
             <div class="review-wrapper wrapper-style mb-4">
                 <div class="row">
                     <div class="col-12">
-                        <h1>Game Title</h1>
+                        <h1><%=review.gameData.gameTitle%></h1>
                         <div class="stars">
                             <%for(let i = 0; i < review.ratings.overall; i++){%>
                                 <i class="far fa-star star-highlight"></i>
@@ -55,7 +55,9 @@
                 </div>
             </div>
         <%});%>
-
+        <%} else {%>
+            <p>There are no reviews. Why not create one?</p>
+        <%}%>
     </div>
 </div>
 <%- include("partials/footer") -%>

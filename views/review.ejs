@@ -30,7 +30,7 @@
                     <img class="profile-picture mb-2" src="<%=review.author.profileImg%>" alt="profile" />
                 </div>
                 <div class="col-lg-10 col-md-9 col-8">
-                    <h1><%=review.gameData.gameTitle%></h1>
+                    <h1>Game Title</h1>
                     <h5>By <a class="user-link" href="/users/<%=review.author.displayName%>"><%=review.author.displayName%></a></h5>
                     <div class="stars">
                         <%for(let i = 0; i < review.ratings.overall; i++){%>
@@ -119,17 +119,17 @@
             
             <div class="row ">
                 <div class="col-12 d-flex justify-content-md-end justify-content-center mt-3">
-                     <button class="btn btn-light" id="informative" name="informative" <%if(user === null || String(review.author._id) == String(user._id)){%>
+                     <button class="btn btn-outline-light rating-size" id="informative" name="informative" title="informative" <%if(user === null || String(review.author._id) == String(user._id)){%>
                         disabled
-                    <%}%>>Informative: <span id="informative-span"><%=review.reactions.reaction.informative%></span></button>
+                    <%}%>><i class="fas fa-info-circle"></i> <span id="informative-span"><%=review.reactions.reaction.informative%></span></button>
 
-                     <button class="btn btn-light ml-2" id="funny" name="funny" <%if(user === null || String(review.author._id) == String(user._id)){%>
+                     <button class="btn btn-outline-light ml-2 rating-size" id="funny" name="funny" title="funny" <%if(user === null || String(review.author._id) == String(user._id)){%>
                         disabled
-                    <%}%>>Funny: <span id="funny-span"><%=review.reactions.reaction.funny%></span></button>
+                    <%}%>><i class="far fa-grin-squint-tears"></i> <span id="funny-span"><%=review.reactions.reaction.funny%></span></button>
 
-                     <button class="btn btn-light ml-2" id="troll" name="troll" <%if(user === null || String(review.author._id) == String(user._id)){%>
+                     <button class="btn btn-outline-light ml-2 rating-size" id="troll" name="troll" title="troll" <%if(user === null || String(review.author._id) == String(user._id)){%>
                         disabled
-                    <%}%>>Troll: <span id="troll-span"><%=review.reactions.reaction.troll%></span></button>
+                    <%}%>><i class="far fa-meh-rolling-eyes"></i> <span id="troll-span"><%=review.reactions.reaction.troll%></span></button>
                 </div>
             </div>
                 

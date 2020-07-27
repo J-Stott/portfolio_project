@@ -18,13 +18,7 @@ router.get("/", async function (req, res) {
             console.log(user);
         }
 
-        let docs = await Latest.find({}).populate({
-            path: "review", 
-            populate: {
-                path: "author",
-                model: "User",
-                select: {"_id": 1, "displayName": 1, "profileImg": 1}
-            }}).exec();
+        let docs = await Latest.getLatests();
 
         const reviews = docs.map((doc) => {
             return doc.review;

@@ -3,5 +3,6 @@ module.exports = {
     UPLOAD_MAX_FILE_SIZE: 40, //MB
     PROJECT_DIR : __dirname,
     DEFAULT_PROFILE_IMG: "/profileImages/default.png",
-    LATESTS_MAX_LENGTH: 10
+    DEFAULT_GAME_IMAGE: "/gameImages/default.png",
+    LATESTS_MAX_LENGTH: 10,
 };

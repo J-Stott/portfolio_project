@@ -6,10 +6,12 @@ const Draft = require("../models/draft");
 const Latest = require("../models/latest");
 const User = require("../models/user");
 const Reaction = require("../models/reaction");
+const igdb = require("../components/igdb_functions");
+const Game = require("../models/game");
 const settings = require("../../settings");
 
 function getUserReaction(reaction, user){
-    console.log(reaction);
+
     let userReaction = reaction.userReactions.find((data) =>{
         return String(data.user) === String(user._id);
     });
@@ -47,27 +49,17 @@ router.post("/create", async function (req, res) {
             //create new reaction
             const newReaction = new Reaction();
             let reactions = await newReaction.save();
+            let game = null;
+            //find game. if it doesn't exist
+            if(req.body.igdbId){
+                game = await Game.model.findOne({igdbId: req.body.igdbId}).exec();
+            }
 
-            //create new review
-            const newReview = new Review({
-                author: user._id,
-                gameData: {
-                    gameTitle: req.body.game,
-                },
-                ratings: {
-                    //if user hasn't entered a rating, presume 0
-                    gameplay: "gameplay" in req.body ? Number(req.body.gameplay) : 0,
-                    visuals: "visuals" in req.body ? Number(req.body.visuals) : 0,
-                    audio: "audio" in req.body ? Number(req.body.audio) : 0,
-                    story: "story" in req.body ? Number(req.body.story) : 0,
-                    overall: "overall" in req.body ? Number(req.body.overall) : 0,
-                },
-                title: req.body.title,
-                content: req.body.content,
-                reactions: reactions._id,
-            });
+            if(!game){
+                game = await igdb.findGameByIdAndCreate(req.body.igdbId);
+            }
 
-            let review = await newReview.save();
+            const review = await Review.createReview(user, game, reactions, req);
             const reviewId = review._id;
 
             //link review to reaction
@@ -80,7 +72,7 @@ router.post("/create", async function (req, res) {
     
             //remove draft from user and drafts collection
             if(req.body.draftId !== null){
-                let draftDelete = Draft.deleteOne({_id: req.body.draftId}).exec();
+                let draftDelete = Draft.model.deleteOne({_id: req.body.draftId}).exec();
 
                 //remove draft ID from the user's review collection
                 let userUpdate = User.updateOne({ _id: req.user._id }, { $pull: { userDrafts: { $in: req.body.draftId } } }).exec();
@@ -88,9 +80,9 @@ router.post("/create", async function (req, res) {
                 await draftDelete;
                 await userUpdate;
             }
-            let latest = new Latest({review: reviewId});
+            let latest = new Latest.model({review: reviewId});
             await latest.save();
-            let latests = await Latest.find({}).exec();
+            let latests = await Latest.model.find({}).exec();
             if(latests.length >= settings.LATESTS_MAX_LENGTH){
                 //remove any old latest posts
                 for(let i = 0; i < latests.length - settings.LATESTS_MAX_LENGTH; i++){
@@ -162,23 +154,9 @@ router.post("/:reviewId/edit", async function (req, res) {
     try {
         if (req.isAuthenticated()) {
             const reviewId = req.params.reviewId;
-    
-            await Review.updateOne({ _id: reviewId, author: req.user._id }, {
-                gameData: {
-                    gameTitle: req.body.game,
-                }, 
-                title: req.body.title, 
-                content: req.body.content, 
-                ratings: {
-                    //if user hasn't entered a rating, presume 0
-                    gameplay: "gameplay" in req.body ? Number(req.body.gameplay) : 0,
-                    visuals: "visuals" in req.body ? Number(req.body.visuals) : 0,
-                    audio: "audio" in req.body ? Number(req.body.audio) : 0,
-                    story: "story" in req.body ? Number(req.body.story) : 0,
-                    overall: "overall" in req.body ? Number(req.body.overall) : 0,
-                },
-            }).exec();
 
+            await Review.updateReview(reviewId, req);
+    
             res.redirect("/");
         } else {
             res.redirect("/login");
@@ -197,11 +175,11 @@ router.post("/:reviewId/delete", async function (req, res) {
             const reviewId = req.params.reviewId;
 
             //removes review and all review related data from other collections
-            let reviewDelete = Review.deleteOne({ _id: reviewId, author: req.user._id }).exec();
+            let reviewDelete = Review.model.deleteOne({ _id: reviewId, author: req.user._id }).exec();
 
-            let reactionDelete = Reaction.deleteOne({ review: reviewId}).exec();
+            let reactionDelete = Reaction.deleteOne({ review: reviewId }).exec();
 
-            let latestDelete = Latest.deleteOne({ review: reviewId }).exec();
+            let latestDelete = Latest.model.deleteOne({ review: reviewId }).exec();
 
             let userUpdate = User.updateOne({ _id: req.user._id }, { $pull: { userReviews: { $in: reviewId } } }).exec();
 
@@ -220,7 +198,39 @@ router.post("/:reviewId/delete", async function (req, res) {
 
 });
 
-//delete review, related reaction, remove from latests and user's created reviews
+router.get("/:reviewId/userRatings", async function (req, res) {
+
+    try {
+
+        const response = {
+            userReactions: null
+        }
+
+        if (req.isAuthenticated()) {
+            const reviewId = req.params.reviewId;
+            const reactionName = req.params.reactionName;
+    
+            let reaction = await Reaction.findOne({review: reviewId},"userReactions")
+            .exec();
+    
+            //check that a reaction exists for the logged in user
+            let userReaction = getUserReaction(reaction, req.user);
+            
+            if(userReaction !== null){
+                response.userReactions = userReaction.userReaction
+            }
+
+            res.status(200).send(response);
+    
+        } else {
+            res.status(200).send(response);
+        }
+    } catch(err) {
+        console.log(err);
+    }
+
+});
+
 router.post("/:reviewId/:reactionName", async function (req, res) {
 
     try {
@@ -264,7 +274,7 @@ router.post("/:reviewId/:reactionName", async function (req, res) {
             
             const response = {
                 [reactionName]: reaction.reaction[reactionName],
-                userReactions: userReaction,
+                userReactions: userReaction.userReaction,
             }
 
             res.status(200).send(response);
