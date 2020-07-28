@@ -39,7 +39,7 @@ async function createReview(user, game, reactions, req){
         reactions: reactions._id,
     });
 
-    let review = review.save();
+    let review = newReview.save();
     return review;
 }
 

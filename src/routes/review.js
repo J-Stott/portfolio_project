@@ -43,20 +43,22 @@ router.post("/create", async function (req, res) {
 
     try {
         if (req.isAuthenticated()) {
-
+            console.log("-- Trying to create review --");
             let user = await User.findOne({ _id: req.user.id }).exec();
 
             //create new reaction
             const newReaction = new Reaction();
             let reactions = await newReaction.save();
-            let game = null;
-            //find game. if it doesn't exist
-            if(req.body.igdbId){
-                game = await Game.model.findOne({igdbId: req.body.igdbId}).exec();
-            }
 
+
+            const igdbId = Number(req.body.igdbId);
+            let game = await Game.model.findOne({igdbId: igdbId}).exec();
+            console.log("-- found game --");
+            console.log(game);
+            
             if(!game){
-                game = await igdb.findGameByIdAndCreate(req.body.igdbId);
+                let gameData = await igdb.findGameByIgdbId(igdbId);
+                game = await Game.createGameEntry(gameData);
             }
 
             const review = await Review.createReview(user, game, reactions, req);
@@ -107,9 +109,10 @@ router.get("/:reviewId", async function (req, res) {
         let populateOptions = {path: "reactions", select: "reaction -_id"};
         //get all reactions and the specific reaction from the logged in user, if any
 
-        let review = await Review.findOne({ _id: reviewId })
+        let review = await Review.model.findOne({ _id: reviewId })
         .populate({ path: "author", select: ["_id", "profileImg", "displayName"]})
-        .populate(populateOptions)
+        .populate({path: "reactions", select: "reaction -_id"})
+        .populate({path: "gameId", select: "image displayName -_id"})
         .exec();
 
         if (!review) {
@@ -133,7 +136,9 @@ router.get("/:reviewId/edit", async function (req, res) {
         if (req.isAuthenticated()) {
             const reviewId = req.params.reviewId;
     
-            let review = await Review.findOne({ _id: reviewId, author: req.user._id }).exec(); 
+            let review = await Review.model.findOne({ _id: reviewId, author: req.user._id })
+            .populate({path: "gameId", select: "displayName -_id"})
+            .exec(); 
             if (!review) {
                 res.redirect("/");
             } else {

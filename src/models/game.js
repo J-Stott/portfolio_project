@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const settings = require("../../settings");
-const igdb = require("../components/igdb_functions");
 
 //setup user schema
 const gameSchema = new mongoose.Schema({
@@ -27,6 +26,17 @@ const Game = mongoose.model("Game", gameSchema);
 function getLastOf(arr){
     const index = arr.lastIndexOf('/');
     return arr.substring(index + 1);
+}
+
+function getGameImageUrl(gameData){
+    let imageUrl = settings.DEFAULT_GAME_IMAGE;
+
+    if("cover" in gameData){
+        imageUrl = gameData.cover.url
+        imageUrl = `https:${imageUrl.replace("t_thumb", "t_cover_big")}`;
+    }
+
+    return imageUrl;
 }
 
 async function createGameEntry(gameData){
@@ -102,18 +112,10 @@ async function removeFromAverages(review){
     game.save();
 }
 
-async function findGameByIdAndCreate(igdbId){
-    const gameRequest = await igdb.findGameById(igdbId);
-    
-    let gameData = gameRequest.data[0];
-    return createGameEntry(gameData);
-
-}
-
 module.exports = {
     model: Game,
     createGameEntry: createGameEntry,
     addToAverages: addToAverages,
     removeFromAverages: removeFromAverages,
-    findGameByIdAndCreate: findGameByIdAndCreate
+    getGameImageUrl: getGameImageUrl,
 };

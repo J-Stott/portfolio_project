@@ -23,9 +23,12 @@
         <% if(locals.reviews) {%>
         <% reviews.forEach((review) => {%>
             <div class="review-wrapper wrapper-style mb-4">
-                <div class="row">
-                    <div class="col-12">
-                        <h1><%=review.gameData.gameTitle%></h1>
+                <div class="row align-items-center">
+                    <div class="col-lg-2 col-md-3 col-4">
+                        <img class="profile-picture" src="<%=review.author.profileImg%>" alt="profile" />
+                    </div>
+                    <div class="col-lg-10 col-md-9 col-8">                  
+                        <h5>By <a class="user-link" href="/users/<%=review.author.displayName%>"><%=review.author.displayName%></a></h5>
                         <div class="stars">
                             <%for(let i = 0; i < review.ratings.overall; i++){%>
                                 <i class="far fa-star star-highlight"></i>

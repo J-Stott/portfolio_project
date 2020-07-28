@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const axios = require("axios");
 const _ = require("lodash");
 const igdb = require("../components/igdb_functions");
 const stringSimilarity = require("string-similarity");
@@ -19,11 +18,19 @@ async function renderGame(game, req, res){
         data.user = req.user;
     }
 
-    const reviews = await Review.find({gameId: game._id}).exec();
+    const reviews = await Review.model.find({gameId: game._id})
+    .populate({path: "gameId", select: "displayName image -_id"})
+    .populate({path: "author", select: "displayName profileImg -_id"})
+    .exec();
+    console.log("-- reviews --");
+    console.log(reviews);
 
-    if(!reviews.length === 0){
+    if(reviews.length > 0){
         data.reviews = reviews;
     }
+
+    console.log("-- data sent --");
+    console.log(data);
 
     res.render("game", data);
 }
@@ -38,37 +45,7 @@ router.get("/:gameName", async function (req, res) {
 
         //if it doesn't exist in the db, search igdb api. 
         if(!game){
-
-            const searchTerm = _.lowerCase(gameName);
-            console.log(searchTerm);
-
-            const response = await igdb.searchForGames(searchTerm);
-            const responseData = response.data;
-            console.log(responseData);
-            
-            if(responseData.length === 0){
-                //redirect somewhere as this game doesn't exist
-                res.redirect("/");
-            } else {
-
-                const foundGames = await igdb.findGamesNotInDb(searchTerm, responseData);
-
-                const names = foundGames.map((data) => {
-                    return _.lowerCase(data.name);
-                });
-
-                const similarity = stringSimilarity.findBestMatch(searchTerm, names);
-
-                console.log(similarity);
-
-                const index = similarity.bestMatchIndex;
-
-                let responseGame = foundGames[index];
-                console.log(responseGame);
-
-                game = await Game.createGameEntry(responseGame);
-                res.redirect(`/games/${game.linkName}`);
-            }
+            res.redirect("/");
         } else {
             console.log("game exists");
             console.log(game);
@@ -81,7 +58,7 @@ router.get("/:gameName", async function (req, res) {
 });
 
 //ajax request used for search bar(s)
-router.get("/search/:term", async function (req, res) {
+router.post("/search/:term", async function (req, res) {
 
     try {
         
@@ -89,10 +66,7 @@ router.get("/search/:term", async function (req, res) {
         const searchTerm = _.lowerCase(term);
 
         const gameData = await igdb.collateDbAndIgdbGames(searchTerm);
-
-        console.log(gameData);
-        //console.log(responseData);
-        //res.status(200).send(responseData);
+        res.status(200).send(gameData);
         
     } catch(err) {
         console.log(err);

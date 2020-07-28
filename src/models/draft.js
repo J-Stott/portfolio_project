@@ -2,9 +2,8 @@ const mongoose = require("mongoose");
 
 //setup user schema
 const draftSchema = new mongoose.Schema({
-    gameData: { 
-        gameTitle: { type : String },
-        gameImg: { type : String }
+    gameId: { 
+        type: mongoose.Schema.Types.ObjectId, ref: "Game"
     },
     ratings: {
         gameplay: { type : Number },
@@ -21,12 +20,10 @@ const draftSchema = new mongoose.Schema({
 
 const Draft = mongoose.model("Draft", draftSchema);
 
-function createDraft(user, req){
+function createDraft(user, game, req){
     const newDraft = new Draft({
         author: user._id,
-        gameData: {
-            gameTitle: req.body.game,
-        },
+        gameId: game._id,
         ratings: {
             //if user hasn't entered a rating, presume 0
             gameplay: "gameplay" in req.body ? Number(req.body.gameplay) : 0,
@@ -44,11 +41,9 @@ function createDraft(user, req){
     return draft
 }
 
-async function updateDraft(draftId, req){
+async function updateDraft(draftId, game, req){
     let update = Draft.updateOne({ _id: draftId, author: req.user._id }, {
-        gameData: {
-            gameTitle: req.body.game,
-        }, 
+        gameId: game._id, 
         title: req.body.title, 
         content: req.body.content, 
         ratings: {

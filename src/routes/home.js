@@ -24,6 +24,9 @@ router.get("/", async function (req, res) {
             return doc.review;
         });
 
+        console.log("-- reviews --");
+        console.log(reviews);
+
         res.render("index", { user: user, reviews: reviews.reverse() });
     } catch(err) {
         console.log(err);

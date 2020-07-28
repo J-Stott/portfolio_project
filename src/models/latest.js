@@ -22,7 +22,7 @@ async function getLatests(){
             populate: {
                 path: "gameId",
                 model: "Game",
-                select: {"displayName": 1, "image": 1}
+                select: {"displayName": 1, "image": 1, "linkName": 1}
             }
         })
         .exec();

@@ -6,9 +6,14 @@
             <h3>Create Your Review</h3>
             <form action="/reviews/create" method="post">
                 <div class="form-row align-items-center">
+                    
+                    <input type="hidden" name="igdbId" value="" id="igdbId"/>
+                    <input type="hidden" name="gameName" value="" id="gameName"/>
+
                     <div class="col-12 my-1">
-                        <input type="hidden" name="igdbId" />
-                        <input class="form-control" type="text" name="game" autocomplete="off" placeholder="Game Title" id="" required/>
+                        <input class="form-control" type="text" name="game" autocomplete="off" placeholder="Game Title" value="" id="gameTitle" required/>
+                        <div class="search-results-container">
+                        </div>
                     </div>
                     <div class="col-12 my-1">
                         <input class="form-control" type="text" name="title" autocomplete="off" placeholder="Review Title" id="" required/>
@@ -110,4 +115,6 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script type="text/javascript" src="/js/search.js"></script>
 <%- include("partials/footer") -%>

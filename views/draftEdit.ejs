@@ -11,8 +11,13 @@
 
                     <input type="hidden" name="draftId" value="<%=draftId%>"/>
 
+                    <input type="hidden" name="igdbId" id="igdbId" value="<%=reviewData.gameId.igdbId%>"/>
+                    <input type="hidden" name="gameName" id="gameName" value="<%=reviewData.gameId.displayName%>"/>
+
                     <div class="col-12 my-1">
-                        <input class="form-control" type="text" name="game" autocomplete="off" placeholder="Game Title" value="<%=reviewData.gameData.gameTitle%>" id="" required/>
+                        <input class="form-control" type="text" name="game" autocomplete="off" placeholder="Game Title" value="<%=reviewData.gameId.displayName%>" id="gameTitle" required/>
+                        <div class="search-results-container">
+                        </div>
                     </div>
                     <div class="col-12 my-1">
                         <input class="form-control" type="text" name="title" autocomplete="off" placeholder="Review Title" id="" value="<%=reviewData.title%>" required/>
@@ -101,4 +106,6 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script type="text/javascript" src="/js/search.js"></script>
 <%- include("partials/footer") -%>
