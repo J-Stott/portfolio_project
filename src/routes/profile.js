@@ -93,11 +93,14 @@ router.post("/:username/updateImage", upload.single("profile"), async function (
                     //update user profile path
                     const file = req.file;
                     let foundUser = await User.findOne({username: username}).exec(); 
+                    const profileImgName = "/profileImages/" + file.filename;
 
                     //delete their previous image from the server
-                    deleteProfileImage(foundUser);
-    
-                    foundUser.profileImg = "/profileImages/" + file.filename;
+                    if(profileImgName !==  foundUser.profileImg){
+                        deleteProfileImage(foundUser);
+                    }
+                    
+                    foundUser.profileImg = profileImgName;
                     await foundUser.save();
                     res.redirect(`/profile/${username}`);
                 }

@@ -24,9 +24,6 @@ router.get("/", async function (req, res) {
             return doc.review;
         });
 
-        console.log("-- reviews --");
-        console.log(reviews);
-
         res.render("index", { user: user, reviews: reviews.reverse() });
     } catch(err) {
         console.log(err);
@@ -97,7 +94,7 @@ router.post("/login", function (req, res, next) {
                         req.session.cookie.expires = false; //expires at end of session
                     }
 
-                    req.user = user;
+                    req.session.user = user;
                     res.redirect("/");
                 }
             });

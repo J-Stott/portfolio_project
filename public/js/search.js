@@ -112,7 +112,7 @@ gameTitle.addEventListener("keydown", function(){
 gameTitle.addEventListener("keyup", function(){
     if(gameTitle.value != ""){
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(getGameData, 1000);
+        timeoutId = setTimeout(getGameData, 500);
     }
 });
 

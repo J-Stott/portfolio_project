@@ -234,6 +234,10 @@ label.star:before {
   background-color: #8a8f92;
 }
 
+.search-results-container:hover{
+  cursor: pointer;
+}
+
 .search-game-art {
   width: 66px;
   height: auto;

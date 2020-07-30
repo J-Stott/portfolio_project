@@ -43,23 +43,21 @@ async function createReview(user, game, reactions, req){
     return review;
 }
 
-async function updateReview(reviewId, req){
+async function updateReview(review, req){
     //create new review
-    Review.updateOne({ _id: reviewId, author: req.user._id }, {
-        gameData: {
-            gameTitle: req.body.game,
-        }, 
-        title: req.body.title, 
-        content: req.body.content, 
-        ratings: {
-            //if user hasn't entered a rating, presume 0
-            gameplay: "gameplay" in req.body ? Number(req.body.gameplay) : 0,
-            visuals: "visuals" in req.body ? Number(req.body.visuals) : 0,
-            audio: "audio" in req.body ? Number(req.body.audio) : 0,
-            story: "story" in req.body ? Number(req.body.story) : 0,
-            overall: "overall" in req.body ? Number(req.body.overall) : 0,
-        },
-    }).exec();
+
+    review.title = req.body.title;
+    review.content = req.body.content;
+    review.ratings = {
+        //if user hasn't entered a rating, presume 0
+        gameplay: "gameplay" in req.body ? Number(req.body.gameplay) : 0,
+        visuals: "visuals" in req.body ? Number(req.body.visuals) : 0,
+        audio: "audio" in req.body ? Number(req.body.audio) : 0,
+        story: "story" in req.body ? Number(req.body.story) : 0,
+        overall: "overall" in req.body ? Number(req.body.overall) : 0,
+    };
+
+    return review.save();
 }
 
 module.exports = {

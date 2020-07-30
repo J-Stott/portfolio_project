@@ -28,17 +28,6 @@ function getLastOf(arr){
     return arr.substring(index + 1);
 }
 
-function getGameImageUrl(gameData){
-    let imageUrl = settings.DEFAULT_GAME_IMAGE;
-
-    if("cover" in gameData){
-        imageUrl = gameData.cover.url
-        imageUrl = `https:${imageUrl.replace("t_thumb", "t_cover_big")}`;
-    }
-
-    return imageUrl;
-}
-
 async function createGameEntry(gameData){
     //create game data here
     let imageUrl = settings.DEFAULT_GAME_IMAGE;
@@ -71,9 +60,11 @@ async function createGameEntry(gameData){
 }
 
 async function addToAverages(review){
+    console.log("-- add to averages --");
+    console.log(review);
     const ratings = review.ratings;
 
-    let game = await Game.find({id: review.gameId}).exec();
+    let game = await Game.findOne({_id: review.gameId}).exec();
 
     Object.keys(game.ratingAverages).forEach(function(key){ 
         game.ratingAverages[key] *= game.numReviews 
@@ -94,7 +85,7 @@ async function addToAverages(review){
 async function removeFromAverages(review){
     const ratings = review.ratings;
 
-    let game = await Game.find({id: review.gameId}).exec();
+    let game = await Game.findOne({_id: review.gameId}).exec();
 
     Object.keys(game.ratingAverages).forEach(function(key){ 
         game.ratingAverages[key] *= game.numReviews 
@@ -103,10 +94,12 @@ async function removeFromAverages(review){
 
     game.numReviews--;
     
-    Object.keys(game.ratingAverages).forEach(function(key){ 
-        game.ratingAverages[key] /= game.numReviews 
-    });
-
+    if(game.numReviews > 1){
+        Object.keys(game.ratingAverages).forEach(function(key){ 
+            game.ratingAverages[key] /= game.numReviews 
+        });
+    }
+    
     console.log(game);
 
     game.save();
@@ -117,5 +110,4 @@ module.exports = {
     createGameEntry: createGameEntry,
     addToAverages: addToAverages,
     removeFromAverages: removeFromAverages,
-    getGameImageUrl: getGameImageUrl,
 };

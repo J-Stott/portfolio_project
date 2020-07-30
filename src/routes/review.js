@@ -43,7 +43,7 @@ router.post("/create", async function (req, res) {
 
     try {
         if (req.isAuthenticated()) {
-            console.log("-- Trying to create review --");
+
             let user = await User.findOne({ _id: req.user.id }).exec();
 
             //create new reaction
@@ -53,8 +53,6 @@ router.post("/create", async function (req, res) {
 
             const igdbId = Number(req.body.igdbId);
             let game = await Game.model.findOne({igdbId: igdbId}).exec();
-            console.log("-- found game --");
-            console.log(game);
             
             if(!game){
                 let gameData = await igdb.findGameByIgdbId(igdbId);
@@ -63,6 +61,8 @@ router.post("/create", async function (req, res) {
 
             const review = await Review.createReview(user, game, reactions, req);
             const reviewId = review._id;
+
+            await Game.addToAverages(review);
 
             //link review to reaction
             reactions.review = reviewId;
@@ -160,7 +160,14 @@ router.post("/:reviewId/edit", async function (req, res) {
         if (req.isAuthenticated()) {
             const reviewId = req.params.reviewId;
 
-            await Review.updateReview(reviewId, req);
+            let review = await Review.model.findOne({ _id: reviewId, author: req.user._id }).exec();
+
+            await Game.removeFromAverages(review);
+
+            review = await Review.updateReview(review, req);
+            console.log(review);
+
+            await Game.addToAverages(review);
     
             res.redirect("/");
         } else {
@@ -180,6 +187,11 @@ router.post("/:reviewId/delete", async function (req, res) {
             const reviewId = req.params.reviewId;
 
             //removes review and all review related data from other collections
+
+            let review = await Review.model.findOne({ _id: reviewId, author: req.user._id }).exec();
+
+            await Game.removeFromAverages(review);
+
             let reviewDelete = Review.model.deleteOne({ _id: reviewId, author: req.user._id }).exec();
 
             let reactionDelete = Reaction.deleteOne({ review: reviewId }).exec();

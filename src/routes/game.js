@@ -2,10 +2,8 @@ const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
 const igdb = require("../components/igdb_functions");
-const stringSimilarity = require("string-similarity");
 const Game = require("../models/game");
 const Review = require("../models/review");
-const settings = require("../../settings");
 
 
 async function renderGame(game, req, res){
@@ -21,6 +19,7 @@ async function renderGame(game, req, res){
     const reviews = await Review.model.find({gameId: game._id})
     .populate({path: "gameId", select: "displayName image -_id"})
     .populate({path: "author", select: "displayName profileImg -_id"})
+    .sort({created: "desc"})
     .exec();
     console.log("-- reviews --");
     console.log(reviews);
@@ -65,7 +64,13 @@ router.post("/search/:term", async function (req, res) {
         const term = req.params.term;
         const searchTerm = _.lowerCase(term);
 
-        const gameData = await igdb.collateDbAndIgdbGames(searchTerm);
+        //const gameData = await igdb.searchForGames(searchTerm);
+        const gameData = await igdb.collateDbAndIgdbGames(Game, searchTerm);
+
+        if("status" in gameData){
+            return res.status(gameData.status).send(gameData.statusText);
+        }
+        
         res.status(200).send(gameData);
         
     } catch(err) {
