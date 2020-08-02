@@ -248,3 +248,7 @@ label.star:before {
   font-size: 16px;
   margin: 0;
 }
+
+.game:hover{
+  background-color: #abaeaf;
+}

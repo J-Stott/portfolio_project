@@ -25,6 +25,7 @@ async function getLatests(){
                 select: {"displayName": 1, "image": 1, "linkName": 1}
             }
         })
+        .sort({review: "desc"})
         .exec();
 
     return docs;

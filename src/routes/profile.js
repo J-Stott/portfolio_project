@@ -4,6 +4,7 @@ const User = require("../models/user");
 const Review = require("../models/review");
 const Latest = require("../models/latest");
 const Draft = require("../models/draft");
+const Game = require("../models/game");
 const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
@@ -200,16 +201,28 @@ router.post("/:username/delete", async function (req, res) {
                 res.redirect("/");
             } else {
     
-                let foundUser = await User.findOne({username: username}).exec(); 
+                let foundUser = await User.findOne({username: username})
+                .populate({
+                    path: "userReviews", 
+                    select:["ratings", "gameId"]
+                })
+                .exec(); 
+
+                console.log("-- Deleting User --");
+                console.log(foundUser);
                     
                 deleteProfileImage(foundUser);
     
                 //find in the latests if it exists and remove
-                await Latest.deleteMany({ review: {$in: foundUser.userReviews} }).exec();
+                await Latest.model.deleteMany({ review: {$in: foundUser.userReviews} }).exec();
 
-                await Review.deleteMany({_id: {$in: foundUser.userReviews}}).exec();
+                foundUser.userReviews.forEach((review) => {
+                    Game.removeFromAverages(review);
+                });
 
-                await Draft.deleteMany({_id: {$in: foundUser.userDrafts}}).exec();
+                await Review.model.deleteMany({_id: {$in: foundUser.userReviews}}).exec();
+
+                await Draft.model.deleteMany({_id: {$in: foundUser.userDrafts}}).exec();
                
                 await User.deleteOne({username: username}).exec();
 

@@ -73,7 +73,7 @@ router.post("/create", async function (req, res) {
 
 });
 
-//edit a particular draft
+//get draft data and send it to edit template
 router.get("/:draftId/edit", async function (req, res) {
 
     try{

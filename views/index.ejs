@@ -9,11 +9,11 @@
             <div class="review-wrapper wrapper-style mb-4">
                 <div class="row">
                     <div class="col-lg-2 col-md-3 col-4 d-flex justify-content-center">
-                        <img class="review-game-art mb-2" src="<%=review.gameId.image%>" alt="profile" />
+                        <a class="user-link" href="/games/<%=review.gameId.linkName%>"><img class="review-game-art mb-2" src="<%=review.gameId.image%>" alt="profile" /></a>
                     </div>
                     <div class="col-lg-10 col-md-9 col-8">
                         <h1 class="mb-4">
-                            <a class="user-link" href="/games/<%=review.gameId.linkName%>"><%=review.gameId.displayName%></a>
+                            <%=review.gameId.displayName%>
                         </h1>
                         <div class="row align-items-center">
                             <div class="col-lg-1 col-md-2 col-3">

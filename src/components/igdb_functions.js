@@ -13,7 +13,7 @@ function getGameImageUrl(gameData){
     return imageUrl;
 }
 
-async function searchForGames(searchTerm, limit=10, offset=0){
+async function searchForGames(searchTerm, limit=50, offset=0){
     return axios({
         url: "https://api-v3.igdb.com/games",
         method: 'POST',
@@ -25,7 +25,7 @@ async function searchForGames(searchTerm, limit=10, offset=0){
       });
 }
 
-//need to think about this function
+//collates DB and api games and sorts them based on closeness to search term
 async function collateDbAndIgdbGames(Game, searchTerm){
     
     let response = await searchForGames(searchTerm);
@@ -40,8 +40,6 @@ async function collateDbAndIgdbGames(Game, searchTerm){
     const games = await Game.model.find({displayName: { $regex: searchTerm, $options: 'i' }})
     .select("igdbId displayName image")
     .exec();
-
-    console.log(games);
 
     // other way of searching text
     // const games = await Game.model.find({$text: {$search: searchTerm}})
@@ -65,6 +63,10 @@ async function collateDbAndIgdbGames(Game, searchTerm){
             });
         }
     });
+
+    if(gameData.length === 0){
+        return {};
+    }
     
     const gameNames = gameData.map((data) => {
         return data.displayName.toLowerCase();
@@ -84,12 +86,12 @@ async function collateDbAndIgdbGames(Game, searchTerm){
         return 0;
     });
 
-    console.log("--results--");
-    console.log(results);
-
     const resultGameData = [];
     const searchThreshold = 0.2;
 
+    /* add to list if it meets a certain threshold
+    looking at returned searches, things below a 0.2 seem to be 
+    irrelevant */
     for(let i = 0; i < results.length; i++){
         const result = results[i];
 
@@ -108,7 +110,7 @@ async function collateDbAndIgdbGames(Game, searchTerm){
     return resultGameData;
 }
 
-
+//find a game by a specific ID.
 async function findGameByIgdbId(id){
     let gameData = await axios({
         url: "https://api-v3.igdb.com/games",

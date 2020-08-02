@@ -8,7 +8,6 @@ router.get("/:username", async function (req, res) {
 
     try {
         const username = _.toLower(req.params.username);
-        console.log(username);
 
         let profile = await User.findOne({username: username})
         .populate({
@@ -32,7 +31,6 @@ router.get("/:username", async function (req, res) {
                 user = req.user;
             }
 
-            console.log(profile);
             res.render("user", {user: user, profileData: profile});
         }
     } catch(err) {

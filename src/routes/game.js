@@ -21,15 +21,10 @@ async function renderGame(game, req, res){
     .populate({path: "author", select: "displayName profileImg -_id"})
     .sort({created: "desc"})
     .exec();
-    console.log("-- reviews --");
-    console.log(reviews);
 
     if(reviews.length > 0){
         data.reviews = reviews;
     }
-
-    console.log("-- data sent --");
-    console.log(data);
 
     res.render("game", data);
 }
@@ -39,15 +34,12 @@ router.get("/:gameName", async function (req, res) {
 
     try {
         const gameName = req.params.gameName;
-        console.log(gameName);
         let game = await Game.model.findOne({linkName: gameName}).exec();
 
         //if it doesn't exist in the db, search igdb api. 
         if(!game){
             res.redirect("/");
         } else {
-            console.log("game exists");
-            console.log(game);
             renderGame(game, req, res);
         }
         

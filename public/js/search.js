@@ -67,7 +67,7 @@ function getGameData(){
 
 function setSearchData(data){
     let parent = document.createElement("div");
-    parent.setAttribute("class", "row align-items-center m-auto");
+    parent.setAttribute("class", "row align-items-center m-auto game");
 
     let imgDiv = document.createElement("div");
     imgDiv.setAttribute("class", "col-md-2 col-3");
@@ -113,6 +113,8 @@ gameTitle.addEventListener("keyup", function(){
     if(gameTitle.value != ""){
         clearTimeout(timeoutId);
         timeoutId = setTimeout(getGameData, 500);
+    } else {
+        clearInputs();
     }
 });
 
@@ -120,6 +122,8 @@ gameTitle.addEventListener("focusout", function(){
     if(!ignoreUnfocus){
         gameTitle.value = gameName.value;
     }
+
+    setSearchVisible(false);
 });
 
 // window.onload = function(){

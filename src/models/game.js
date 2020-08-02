@@ -60,8 +60,6 @@ async function createGameEntry(gameData){
 }
 
 async function addToAverages(review){
-    console.log("-- add to averages --");
-    console.log(review);
     const ratings = review.ratings;
 
     let game = await Game.findOne({_id: review.gameId}).exec();
