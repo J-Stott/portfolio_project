@@ -105,6 +105,7 @@ router.post("/create", async function (req, res) {
 //show review
 router.get("/:reviewId", async function (req, res) {
     try{
+        console.log("Are we here? If so, why?");
         const reviewId = req.params.reviewId;
         let populateOptions = {path: "reactions", select: "reaction -_id"};
         //get all reactions and the specific reaction from the logged in user, if any

@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
 
-//setup user schema
+//setup latest schema
 const latestSchema = new mongoose.Schema({
     review: {type: mongoose.Schema.Types.ObjectId, ref: "Review"}
 });
 
 const Latest = mongoose.model("Latest", latestSchema);
 
+//returns the latest reviews
 async function getLatests(){
     let docs = Latest.find({})
         .populate({

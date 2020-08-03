@@ -38,7 +38,7 @@ async function collateDbAndIgdbGames(Game, searchTerm){
     }
 
     const games = await Game.model.find({displayName: { $regex: searchTerm, $options: 'i' }})
-    .select("igdbId displayName image")
+    .select("igdbId displayName image linkName")
     .exec();
 
     // other way of searching text
@@ -59,7 +59,8 @@ async function collateDbAndIgdbGames(Game, searchTerm){
             gameData.push({
                 igdbId: data.id,
                 displayName: data.name,
-                image: getGameImageUrl(data)
+                image: getGameImageUrl(data),
+                linkName: Game.getAfterLastSlash(data.url)
             });
         }
     });
@@ -122,10 +123,14 @@ async function findGameByIgdbId(id){
         data: `fields id,name,summary,url,cover.url,first_release_date; where id = ${id};`
     });
 
+    if(gameData.data.length === 0){
+        return [];
+    }
+    
     return gameData.data[0];
 }
 
 module.exports = {
     findGameByIgdbId: findGameByIgdbId,
-    collateDbAndIgdbGames: collateDbAndIgdbGames
+    collateDbAndIgdbGames: collateDbAndIgdbGames,
 }

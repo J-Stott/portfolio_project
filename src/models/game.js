@@ -23,9 +23,9 @@ gameSchema.index({displayName: "text"});
 
 const Game = mongoose.model("Game", gameSchema);
 
-function getLastOf(arr){
-    const index = arr.lastIndexOf('/');
-    return arr.substring(index + 1);
+function getAfterLastSlash(str){
+    const index = str.lastIndexOf('/');
+    return str.substring(index + 1);
 }
 
 async function createGameEntry(gameData){
@@ -42,8 +42,7 @@ async function createGameEntry(gameData){
         date = new Date(gameData.first_release_date * 1000);
     }
 
-    const link = gameData.url;
-    const linkName = getLastOf(link);
+    const linkName = getAfterLastSlash(gameData.url);
 
     let newGame = new Game({
         igdbId: gameData.id,
@@ -59,6 +58,7 @@ async function createGameEntry(gameData){
     return game;
 }
 
+//adds to the averages of a game
 async function addToAverages(review){
     const ratings = review.ratings;
 
@@ -80,6 +80,7 @@ async function addToAverages(review){
     game.save();
 }
 
+//removes the averages for a game
 async function removeFromAverages(review){
     const ratings = review.ratings;
 
@@ -108,4 +109,5 @@ module.exports = {
     createGameEntry: createGameEntry,
     addToAverages: addToAverages,
     removeFromAverages: removeFromAverages,
+    getAfterLastSlash: getAfterLastSlash,
 };

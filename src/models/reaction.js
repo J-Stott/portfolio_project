@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-//setup user schema
+//setup reaction schema
 const reactionSchema = new mongoose.Schema({
 
     review: {type: mongoose.Schema.Types.ObjectId, ref: "Review" },

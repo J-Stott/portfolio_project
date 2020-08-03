@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-//setup user schema
+//setup review schema
 const reviewSchema = new mongoose.Schema({
     gameId: { 
         type: mongoose.Schema.Types.ObjectId, ref: "Game"
@@ -44,8 +44,8 @@ async function createReview(user, game, reactions, req){
 }
 
 async function updateReview(review, req){
-    //create new review
 
+    //update review
     review.title = req.body.title;
     review.content = req.body.content;
     review.ratings = {

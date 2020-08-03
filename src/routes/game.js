@@ -48,11 +48,36 @@ router.get("/:gameName", async function (req, res) {
     } 
 });
 
+//create a game 
+router.post("/:gameName", async function (req, res) {
+
+    try {
+        const gameName = req.params.gameName;
+        const igdbId = req.body.igdbId;
+
+        const game = await Game.model.findOne({igdbId: igdbId}).exec();
+
+        if(game !== null){
+            return res.redirect(`/games/${gameName}`);
+        }
+
+        const gameData = await igdb.findGameByIgdbId(igdbId);
+
+        if(gameData.length === 0){
+            return gameData.redirect("/");
+        } 
+        
+        await Game.createGameEntry(gameData);
+        res.redirect(`/games/${gameName}`); 
+    } catch(err) {
+        console.log(err);
+    } 
+});
+
 //ajax request used for search bar(s)
 router.post("/search/:term", async function (req, res) {
 
     try {
-        
         const term = req.params.term;
         const searchTerm = _.lowerCase(term);
 

@@ -45,6 +45,11 @@ body{
   background-color: #51565c;
 }
 
+.search-width{
+  width: 100%;
+  max-width: 80%;
+}
+
 
 /*login styles*/
 .login-wrapper{
@@ -151,20 +156,6 @@ body{
   width: 60%; 
 }
 
-/*media queries*/
-@media screen and (max-width: 768px) {
-  .profile-image-margin {
-    margin-top: 1rem;
-  }
-}
-
-@media screen and (max-width: 576px) {
-  .navbar-expand > .container {
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
 /*star rating*/
 input.star { 
   display: none; 
@@ -224,6 +215,17 @@ label.star:before {
 
 /* search results */
 
+.nav-search-results-container{
+  position: absolute;
+  display: inherit;
+  z-index: 1;
+  width: 100%;
+  max-width: 50%;
+  max-height: 300px;
+  overflow: auto;
+  background-color: #8a8f92;
+}
+
 .search-results-container{
   position: absolute;
   display: none;
@@ -232,10 +234,6 @@ label.star:before {
   max-height: 300px;
   overflow: auto;
   background-color: #8a8f92;
-}
-
-.search-results-container:hover{
-  cursor: pointer;
 }
 
 .search-game-art {
@@ -251,4 +249,68 @@ label.star:before {
 
 .game:hover{
   background-color: #abaeaf;
+  cursor: pointer;
+}
+
+/*media queries*/
+
+/* Small devices (landscape phones, 576px and up) */
+@media (max-width: 576px) {  
+  .search-width{
+    max-width: 55%;
+  }
+
+  .navbar-expand > .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .nav-search-results-container{
+    max-width: 46%;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {  
+
+  .nav-search-results-container{
+    max-width: 239px;
+  }
+
+  .search-width{
+    max-width: 55%;
+  }
+}
+ 
+/* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
+@media (min-width: 768px) {  
+  .profile-image-margin {
+    margin-top: 1rem;
+  }
+
+  .nav-search-results-container{
+    max-width: 443px;
+  }
+
+  .search-width{
+    max-width: 70%;
+  }
+}
+ 
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+  .search-width{
+    max-width: 75%;
+  }
+
+  .nav-search-results-container{
+    max-width: 656px;
+  }
+}
+ 
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {  
+  .nav-search-results-container{
+    max-width: 791px;
+  }
 }
