@@ -10,6 +10,7 @@ const reviewSearchContainer = document.querySelector(".search-results-container"
 let ignoreUnfocus = false;
 
 function setSearchVisible(searchContainer, visible){
+
     if(visible){
         searchContainer.style.display = "inherit";
         ignoreUnfocus = true;
@@ -79,7 +80,7 @@ function setReviewGameData(data, searchContainer){
         igdbId.value = data.igdbId;
         gameName.value = data.displayName;
         gameTitle.value = data.displayName;
-        clearSearchContainer();
+        clearSearchContainer(reviewSearchContainer);
         setSearchVisible(searchContainer, false);
     });
 
@@ -168,8 +169,6 @@ navSearch.addEventListener("keyup", function(){
                 displayGameSearch(response, navSearchContainer, setSearchGameData);
             });
         }, 500);
-    } else {
-        clearInputs();
     }
 });
 
