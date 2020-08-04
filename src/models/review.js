@@ -60,8 +60,20 @@ async function updateReview(review, req){
     return review.save();
 }
 
+async function getSetNumberOfReviews(skipNumber, limit = 10){
+            
+    return Review.find()
+    .populate({path: "gameId", select: "displayName image -_id"})
+    .populate({path: "author", select: "displayName profileImg -_id"})
+    .sort({created: "desc"})
+    .skip(skipNumber)
+    .limit(limit)
+    .exec();
+}
+
 module.exports = {
     model: Review,
     createReview: createReview,
-    updateReview: updateReview
+    updateReview: updateReview,
+    getSetNumberOfReviews: getSetNumberOfReviews
 };

@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const Review = require("../models/review");
-const Latest = require("../models/latest");
 const Draft = require("../models/draft");
 const Game = require("../models/game");
 const fs = require("fs");
@@ -212,9 +211,6 @@ router.post("/:username/delete", async function (req, res) {
                 console.log(foundUser);
                     
                 deleteProfileImage(foundUser);
-    
-                //find in the latests if it exists and remove
-                await Latest.model.deleteMany({ review: {$in: foundUser.userReviews} }).exec();
 
                 foundUser.userReviews.forEach((review) => {
                     Game.removeFromAverages(review);

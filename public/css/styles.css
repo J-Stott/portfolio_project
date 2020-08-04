@@ -257,7 +257,7 @@ label.star:before {
 /* Small devices (landscape phones, 576px and up) */
 @media (max-width: 576px) {  
   .search-width{
-    max-width: 55%;
+    max-width: 51%;
   }
 
   .navbar-expand > .container {
@@ -304,7 +304,7 @@ label.star:before {
   }
 
   .nav-search-results-container{
-    max-width: 656px;
+    max-width: 655px;
   }
 }
  

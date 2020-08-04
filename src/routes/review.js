@@ -3,7 +3,6 @@ const router = express.Router();
 const _ = require("lodash")
 const Review = require("../models/review");
 const Draft = require("../models/draft");
-const Latest = require("../models/latest");
 const User = require("../models/user");
 const Reaction = require("../models/reaction");
 const igdb = require("../components/igdb_functions");
@@ -81,15 +80,6 @@ router.post("/create", async function (req, res) {
 
                 await draftDelete;
                 await userUpdate;
-            }
-            let latest = new Latest.model({review: reviewId});
-            await latest.save();
-            let latests = await Latest.model.find({}).exec();
-            if(latests.length >= settings.LATESTS_MAX_LENGTH){
-                //remove any old latest posts
-                for(let i = 0; i < latests.length - settings.LATESTS_MAX_LENGTH; i++){
-                    await latests[i].remove();
-                }
             }
 
             res.redirect("/");
@@ -180,7 +170,7 @@ router.post("/:reviewId/edit", async function (req, res) {
 
 });
 
-//delete review, related reaction, remove from latests and user's created reviews
+//delete review, related reaction, remove from user's created reviews
 router.post("/:reviewId/delete", async function (req, res) {
 
     try {
@@ -197,13 +187,10 @@ router.post("/:reviewId/delete", async function (req, res) {
 
             let reactionDelete = Reaction.deleteOne({ review: reviewId }).exec();
 
-            let latestDelete = Latest.model.deleteOne({ review: reviewId }).exec();
-
             let userUpdate = User.updateOne({ _id: req.user._id }, { $pull: { userReviews: { $in: reviewId } } }).exec();
 
             await reviewDelete;
             await reactionDelete;
-            await latestDelete;
             await userUpdate;
             
             res.redirect("/");

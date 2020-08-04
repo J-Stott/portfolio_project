@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
-const Latest = require("../models/latest");
+const Review = require("../models/review");
 const passport = require("passport");
 const _ = require("lodash");
 
@@ -18,11 +18,8 @@ router.get("/", async function (req, res) {
             console.log(user);
         }
 
-        let docs = await Latest.getLatests();
-
-        const reviews = docs.map((doc) => {
-            return doc.review;
-        });
+        
+        const reviews = await Review.getSetNumberOfReviews(0);
 
         res.render("index", { user: user, reviews: reviews });
     } catch(err) {
