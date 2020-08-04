@@ -63,7 +63,7 @@ async function updateReview(review, req){
 async function getSetNumberOfReviews(skipNumber, limit = 10){
             
     return Review.find()
-    .populate({path: "gameId", select: "displayName image -_id"})
+    .populate({path: "gameId", select: "displayName image linkName -_id"})
     .populate({path: "author", select: "displayName profileImg -_id"})
     .sort({created: "desc"})
     .skip(skipNumber)
