@@ -275,7 +275,6 @@ export function getMoreContent(url, container, headerFunc, contentFunc, buttonFu
         })
         .then(response => {
             const data = response.data;
-            console.log(data);
 
             data.forEach((review) => {
                 createReview(container, review, headerFunc, contentFunc, buttonFunc);

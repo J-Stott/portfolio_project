@@ -14,7 +14,6 @@ window.onscroll = function (event) {
 
             if (moreContentToLoad) {
                 const url = `${window.location.pathname}/${index}`;
-                console.log(url);
                 getMoreContent(url, container, createUserHeader, createContent, createButton, (moreToLoad) => {
                     moreContentToLoad = moreToLoad;
                     index++;

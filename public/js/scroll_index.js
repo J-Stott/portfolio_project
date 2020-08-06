@@ -13,7 +13,8 @@ window.onscroll = function (event) {
             atBottom = true;
 
             if (moreContentToLoad) {
-                getMoreContent(`/latests/${index}`, container, createIndexHeader, createContent, createButton, (moreToLoad) => {
+                const url = `/latests/${index}`;
+                getMoreContent(url, container, createIndexHeader, createContent, createButton, (moreToLoad) => {
                     moreContentToLoad = moreToLoad;
                     index++;
                 });
