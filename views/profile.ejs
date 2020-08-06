@@ -25,6 +25,10 @@
 
         <h2 class="pb-4">Profile Settings</h2>
 
+        <% if(locals.successMessage) {%>
+            <p class="success-text"><%=successMessage%></p>
+        <%}%>
+
         <!-- Profile image -->
         <div class="profile-section wrapper-style">
             <div class="row">

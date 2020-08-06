@@ -15,13 +15,24 @@ router.get("/", async function (req, res) {
 
         if (req.isAuthenticated()) {
             user = req.user;
-            console.log(user);
         }
-
-        
-        const reviews = await Review.getSetNumberOfReviews(0);
+        const reviews = await Review.getSetNumberOfReviews({}, 0);
 
         res.render("index", { user: user, reviews: reviews });
+    } catch(err) {
+        console.log(err);
+    }
+    
+});
+
+router.get("/latests/:index", async function (req, res) {
+
+    try {
+        const index = Number(req.params.index);
+
+        const reviews = await Review.getSetNumberOfReviews({}, index * 10);
+
+        res.status(200).send(reviews);
     } catch(err) {
         console.log(err);
     }

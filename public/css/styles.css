@@ -125,6 +125,10 @@ body{
   color: #ff4949
 }
 
+.success-text{
+  color: #12B572
+}
+
 .user-link{
   color: #ffffff;
   text-decoration: underline;

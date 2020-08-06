@@ -19,7 +19,7 @@ function checkMatch(userData, username){
 }
 
 //checks if an error message exists and adds it to data sent to rendered page
-function checkAndSetErrorMessage(session, data, key){
+function checkAndSetMessage(session, data, key){
     if (session[key] !== null) {
         data[key] = session[key];
         session[key] = null;
@@ -58,9 +58,10 @@ router.get("/:username", async function (req, res) {
                         user: user
                     }
 
-                    checkAndSetErrorMessage(req.session, data, "userMessage");
-                    checkAndSetErrorMessage(req.session, data, "imageMessage");
-                    checkAndSetErrorMessage(req.session, data, "passwordMessage");
+                    checkAndSetMessage(req.session, data, "userMessage");
+                    checkAndSetMessage(req.session, data, "imageMessage");
+                    checkAndSetMessage(req.session, data, "passwordMessage");
+                    checkAndSetMessage(req.session, data, "successMessage");
             
                     res.render("profile", data);
                 }
@@ -102,6 +103,7 @@ router.post("/:username/updateImage", upload.single("profile"), async function (
                     
                     foundUser.profileImg = profileImgName;
                     await foundUser.save();
+                    req.session.successMessage = "Profile image updated successfully";
                     res.redirect(`/profile/${username}`);
                 }
             }
@@ -143,6 +145,7 @@ router.post("/:username/updateInfo", async function (req, res) {
                     foundUser.displayName = displayName;
                     foundUser.bio = bio;
                     await foundUser.save();
+                    req.session.successMessage = "Profile info updated successfully";
                     res.redirect(`/profile/${username}`);
                 }
             }   
@@ -175,6 +178,7 @@ router.post("/:username/updatePassword", async function (req, res) {
                         req.session.passwordMessage = "Your old password is incorrect";
                         res.redirect(`/profile/${username}`);
                     } else {
+                        req.session.successMessage = "Password updated successfully";
                         res.redirect(`/profile/${username}`);
                     }
                 });

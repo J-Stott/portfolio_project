@@ -7,11 +7,11 @@
             <form action="/reviews/create" method="post">
                 <div class="form-row align-items-center">
                     
-                    <input type="hidden" name="igdbId" value="" id="igdbId"/>
-                    <input type="hidden" name="gameName" value="" id="gameName"/>
+                    <input type="hidden" name="igdbId" value="<%=igdbId%>" id="igdbId"/>
+                    <input type="hidden" name="gameName" value="<%=gameName%>" id="gameName"/>
 
                     <div class="col-12 my-1">
-                        <input class="form-control" type="text" name="game" autocomplete="off" placeholder="Search For Game" value="" id="gameTitle" required/>
+                        <input class="form-control" type="text" name="game" autocomplete="off" placeholder="Search For Game" value="<%=gameName%>" id="gameTitle" required/>
                         <div class="search-results-container">
                         </div>
                     </div>
@@ -106,6 +106,10 @@
                         <button type="submit" class="btn btn-light px-5">Post</button>
                     </div>
                 </div>
+
+                <% if(locals.createMessage) {%>
+                    <p class="warning-text"><%=createMessage%></p>
+                <%}%>
 
                 <% if(locals.errorMsg) {%>
                     <p class="warning-text"><%=errorMsg%></p>

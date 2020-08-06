@@ -2,26 +2,26 @@ const mongoose = require("mongoose");
 
 //setup review schema
 const reviewSchema = new mongoose.Schema({
-    gameId: { 
+    gameId: {
         type: mongoose.Schema.Types.ObjectId, ref: "Game"
     },
     ratings: {
-        gameplay: { type : Number },
-        visuals: { type : Number },
-        audio: { type : Number },
-        story: { type : Number },
-        overall: { type : Number },
+        gameplay: { type: Number },
+        visuals: { type: Number },
+        audio: { type: Number },
+        story: { type: Number },
+        overall: { type: Number },
     },
-    title: {type : String},
-    content: {type : String},
-    author: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
-    created: {type: Date, default: Date.now},
-    reactions: {type: mongoose.Schema.Types.ObjectId, ref: "Reaction"}
+    title: { type: String },
+    content: { type: String },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    created: { type: Date, default: Date.now },
+    reactions: { type: mongoose.Schema.Types.ObjectId, ref: "Reaction" }
 });
 
 const Review = mongoose.model("Review", reviewSchema);
 
-async function createReview(user, game, reactions, req){
+async function createReview(user, game, reactions, req) {
     //create new review
     const newReview = new Review({
         author: user._id,
@@ -43,7 +43,7 @@ async function createReview(user, game, reactions, req){
     return review;
 }
 
-async function updateReview(review, req){
+async function updateReview(review, req) {
 
     //update review
     review.title = req.body.title;
@@ -60,15 +60,17 @@ async function updateReview(review, req){
     return review.save();
 }
 
-async function getSetNumberOfReviews(skipNumber, limit = 10){
-            
-    return Review.find()
-    .populate({path: "gameId", select: "displayName image linkName -_id"})
-    .populate({path: "author", select: "displayName profileImg -_id"})
-    .sort({created: "desc"})
-    .skip(skipNumber)
-    .limit(limit)
-    .exec();
+async function getSetNumberOfReviews(findOptions = {}, skipNumber = 0, limit = 10, sortBy = {
+    created: "desc"
+}) {
+
+    return Review.find(findOptions)
+        .populate({ path: "gameId", select: "displayName image linkName -_id" })
+        .populate({ path: "author", select: "displayName profileImg -_id" })
+        .sort(sortBy)
+        .skip(skipNumber)
+        .limit(limit)
+        .exec();
 }
 
 module.exports = {

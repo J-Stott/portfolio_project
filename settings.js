@@ -4,5 +4,4 @@ module.exports = {
     PROJECT_DIR : __dirname,
     DEFAULT_PROFILE_IMG: "/profileImages/default.png",
     DEFAULT_GAME_IMAGE: "/gameImages/default.png",
-    LATESTS_MAX_LENGTH: 10,
 };

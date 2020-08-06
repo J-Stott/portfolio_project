@@ -27,7 +27,40 @@ router.get("/create", function (req, res) {
     if (req.isAuthenticated()) {
         const user = req.user;
         const data = {
-            user: user
+            user: user,
+            igdbId: "",
+            gameName: ""
+        }
+
+        if (req.session["createMessage"] !== null) {
+            data["createMessage"] = req.session["createMessage"];
+            req.session["createMessage"] = null;
+        }
+
+        res.render("create", data);
+
+    } else {
+        res.redirect("/login");
+    }
+});
+
+//review creation page
+router.get("/create/:gameLink", async function (req, res) {
+    if (req.isAuthenticated()) {
+
+        const gameLink = req.params.gameLink;
+
+        const game = await Game.model.findOne({linkName: gameLink}).exec();
+
+        if(!game){
+            return res.redirect("/reviews/create");
+        }
+
+        const user = req.user;
+        const data = {
+            user: user,
+            igdbId: game.igdbId,
+            gameName: game.displayName
         }
 
         res.render("create", data);
@@ -44,14 +77,24 @@ router.post("/create", async function (req, res) {
         if (req.isAuthenticated()) {
 
             let user = await User.findOne({ _id: req.user.id }).exec();
+            const igdbId = Number(req.body.igdbId);
+            let game = await Game.model.findOne({igdbId: igdbId}).exec();
+
+            //find if user has already created a review for this game
+            let existingReview = await Review.model.findOne({ author: user._id, gameId: game._id }).exec();
+
+            if(existingReview){
+                req.session.createMessage = "You have already created a review for this game. Please edit or delete your existing review if you wish to rewrite it.";
+                return res.redirect("/reviews/create");
+            }
+
 
             //create new reaction
             const newReaction = new Reaction();
             let reactions = await newReaction.save();
 
 
-            const igdbId = Number(req.body.igdbId);
-            let game = await Game.model.findOne({igdbId: igdbId}).exec();
+
             
             if(!game){
                 let gameData = await igdb.findGameByIgdbId(igdbId);

@@ -16,11 +16,7 @@ async function renderGame(game, req, res){
         data.user = req.user;
     }
 
-    const reviews = await Review.model.find({gameId: game._id})
-    .populate({path: "gameId", select: "displayName image -_id"})
-    .populate({path: "author", select: "displayName profileImg -_id"})
-    .sort({created: "desc"})
-    .exec();
+    const reviews = await Review.getSetNumberOfReviews({gameId: game._id});
 
     if(reviews.length > 0){
         data.reviews = reviews;
@@ -42,6 +38,28 @@ router.get("/:gameName", async function (req, res) {
         } else {
             renderGame(game, req, res);
         }
+        
+    } catch(err) {
+        console.log(err);
+    } 
+});
+
+//get a users saved drafts
+router.get("/:gameName/:index", async function (req, res) {
+
+    try {
+        const index = Number(req.params.index);
+        const gameName = req.params.gameName;
+        let game = await Game.model.findOne({linkName: gameName}).exec();
+
+        //if it doesn't exist in the db, search igdb api. 
+        if(!game){
+            return res.sendStatus(404);
+        }
+
+        const reviews = await Review.getSetNumberOfReviews({gameId: game._id}, index * 10);
+
+        res.status(200).send(reviews);
         
     } catch(err) {
         console.log(err);
