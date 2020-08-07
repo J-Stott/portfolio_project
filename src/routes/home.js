@@ -2,8 +2,12 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const Review = require("../models/review");
+const Reset = require("../models/password_reset");
 const passport = require("passport");
 const _ = require("lodash");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+const oauthClient = require("../components/google_oauth");
 
 
 //routes
@@ -109,6 +113,157 @@ router.post("/login", function (req, res, next) {
         }
 
     })(req, res, next);
+});
+
+//forgot password page
+router.get("/forgot", function (req, res) {
+    if (req.isAuthenticated()) {
+        res.redirect("/");
+    } else {
+        res.render("forgot");
+    }
+});
+
+
+router.post("/forgot", async function (req, res) {
+
+    try{
+        if (req.isAuthenticated()) {
+            res.redirect("/");
+        } else {
+            const userCredentials = _.toLower(req.body.username);
+    
+            const user = await User.findOne({$or: [{username: userCredentials}, {email: userCredentials}]}).exec();
+    
+            if(!user){
+                return res.render("forgot_response", {
+                    heading:"Forgot Password",
+                    message: "The user or email could not be found."
+                });
+            }
+    
+            const buf = crypto.randomBytes(30);
+            
+            const token = `${user.username}-${buf.toString("hex")}`;
+            const reset = new Reset.model({
+                token: token,
+                user: user._id,
+            });
+    
+            await reset.save();
+
+            const accessToken = await oauthClient.getAccessToken();
+    
+            const smtpTransport = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    type: "OAuth2",
+                    user: process.env.GOOGLE_EMAIL,
+                    clientId: process.env.GOOGLE_CLIENT_ID,
+                    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+                    refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+                    accessToken: accessToken
+                }
+            });
+    
+            const mailOptions = {
+                from: process.env.GOOGLE_EMAIL,
+                to: user.email,
+                subject: "Regular Reviews Password Reset",
+                text: `You are receiving this email because you (or someone else) has requested a password reset on the account linked to this email address.
+    
+                Please click on the following link, or paste this into your browser to complete the process:
+    
+                http://${req.headers.host}/reset/${token}
+    
+                If you did not request this, please ignore this email and your password will remain unchanged.
+                `
+            };
+    
+            smtpTransport.sendMail(mailOptions, function(err) {
+                if(!err){
+                    res.render("forgot_response", {
+                        heading:"Forgot Password",
+                        message: "A reset link has been sent to your email address."
+                    });
+                } else {
+                    console.log(err);
+                }
+            });
+        }
+    } catch(err) {
+        console.log(err);
+    }
+
+});
+
+//reset password page
+router.get("/reset/:token", async function (req, res) {
+    try{
+        if (req.isAuthenticated()) {
+            res.redirect("/");
+        } else {
+            const token = req.params.token;
+    
+            const reset = await Reset.model.findOne({token: token}).exec();
+    
+            if(!reset){
+                res.render("forgot_response", {
+                    heading:"Reset Password",
+                    message: "This reset link is either invalid or has expired."
+                });
+            } else {
+                res.render("reset", {token: token});
+            }
+        }
+    } catch(err) {
+        console.log(err);
+    }
+
+});
+
+//reset password page
+router.post("/reset/:token", async function (req, res) {
+
+    try{
+        if (req.isAuthenticated()) {
+            res.redirect("/");
+        } else {
+            const token = req.params.token;
+            const newPassword = req.body.password;
+    
+            const reset = await Reset.model.findOne({token: token}).exec();
+
+            if(!reset){
+                return res.render("forgot_response", {
+                    heading:"Reset Password",
+                    message: "This reset link is either invalid or has expired."
+                });
+            }
+    
+            const user = await User.findOne({_id: reset.user}).exec();
+    
+            if(!user){
+                return res.render("forgot_response", {
+                    heading:"Reset Password",
+                    message: "This user doesn't exist. How are you here?"
+                });
+            } else {
+                user.setPassword(newPassword, async function(err, newPasswordUser){
+                    if(!err) {
+                        await newPasswordUser.save();
+                        await Reset.model.deleteOne({token: token}).exec();
+                        return res.render("forgot_response", {
+                            heading:"Reset Password",
+                            message: "Password successfully reset"
+                        });
+                    }
+                })
+            }
+        }
+    } catch(err) {
+        console.log(err);
+    }
 });
 
 //logout
