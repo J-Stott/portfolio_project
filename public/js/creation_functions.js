@@ -126,7 +126,7 @@ export function addEditBox(container){
 
     let comment = clone.querySelector(".comment");
     text.required = true;
-    text.innerText = comment.innerText;
+    text.value = comment.innerText;
 
     textCol.appendChild(text);
     container.appendChild(textCol);

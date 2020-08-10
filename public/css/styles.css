@@ -266,6 +266,11 @@ label.star:before {
   text-align: center;
 }
 
+/*comments*/
+.comment {
+  white-space: pre-wrap;
+}
+
 /*media queries*/
 
 /* Small devices (landscape phones, 576px and up) */
