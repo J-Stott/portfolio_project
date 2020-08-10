@@ -179,7 +179,7 @@
                         <div class="col-md-10 col-8">
                             <p class="comment"><%=comment.comment%></p>
                         </div>
-                        <%if(user !== null && String(review.author._id) == String(user._id)){%>
+                        <%if(user !== null && String(comment.user._id) == String(user._id)){%>
                             
                             <div class="col-12 d-flex justify-content-md-end justify-content-center mt-3">
                                 <button class="btn btn-outline-light comment-edit">Edit Comment</button>
