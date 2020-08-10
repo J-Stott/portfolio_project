@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const _ = require("lodash");
+
 const User = require("../models/user");
 const Review = require("../models/review");
-const _ = require("lodash");
+const settings = require("../../settings");
 
 //show user's profile page
 router.get("/:username", async function (req, res) {
@@ -44,7 +46,7 @@ router.get("/:username/:index", async function (req, res) {
             return res.sendStatus(404);
         }
 
-        const reviews = await Review.getSetNumberOfReviews({author: userProfile._id}, index * 10);
+        const reviews = await Review.getSetNumberOfReviews({author: userProfile._id}, index * settings.NUM_REVIEWS_TO_GET);
 
         res.status(200).send(reviews);
     } catch(err) {

@@ -2,7 +2,7 @@
 <%- include("partials/navbar") -%>
 <div class="container">
     <div class="content-container">
-        <div class="review-wrapper wrapper-style">
+        <div class="content-wrapper wrapper-style">
             <h3>Create Your Review</h3>
             <form action="/reviews/<%=reviewData._id%>/edit" method="post">
                 <div class="form-row align-items-center">
@@ -83,7 +83,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 my-1 d-flex justify-content-end">
+                    <div class="col-12 my-1 d-flex justify-content-md-end justify-content-center">
                         <button type="submit" class="btn btn-light px-5">Post</button>
                     </div>
                 </div>

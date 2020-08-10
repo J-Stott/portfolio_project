@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-//setup user schema
+//setup draft schema
 const draftSchema = new mongoose.Schema({
     gameId: { 
         type: mongoose.Schema.Types.ObjectId, ref: "Game"

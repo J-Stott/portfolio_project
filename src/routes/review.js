@@ -5,6 +5,7 @@ const Review = require("../models/review");
 const Draft = require("../models/draft");
 const User = require("../models/user");
 const Reaction = require("../models/reaction");
+const Discussion = require("../models/discussion");
 const igdb = require("../components/igdb_functions");
 const Game = require("../models/game");
 const settings = require("../../settings");
@@ -80,6 +81,11 @@ router.post("/create", async function (req, res) {
             const igdbId = Number(req.body.igdbId);
             let game = await Game.model.findOne({igdbId: igdbId}).exec();
 
+            if(!game){
+                let gameData = await igdb.findGameByIgdbId(igdbId);
+                game = await Game.createGameEntry(gameData);
+            }
+
             //find if user has already created a review for this game
             let existingReview = await Review.model.findOne({ author: user._id, gameId: game._id }).exec();
 
@@ -93,15 +99,15 @@ router.post("/create", async function (req, res) {
             const newReaction = new Reaction();
             let reactions = await newReaction.save();
 
+            const createDiscussion = req.body.discussion;
+            let newDiscussion = null;
 
-
-            
-            if(!game){
-                let gameData = await igdb.findGameByIgdbId(igdbId);
-                game = await Game.createGameEntry(gameData);
+            if(createDiscussion){
+                newDiscussion = new Discussion.model();
+                await newDiscussion.save();
             }
 
-            const review = await Review.createReview(user, game, reactions, req);
+            const review = await Review.createReview(req, user, game, reactions, newDiscussion);
             const reviewId = review._id;
 
             await Game.addToAverages(review);
@@ -109,6 +115,10 @@ router.post("/create", async function (req, res) {
             //link review to reaction
             reactions.review = reviewId;
             reactions.save();
+
+            //link review to discussion
+            newDiscussion.review = reviewId;
+            newDiscussion.save();
 
             //link review to user
             user.userReviews.unshift(reviewId);
@@ -138,7 +148,6 @@ router.post("/create", async function (req, res) {
 //show review
 router.get("/:reviewId", async function (req, res) {
     try{
-        console.log("Are we here? If so, why?");
         const reviewId = req.params.reviewId;
         let populateOptions = {path: "reactions", select: "reaction -_id"};
         //get all reactions and the specific reaction from the logged in user, if any
@@ -156,7 +165,20 @@ router.get("/:reviewId", async function (req, res) {
             if (req.isAuthenticated()) {
                 user = req.user;
             }
-            res.render("review", { user: user, review: review });
+
+            const data = { 
+                user: user, 
+                review: review 
+            };
+
+            let comments = await Discussion.getComments(reviewId);
+            console.log(comments);
+
+            if(comments){
+                data.comments = comments;
+            }
+
+            res.render("review", data);
         }
     } catch(err) {
         console.log(err);
@@ -228,6 +250,8 @@ router.post("/:reviewId/delete", async function (req, res) {
 
             let reviewDelete = Review.model.deleteOne({ _id: reviewId, author: req.user._id }).exec();
 
+            let discussionDelete = Discussion.model.deleteOne({ review: reviewId }).exec();
+
             let reactionDelete = Reaction.deleteOne({ review: reviewId }).exec();
 
             let userUpdate = User.updateOne({ _id: req.user._id }, { $pull: { userReviews: { $in: reviewId } } }).exec();
@@ -235,6 +259,7 @@ router.post("/:reviewId/delete", async function (req, res) {
             await reviewDelete;
             await reactionDelete;
             await userUpdate;
+            await discussionDelete;
             
             res.redirect("/");
         } else {
@@ -334,5 +359,81 @@ router.post("/:reviewId/:reactionName", async function (req, res) {
     }
 
 });
+
+router.post("/:reviewId/comments/add", async function (req, res) {
+
+    try {
+        if (req.isAuthenticated()) {
+            const reviewId = req.params.reviewId;
+            const comment = req.body.comment;
+
+            let discussion = await Discussion.addToDiscusssion(reviewId, req.user.id, comment);
+
+            console.log(discussion);
+
+
+            res.status(200).send(discussion);
+        } else {
+            res.redirect("/login");
+        }
+    } catch(err) {
+        console.log(err);
+    }
+
+});
+
+
+router.post("/:reviewId/comments/:comment_id/remove", async function (req, res) {
+
+    try {
+        if (req.isAuthenticated()) {
+            const reviewId = req.params.reviewId;
+            const commentId = req.params.comment_id;
+
+            let result = await Discussion.model.updateOne({review: reviewId}, {"$pull": {"comments": {"_id": commentId, "user": req.user._id}}}).exec();
+
+            console.log(result);
+
+            res.status(200).send(result);
+        } else {
+            res.redirect("/login");
+        }
+    } catch(err) {
+        console.log(err);
+    }
+
+});
+
+router.post("/:reviewId/comments/:comment_id/edit", async function (req, res) {
+
+    try {
+        if (req.isAuthenticated()) {
+            const reviewId = req.params.reviewId;
+            const commentId = req.params.comment_id;
+            const newComment = req.body.comment;
+
+            let doc = await Discussion.model.findOne({review: reviewId}).exec();
+            let comment = doc.comments.id(commentId);
+
+            if(String(comment.user) !== String(req.user._id)){
+                return res.status(404).send({reason: "You are trying to edit a comment that isn't yours!"})
+            }
+
+            comment.comment = newComment;
+            await doc.save();
+
+            console.log(comment);
+
+            res.status(200).send(comment);
+        } else {
+            res.redirect("/login");
+        }
+    } catch(err) {
+        console.log(err);
+    }
+
+});
+
+
 
 module.exports = router;

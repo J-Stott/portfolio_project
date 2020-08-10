@@ -60,7 +60,7 @@ body{
 
 /*review styles*/
 
-.review-wrapper{
+.content-wrapper{
   padding: 20px;
   margin: 0 auto;
 }
@@ -254,6 +254,16 @@ label.star:before {
 .game:hover{
   background-color: #abaeaf;
   cursor: pointer;
+}
+
+/*rating*/
+.average{
+  padding: 10px;
+  border: 1px solid #b2b4b6;
+  border-radius: 15px;
+  background-color: #6d7277;
+  width: 150px;
+  text-align: center;
 }
 
 /*media queries*/

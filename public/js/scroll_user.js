@@ -1,4 +1,5 @@
-import { getMoreContent, createUserHeader, createContent, createButton } from "./scroll_functions.js";
+import { getMoreContent } from "./scroll_functions.js";
+import { createUserHeader, createContent, createButton } from "./creation_functions.js";
 
 const container = document.querySelector(".content-container");
 

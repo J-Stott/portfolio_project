@@ -6,7 +6,7 @@
         <h1 class="mb-4">Latest Reviews</h1>
         <%if(reviews.length > 0){%>
         <% reviews.forEach((review) => {%>
-            <div class="review-wrapper wrapper-style mb-4">
+            <div class="content-wrapper wrapper-style mb-4">
                 <div class="row">
                     <div class="col-lg-2 col-md-3 col-4 d-flex justify-content-center">
                         <a class="user-link" href="/games/<%=review.gameId.linkName%>"><img class="review-game-art mb-2" src="<%=review.gameId.image%>" alt="profile" /></a>

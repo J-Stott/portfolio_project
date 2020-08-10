@@ -4,7 +4,7 @@ const _ = require("lodash");
 const igdb = require("../components/igdb_functions");
 const Game = require("../models/game");
 const Review = require("../models/review");
-
+const settings = require("../../settings");
 
 async function renderGame(game, req, res){
     let data = {
@@ -57,7 +57,7 @@ router.get("/:gameName/:index", async function (req, res) {
             return res.sendStatus(404);
         }
 
-        const reviews = await Review.getSetNumberOfReviews({gameId: game._id}, index * 10);
+        const reviews = await Review.getSetNumberOfReviews({gameId: game._id}, index * settings.NUM_REVIEWS_TO_GET);
 
         res.status(200).send(reviews);
         

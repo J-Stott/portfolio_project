@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const settings = require("../../settings");
 
-//setup user schema
+//setup game schema
 const gameSchema = new mongoose.Schema({
     igdbId: {type: Number},
     linkName: {type: String},

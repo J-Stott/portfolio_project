@@ -24,7 +24,7 @@
         </div>
 
 
-        <div class="review-wrapper wrapper-style mb-4">
+        <div class="content-wrapper wrapper-style mb-4">
             <div class="row">
                 <div class="col-lg-2 col-md-3 col-4 d-flex justify-content-center">
                     <img class="review-game-art mb-2" src="<%=review.gameId.image%>" alt="profile" />
@@ -152,10 +152,52 @@
             <%}%>
         </div>
 
+        <%if(locals.comments){ %>
+        <div class="content-wrapper wrapper-style mb-4" id="comments-container">
+            <h3>Discussion</h3>
+            <hr class="light" />
+            <%if(user !== null) {%>
+            <div class="row ">
+                <div class="col-12 mt-3">
+                    <textarea class="form-control" name="comment" id="comment-text" placeholder="Add comment here" rows="3" required></textarea>
+                </div>
+
+                <div class="col-12 d-flex justify-content-md-end justify-content-center mt-3">
+                    <button class="btn btn-outline-light mb-4" id="comment-submit">Comment!</button>
+                </div>
+            </div>
+
+            <%}%>
+
+            <% comments.forEach((comment) => {%>
+                <div class="content-wrapper wrapper-style mb-4">
+                    <div class="row" data-userId="<%=comment.user._id%>" data-commentId="<%=comment._id%>">
+                        <div class="col-md-2 col-4 d-flex flex-column align-items-center">
+                            <img class="review-profile-picture" src="<%=comment.user.profileImg%>" alt="profile" />
+                            <p><%=comment.user.displayName%></p>
+                        </div>
+                        <div class="col-md-10 col-8">
+                            <p class="comment"><%=comment.comment%></p>
+                        </div>
+                        <%if(user !== null && String(review.author._id) == String(user._id)){%>
+                            
+                            <div class="col-12 d-flex justify-content-md-end justify-content-center mt-3">
+                                <button class="btn btn-outline-light comment-edit">Edit Comment</button>
+                                <button class="btn btn-danger ml-2 comment-delete">Delete Comment</button>
+                            </div>
+                            
+                        <%}%>
+                    </div>
+                    
+                </div>
+            <%});%>
+        </div>
+        <%}%>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script type="text/javascript" src="/js/ratings.js"></script>
 <script type="text/javascript" src="/js/modal.js"></script>
+<script type="module" src="/js/comments.js"></script>
 <%- include("partials/footer") -%>

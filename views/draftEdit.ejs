@@ -2,7 +2,7 @@
 <%- include("partials/navbar") -%>
 <div class="container">
     <div class="content-container">
-        <div class="review-wrapper wrapper-style">
+        <div class="content-wrapper wrapper-style">
             <h3>Create Your Review</h3>
             <form action="/reviews/create" method="post">
                 <div class="form-row align-items-center">
@@ -92,7 +92,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 my-1 d-flex justify-content-end">
+                    <div class="col-12 my-1 d-flex align-items-center justify-content-md-end justify-content-center">
+                        <input type="checkbox" name="discussion" id="discussion">
+                        <label class="ml-2 mt-1"for="discussion">Create Review Discussion</label>
+                    </div>
+                    <div class="col-12 my-1 d-flex justify-content-md-end justify-content-center">
                         <button type="submit" class="btn btn-light px-5 mr-2" formaction="/drafts/<%=reviewData._id%>/edit">Draft</button>
                         <button type="submit" class="btn btn-light px-5">Post</button>
                     </div>

@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user");
-const Review = require("../models/review");
-const Reset = require("../models/password_reset");
 const passport = require("passport");
 const _ = require("lodash");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const oauthClient = require("../components/google_oauth");
+const User = require("../models/user");
+const Review = require("../models/review");
+const Reset = require("../models/password_reset");
+const settings = require("../../settings");
 
 
 //routes
@@ -34,7 +35,7 @@ router.get("/latests/:index", async function (req, res) {
     try {
         const index = Number(req.params.index);
 
-        const reviews = await Review.getSetNumberOfReviews({}, index * 10);
+        const reviews = await Review.getSetNumberOfReviews({}, index * settings.NUM_REVIEWS_TO_GET);
 
         res.status(200).send(reviews);
     } catch(err) {
@@ -45,7 +46,12 @@ router.get("/latests/:index", async function (req, res) {
 
 //register page
 router.get("/register", function (req, res) {
-    res.render("register");
+    if (req.isAuthenticated()) {
+        res.render("/");
+    } else {
+        res.render("register");
+    }
+    
 });
 
 //register new user and save credentials to db
@@ -244,6 +250,7 @@ router.post("/reset/:token", async function (req, res) {
             const user = await User.findOne({_id: reset.user}).exec();
     
             if(!user){
+                await Reset.model.deleteOne({token: token}).exec();
                 return res.render("forgot_response", {
                     heading:"Reset Password",
                     message: "This user doesn't exist. How are you here?"
@@ -264,6 +271,45 @@ router.post("/reset/:token", async function (req, res) {
     } catch(err) {
         console.log(err);
     }
+});
+
+router.get("/privacy-policy", function (req, res) {
+
+    try {
+        let user = null;
+
+        if (req.isAuthenticated()) {
+            user = req.user;
+        }
+
+        res.render("privacy", {user: user});
+    } catch(err) {
+        console.log(err);
+    }
+    
+});
+
+router.get("/getuserdata", async function (req, res) {
+
+    try {
+        if(req.isAuthenticated()){
+            console.log("user logged in");
+
+            const response = {
+                id: req.user._id,
+                username: req.user.username
+            };
+
+            res.status(200).send(response);
+        } else {
+            console.log("user not logged in");
+            res.status(200).send(null);
+        }
+        
+    } catch(err) {
+        console.log(err);
+    }
+    
 });
 
 //logout

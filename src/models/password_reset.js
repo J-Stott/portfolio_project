@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-//setup user schema
+//setup reset schema. Document should automatically expire after an hour
 const resetSchema = new mongoose.Schema({
     token: {type: String},
     user: {type: mongoose.Schema.Types.ObjectId, ref: "User"},

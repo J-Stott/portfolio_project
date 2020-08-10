@@ -16,12 +16,15 @@ const reviewSchema = new mongoose.Schema({
     content: { type: String },
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     created: { type: Date, default: Date.now },
-    reactions: { type: mongoose.Schema.Types.ObjectId, ref: "Reaction" }
+    reactions: { type: mongoose.Schema.Types.ObjectId, ref: "Reaction" },
+    discussion: {
+        type: mongoose.Schema.Types.ObjectId, ref: "Discussion"
+    },
 });
 
 const Review = mongoose.model("Review", reviewSchema);
 
-async function createReview(user, game, reactions, req) {
+async function createReview(req, user, game, reactions, discussion = null) {
     //create new review
     const newReview = new Review({
         author: user._id,
@@ -38,6 +41,10 @@ async function createReview(user, game, reactions, req) {
         content: req.body.content,
         reactions: reactions._id,
     });
+
+    if(discussion !== null){
+        newReview.discussion = discussion._id;
+    }
 
     let review = newReview.save();
     return review;
