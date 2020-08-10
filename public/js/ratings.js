@@ -38,6 +38,7 @@ function getUserRating(){
       })
         .then(response => {
             const reactions = response.data.userReactions;
+            console.log(reactions);
             
             if(reactions !== null){
                 ratingInfo.forEach((info) => {
@@ -70,8 +71,9 @@ ratingInfo.forEach(function(info) {
     });
 });
 
-window.onload = function(){
+window.addEventListener("load", function(){
+    console.log("test!");
     getUserRating();
-}
+});
 
 

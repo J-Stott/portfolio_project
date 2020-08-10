@@ -23,7 +23,7 @@ if(commentsContainer !== null){
     }
 }
 
-window.onload = function(){
+window.addEventListener("load", function(){
     axios({
         url: "/getuserdata",
         method: 'GET',
@@ -39,4 +39,4 @@ window.onload = function(){
         .catch(err => {
             console.error(err);
     });
-}
+});
