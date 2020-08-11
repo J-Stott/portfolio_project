@@ -1,19 +1,24 @@
 import { createComment, setCommentContent, removeComment } from "./creation_functions.js";
 
-export function deleteComment(url, container){
+//sends comment data to server then populates comment if successful
+export function postComment(url, comment, container){
     axios({
         url: url,
         method: 'POST',
+        data: {
+            comment: comment
+        }
         })
         .then(response => {
-            removeComment(container);
+            let commentData = response.data;
+            createComment(container, commentData);
         })
         .catch(err => {
             console.error(err);
     });
 }
 
-
+//sends comment data to server then populates comment if successful
 export function editComment(url, comment, container, clone){
     axios({
         url: url,
@@ -32,17 +37,14 @@ export function editComment(url, comment, container, clone){
     });
 }
 
-export function postComment(url, comment, container){
+//sends delete data to server then removes comment if successful
+export function deleteComment(url, container){
     axios({
         url: url,
         method: 'POST',
-        data: {
-            comment: comment
-        }
         })
         .then(response => {
-            let commentData = response.data;
-            createComment(container, commentData);
+            removeComment(container);
         })
         .catch(err => {
             console.error(err);

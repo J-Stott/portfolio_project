@@ -1,6 +1,7 @@
 import {setCommentButtonEvents} from "./button_events.js"
-import {deleteComment, editComment} from "./comment_functions.js";
+import {editComment} from "./comment_functions.js";
 
+//gives us an element and applies any attributes we specify
 function createElement(elementType, attributes = null){
     let element = document.createElement(elementType);
 
@@ -14,6 +15,7 @@ function createElement(elementType, attributes = null){
 }
 
 //comment functions
+//creates a new comment when user adds one
 export function createComment(container, comment){
 
     console.log(container);
@@ -84,11 +86,13 @@ export function createComment(container, comment){
     container.appendChild(parent);
 }
 
+//removes a comment when deleted
 export function removeComment(comment){
     let parent = comment.parentNode;
     parent.remove();
 }
 
+//sets the content for a comment when edited or edit is cancelled
 export function setCommentContent(container, clone, newComment = null){
     container.innerHTML = "";
     let children = [ ...clone.children ];
@@ -105,6 +109,7 @@ export function setCommentContent(container, clone, newComment = null){
     }
 }
 
+//adds the edit box and buttons when trying to edit a comment
 export function addEditBox(container){
 
     let clone = container.cloneNode(true);
@@ -162,6 +167,7 @@ export function addEditBox(container){
 }
 
 //review functions
+//creates header for reviews on Index page
 export function createIndexHeader(review){
     //headings
     let headRow = createElement("div", {
@@ -244,7 +250,7 @@ export function createIndexHeader(review){
     return headRow;
 }
 
-
+//creates header for reviews on user page
 export function createUserHeader(review){
     //headings
     let headRow = createElement("div", {
@@ -297,6 +303,7 @@ export function createUserHeader(review){
     return headRow;
 }
 
+//creates header for reviews on game page
 export function createGameHeader(review){
     //headings
     let headRow = createElement("div", {
@@ -343,6 +350,7 @@ export function createGameHeader(review){
     return headRow;
 }
 
+//creates content for reviews
 export function createContent(review){
     //content
     let contentRow = createElement("div", {
@@ -373,6 +381,7 @@ export function createContent(review){
     return contentRow;
 }
 
+//creates read review button
 export function createButton(review){
     let buttonRow = createElement("div", {
         class: "row"
@@ -394,6 +403,7 @@ export function createButton(review){
     return buttonRow;
 }
 
+//creates a review style based on the construction functions we pass in
 export function createReview(container, review, headerFunc, contentFunc, buttonFunc){
     
     let parent = createElement("div", {

@@ -6,6 +6,7 @@ function getURL(buttonName){
     return `${path}/${buttonName}`;
 }
 
+//sets up appropriate style of button depending on if it has been rated by the user
 function setButtonStyle(button, reactionValue){
 
     if(reactionValue === 1){

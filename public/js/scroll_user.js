@@ -8,6 +8,7 @@ let moreContentToLoad = true;
 
 let index = 1;
 
+//loads more content on user page
 window.onscroll = function (event) {
     if (!atBottom) {
         if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 2) {
