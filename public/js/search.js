@@ -87,7 +87,8 @@ function setReviewGameData(data, searchContainer){
     searchContainer.appendChild(parent);
 }
 
-/*creates panels for game searches. When clicked, will post to server and will either redirect if the game exists in the db or create that entry and then redirect*/
+/*creates panels for game searches. When clicked, will post to server and will either 
+redirect if the game exists in the db or create that entry and then redirect*/
 function setSearchGameData(data, searchContainer){
 
     let parent = document.createElement("div");
@@ -196,7 +197,7 @@ if(gameTitle !== null){
                 getGameData(gameTitle, (response) => {
                     displayGameSearch(response, reviewSearchContainer, setReviewGameData);
                 });
-            }, 500);
+            }, 300);
         } else {
             clearInputs();
         }
@@ -208,10 +209,3 @@ if(gameTitle !== null){
         }
     });
 }
-
-
-// window.onload = function(){
-//     igdbId.value = "";
-//     gameName.value = "";
-//     gameTitle.value = "";
-// }

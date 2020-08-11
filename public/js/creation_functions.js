@@ -26,8 +26,8 @@ export function createComment(container, comment){
         class: "row",
     });
 
-    row.setAttribute("data-commentId", comment._id);
-    row.setAttribute("data-userId", comment.user._id);
+    row.setAttribute("data-comment-id", comment._id);
+    row.setAttribute("data-user-id", comment.user._id);
 
     let imgCol = createElement("div", {
         class: "col-md-2 col-4 d-flex flex-column align-items-center"
@@ -78,7 +78,7 @@ export function createComment(container, comment){
     buttonCol.appendChild(deleteButton);
     row.appendChild(buttonCol);
 
-    setCommentButtonEvents(row, addEditBox, deleteComment);
+    setCommentButtonEvents(row);
 
     parent.appendChild(row);
     container.appendChild(parent);
@@ -89,7 +89,7 @@ export function removeComment(comment){
     parent.remove();
 }
 
-function setCommentContent(container, clone, newComment = null){
+export function setCommentContent(container, clone, newComment = null){
     container.innerHTML = "";
     let children = [ ...clone.children ];
 
@@ -97,7 +97,7 @@ function setCommentContent(container, clone, newComment = null){
         container.appendChild(child);
     })
 
-    setCommentButtonEvents(container, addEditBox, deleteComment);
+    setCommentButtonEvents(container);
 
     if(newComment){
         let comment = container.querySelector(".comment");
@@ -108,8 +108,6 @@ function setCommentContent(container, clone, newComment = null){
 export function addEditBox(container){
 
     let clone = container.cloneNode(true);
-    console.log("--before--")
-    console.log(clone);
 
     container.innerHTML = "";
 
@@ -130,9 +128,6 @@ export function addEditBox(container){
 
     textCol.appendChild(text);
     container.appendChild(textCol);
-
-    console.log("--after--")
-    console.log(clone);
 
     let buttonCol = createElement("div", {
         class: "col-12 d-flex justify-content-md-end justify-content-center mt-3"
@@ -157,9 +152,9 @@ export function addEditBox(container){
 
     edit.addEventListener("click", function(){
         let textValue = text.value;
-        const commentId = container.getAttribute("data-commentId");
+        const commentId = container.getAttribute("data-comment-id");
         const url = `${window.location.pathname}/comments/${commentId}/edit`;
-        editComment(url, textValue, container, clone, setCommentContent);
+        editComment(url, textValue, container, clone);
     });
 
     buttonCol.appendChild(edit);

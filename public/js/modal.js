@@ -4,7 +4,6 @@ var modal = document.querySelector("#myModal");
 var btn = document.querySelector("#delete");
 
 var cancelButton = document.querySelector("#close");
-console.log(cancelButton);
 
 if(btn !== null){
   // When the user clicks on the button, open the modal
@@ -16,10 +15,9 @@ if(btn !== null){
     modal.style.display = "none";
   }
 
-  // When the user clicks anywhere outside of the modal, close it
-  window.onclick = function(event) {
+  window.addEventListener("load", function(){
     if (event.target == modal) {
       modal.style.display = "none";
     }
-  } 
+  });
 }

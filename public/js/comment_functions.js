@@ -1,12 +1,12 @@
-import { createComment, removeComment } from "./creation_functions.js";
+import { createComment, setCommentContent, removeComment } from "./creation_functions.js";
 
-export function deleteComment(url, container, successCallback){
+export function deleteComment(url, container){
     axios({
         url: url,
         method: 'POST',
         })
         .then(response => {
-            successCallback(container);
+            removeComment(container);
         })
         .catch(err => {
             console.error(err);
@@ -14,7 +14,7 @@ export function deleteComment(url, container, successCallback){
 }
 
 
-export function editComment(url, comment, container, clone, successCallback){
+export function editComment(url, comment, container, clone){
     axios({
         url: url,
         method: 'POST',
@@ -25,14 +25,14 @@ export function editComment(url, comment, container, clone, successCallback){
         .then(response => {
             let commentData = response.data;
 
-            successCallback(container, clone, commentData.comment);
+            setCommentContent(container, clone, commentData.comment);
         })
         .catch(err => {
             console.error(err);
     });
 }
 
-export function postComment(url, comment, container, successCallback){
+export function postComment(url, comment, container){
     axios({
         url: url,
         method: 'POST',
@@ -42,7 +42,7 @@ export function postComment(url, comment, container, successCallback){
         })
         .then(response => {
             let commentData = response.data;
-            successCallback(container, commentData);
+            createComment(container, commentData);
         })
         .catch(err => {
             console.error(err);
