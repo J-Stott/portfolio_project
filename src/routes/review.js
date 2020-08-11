@@ -367,7 +367,7 @@ router.post("/:reviewId/comments/add", async function (req, res) {
             const reviewId = req.params.reviewId;
             const comment = req.body.comment;
 
-            let discussion = await Discussion.addToDiscusssion(reviewId, req.user.id, comment);
+            const discussion = await Discussion.addToDiscusssion(reviewId, req.user.id, comment);
 
             console.log(discussion);
 
@@ -390,7 +390,7 @@ router.post("/:reviewId/comments/:comment_id/remove", async function (req, res) 
             const reviewId = req.params.reviewId;
             const commentId = req.params.comment_id;
 
-            let result = await Discussion.model.updateOne({review: reviewId}, {"$pull": {"comments": {"_id": commentId, "user": req.user._id}}}).exec();
+            const result = await Discussion.model.updateOne({review: reviewId}, {"$pull": {"comments": {"_id": commentId, "user": req.user._id}}}).exec();
 
             console.log(result);
 
@@ -412,7 +412,7 @@ router.post("/:reviewId/comments/:comment_id/edit", async function (req, res) {
             const commentId = req.params.comment_id;
             const newComment = req.body.comment;
 
-            let doc = await Discussion.model.findOne({review: reviewId}).exec();
+            const doc = await Discussion.model.findOne({review: reviewId}).exec();
             let comment = doc.comments.id(commentId);
 
             if(String(comment.user) !== String(req.user._id)){
@@ -421,8 +421,6 @@ router.post("/:reviewId/comments/:comment_id/edit", async function (req, res) {
 
             comment.comment = newComment;
             await doc.save();
-
-            console.log(comment);
 
             res.status(200).send(comment);
         } else {

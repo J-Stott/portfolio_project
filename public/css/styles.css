@@ -273,7 +273,7 @@ label.star:before {
 
 /*media queries*/
 
-/* Small devices (landscape phones, 576px and up) */
+/* extra small devices (landscape phones, up to 576px) */
 @media (max-width: 576px) {  
   .search-width{
     max-width: 51%;

@@ -29,6 +29,7 @@ export function editComment(url, comment, container, clone){
         })
         .then(response => {
             let commentData = response.data;
+            console.log(commentData);
 
             setCommentContent(container, clone, commentData.comment);
         })

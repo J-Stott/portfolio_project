@@ -1,5 +1,4 @@
-import {setCommentButtonEvents} from "./button_events.js"
-import {editComment} from "./comment_functions.js";
+import {setCommentButtonEvents, setEditButtonEvents} from "./button_events.js"
 
 //gives us an element and applies any attributes we specify
 function createElement(elementType, attributes = null){
@@ -122,8 +121,8 @@ export function addEditBox(container){
 
     let text = createElement("textarea", {
         class: "form-control",
-        name: "comment",
-        id: "comment-text",
+        name: "edit",
+        id: "edit-text",
         rows: 3
     });
 
@@ -139,31 +138,22 @@ export function addEditBox(container){
     });
 
     let cancel = createElement("button", {
-        class: "btn btn-outline-light"
+        class: "btn btn-outline-light edit-cancel"
     });
 
     cancel.innerText = "Cancel";
 
-    cancel.addEventListener("click", function(){
-        setCommentContent(container, clone);
-    });
-
     buttonCol.appendChild(cancel);
     let edit = createElement("button", {
-        class: "btn btn-outline-light ml-2"
+        class: "btn btn-outline-light ml-2 edit-submit"
     });
 
     edit.innerText = "Comment!";
 
-    edit.addEventListener("click", function(){
-        let textValue = text.value;
-        const commentId = container.getAttribute("data-comment-id");
-        const url = `${window.location.pathname}/comments/${commentId}/edit`;
-        editComment(url, textValue, container, clone);
-    });
-
     buttonCol.appendChild(edit);
     container.appendChild(buttonCol);
+
+    setEditButtonEvents(container, clone);
 }
 
 //review functions

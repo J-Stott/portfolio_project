@@ -1,5 +1,35 @@
-import { deleteComment } from "./comment_functions.js"
-import { addEditBox } from "./creation_functions.js";
+import { editComment, deleteComment, postComment } from "./comment_functions.js"
+import { addEditBox, setCommentContent } from "./creation_functions.js";
+
+//allows us to enable/disable comment buttons
+//don't want to have multiple edits open at once
+function setAllCommentButtonsState(enabled){
+    let editButtons = document.querySelectorAll(".comment-edit");
+    let deleteButtons = document.querySelectorAll(".comment-delete");
+
+    editButtons.forEach((button) => {
+        button.disabled = !enabled;
+    });
+
+    deleteButtons.forEach((button) => {
+        button.disabled = !enabled;
+    });
+
+    const commentButton = document.querySelector("#comment-submit"); 
+    commentButton.disabled = !enabled;
+}
+
+export function setCommentPostEvent(button, container){
+    const commentText = document.querySelector("#comment-text");
+
+    button.addEventListener("click", function(){
+        console.log("click");
+        const comment = commentText.value;
+        let url = `${window.location.pathname}/comments/add`;
+        postComment(url, comment, container);
+        commentText.value = "";
+    });
+}
 
 //sets initial comment button events
 export function setCommentButtonEvents(element){
@@ -9,6 +39,7 @@ export function setCommentButtonEvents(element){
     editButton.addEventListener("click", () => {
         const commentId = element.getAttribute("data-comment-id");
         addEditBox(element);
+        setAllCommentButtonsState(false);
     });
 
     deleteButton.addEventListener("click", () => {
@@ -16,6 +47,26 @@ export function setCommentButtonEvents(element){
         const commentId = element.getAttribute("data-comment-id");
         const url = `${window.location.pathname}/comments/${commentId}/remove`;
         deleteComment(url, element);
+    });
+}
+
+//adds edit button event handlers
+export function setEditButtonEvents(element, clone){
+    let cancelButton = element.querySelector(".edit-cancel");
+    let submitButton = element.querySelector(".edit-submit");
+
+    cancelButton.addEventListener("click", () => {
+        setCommentContent(element, clone);
+        setAllCommentButtonsState(true);
+    });
+
+    submitButton.addEventListener("click", () => {
+        let text = element.querySelector("textarea");
+        let textValue = text.value;
+        const commentId = element.getAttribute("data-comment-id");
+        const url = `${window.location.pathname}/comments/${commentId}/edit`;
+        editComment(url, textValue, element, clone);
+        setAllCommentButtonsState(true);
     });
 }
 
