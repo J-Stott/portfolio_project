@@ -3,7 +3,7 @@ import { addEditBox, setCommentContent } from "./creation_functions.js";
 
 //allows us to enable/disable comment buttons
 //don't want to have multiple edits open at once
-function setAllCommentButtonsState(enabled){
+function enableAllCommentButtonsState(enabled){
     let editButtons = document.querySelectorAll(".comment-edit");
     let deleteButtons = document.querySelectorAll(".comment-delete");
 
@@ -23,7 +23,6 @@ export function setCommentPostEvent(button, container){
     const commentText = document.querySelector("#comment-text");
 
     button.addEventListener("click", function(){
-        console.log("click");
         const comment = commentText.value;
         let url = `${window.location.pathname}/comments/add`;
         postComment(url, comment, container);
@@ -37,9 +36,8 @@ export function setCommentButtonEvents(element){
     let deleteButton = element.querySelector(".comment-delete");
 
     editButton.addEventListener("click", () => {
-        const commentId = element.getAttribute("data-comment-id");
         addEditBox(element);
-        setAllCommentButtonsState(false);
+        enableAllCommentButtonsState(false);
     });
 
     deleteButton.addEventListener("click", () => {
@@ -57,7 +55,7 @@ export function setEditButtonEvents(element, clone){
 
     cancelButton.addEventListener("click", () => {
         setCommentContent(element, clone);
-        setAllCommentButtonsState(true);
+        enableAllCommentButtonsState(true);
     });
 
     submitButton.addEventListener("click", () => {
@@ -66,7 +64,7 @@ export function setEditButtonEvents(element, clone){
         const commentId = element.getAttribute("data-comment-id");
         const url = `${window.location.pathname}/comments/${commentId}/edit`;
         editComment(url, textValue, element, clone);
-        setAllCommentButtonsState(true);
+        enableAllCommentButtonsState(true);
     });
 }
 

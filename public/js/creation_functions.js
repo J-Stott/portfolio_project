@@ -13,6 +13,7 @@ function createElement(elementType, attributes = null){
     return element;
 }
 
+
 //comment functions
 //creates a new comment when user adds one
 export function createComment(container, comment){
@@ -157,13 +158,8 @@ export function addEditBox(container){
 }
 
 //review functions
-//creates header for reviews on Index page
-export function createIndexHeader(review){
-    //headings
-    let headRow = createElement("div", {
-        class: "row"
-    });
 
+function createGameImage(review, container){
     let gameImgContainer = createElement("div", {
         class: "col-lg-2 col-md-3 col-4 d-flex justify-content-center"
     });
@@ -181,21 +177,61 @@ export function createIndexHeader(review){
 
     gameLink.appendChild(gameImg);
     gameImgContainer.appendChild(gameLink);
-    headRow.appendChild(gameImgContainer);
 
-    let titleContainer = createElement("div", {
-        class: "col-lg-10 col-md-9 col-8",
-    });
+    container.appendChild(gameImgContainer);
+}
 
+function createTitleHeading(review, container){
     let title = createElement("h1", {
         class: "mb-4",
     });
 
     title.innerText = review.gameId.displayName;
-    titleContainer.appendChild(title);
+    container.appendChild(title);
+}
+
+function createStars(review, container){
+    let starsContainer = createElement("div", {
+        class: "stars",
+    });
+
+    for(let i = 0; i < review.ratings.overall; i++){
+        starsContainer.innerHTML += `<i class="far fa-star star-highlight"></i> `;
+    }
+
+    for(let i = 0; i < 5 - review.ratings.overall; i++){
+        starsContainer.innerHTML += `<i class="far fa-star star-lowlight"></i> `;
+    }
+    
+    container.appendChild(starsContainer);
+}
+
+function createDateParagraph(review, container){
+    let published = createElement("p");
+    let date = new Date(review.created);
+    published.innerText = `Published on ${date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) }`;
+
+    container.appendChild(published);
+}
+
+//creates header for reviews on Index page
+export function createIndexHeader(review){
+    //headings
+    let headRow = createElement("div", {
+        class: "row"
+    });
+
+    createGameImage(review, headRow);
+
+    let titleContainer = createElement("div", {
+        class: "col-lg-10 col-md-9 col-8",
+    });
+
+
+    createTitleHeading(review, titleContainer);
 
     let userInfoContainer = createElement("div", {
-        class: "row align-items-center",
+        class: "row align-items-begin",
     });
 
     let profileImgContainer = createElement("div", {
@@ -220,19 +256,9 @@ export function createIndexHeader(review){
     userName.innerHTML = `By <a class="user-link" href="/users/${review.author.displayName}">${review.author.displayName}</a>`;
     profileNameContainer.appendChild(userName);
 
-    let starsContainer = createElement("div", {
-        class: "stars",
-    });
+    createStars(review, profileNameContainer);
+    createDateParagraph(review, profileNameContainer);
 
-    for(let i = 0; i < review.ratings.overall; i++){
-        starsContainer.innerHTML += `<i class="far fa-star star-highlight"></i> `;
-    }
-
-    for(let i = 0; i < 5 - review.ratings.overall; i++){
-        starsContainer.innerHTML += `<i class="far fa-star star-lowlight"></i> `;
-    }
-
-    profileNameContainer.appendChild(starsContainer);
     userInfoContainer.appendChild(profileNameContainer);
     titleContainer.appendChild(userInfoContainer);
     headRow.appendChild(titleContainer);
@@ -247,47 +273,18 @@ export function createUserHeader(review){
         class: "row"
     });
 
-    let gameImgContainer = createElement("div", {
-        class: "col-lg-2 col-md-3 col-4"
-    });
-
-    let gameLink = createElement("a", {
-        class: "user-link",
-        href: `/games/${review.gameId.linkName}`
-    });
-
-    let gameImg = createElement("img", {
-        class: "review-game-art mb-2",
-        src: review.gameId.image,
-        alt: review.gameId.displayName
-    });
-
-    gameLink.appendChild(gameImg);
-    gameImgContainer.appendChild(gameLink);
-    headRow.appendChild(gameImgContainer);
+    createGameImage(review, headRow);
 
     let titleContainer = createElement("div", {
         class: "col-lg-10 col-md-9 col-8",
     });
 
-    let title = createElement("h1");
+    createTitleHeading(review, titleContainer);
 
-    title.innerText = review.gameId.displayName;
-    titleContainer.appendChild(title);
+    createStars(review, titleContainer);
 
-    let starsContainer = createElement("div", {
-        class: "stars",
-    });
+    createDateParagraph(review, titleContainer);
 
-    for(let i = 0; i < review.ratings.overall; i++){
-        starsContainer.innerHTML += `<i class="far fa-star star-highlight"></i> `;
-    }
-
-    for(let i = 0; i < 5 - review.ratings.overall; i++){
-        starsContainer.innerHTML += `<i class="far fa-star star-lowlight"></i> `;
-    }
-
-    titleContainer.appendChild(starsContainer);
     headRow.appendChild(titleContainer);
 
     return headRow;
@@ -322,19 +319,9 @@ export function createGameHeader(review){
     title.innerHTML = `By <a class="user-link" href="/users/${review.author.displayName}">${review.author.displayName}</a>`;
     titleContainer.appendChild(title);
 
-    let starsContainer = createElement("div", {
-        class: "stars",
-    });
+    createStars(review, titleContainer);
+    createDateParagraph(review, titleContainer);
 
-    for(let i = 0; i < review.ratings.overall; i++){
-        starsContainer.innerHTML += `<i class="far fa-star star-highlight"></i> `;
-    }
-
-    for(let i = 0; i < 5 - review.ratings.overall; i++){
-        starsContainer.innerHTML += `<i class="far fa-star star-lowlight"></i> `;
-    }
-
-    titleContainer.appendChild(starsContainer);
     headRow.appendChild(titleContainer);
 
     return headRow;

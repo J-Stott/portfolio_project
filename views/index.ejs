@@ -15,7 +15,7 @@
                         <h1 class="mb-4">
                             <%=review.gameId.displayName%>
                         </h1>
-                        <div class="row align-items-center">
+                        <div class="row align-items-begin">
                             <div class="col-lg-1 col-md-2 col-3">
                                 <img class="review-profile-picture" src="<%=review.author.profileImg%>" alt="profile" />
                             </div>
@@ -29,6 +29,7 @@
                                         <i class="far fa-star star-lowlight"></i>
                                     <%}%>
                                 </div>
+                                <p>Published on <%=review.created.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })%></p>
                             </div>
                         </div>
 
