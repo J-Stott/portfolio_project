@@ -10,26 +10,14 @@ router.get("/:username", async function (req, res) {
 
     try {
         if(req.isAuthenticated()){
-         
-            let profile = await User.findOne({_id: req.user._id})
-                .populate({
-                    path: "userDrafts",
-                    populate: {
-                        path: "gameId",
-                        model: "Game",
-                        select: {"displayName": 1, "image": 1, "_id": 0}
-                    }
-                })
-                .exec();
             
-            console.log("-- drafts: user profile --");
-            console.log(profile);
+            let drafts = await Draft.getSetNumberOfDrafts({author:  req.user._id});
             
-            if(!profile) {
+            if(!drafts) {
                 return res.redirect("/")
             }
 
-            res.render("drafts", {user: req.user, drafts: profile.userDrafts});
+            res.render("drafts", {user: req.user, drafts: drafts});
         } else {
             res.redirect("/login");
         }
@@ -44,7 +32,7 @@ router.post("/create", async function (req, res) {
     try{
         if (req.isAuthenticated()) {
 
-            let user = await User.findOne({ _id: req.user.id }).exec();
+            let user = await User.model.findOne({ _id: req.user.id }).exec();
 
             const igdbId = Number(req.body.igdbId);
             let game = await Game.model.findOne({igdbId: igdbId}).exec();

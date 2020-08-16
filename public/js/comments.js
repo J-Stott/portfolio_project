@@ -20,6 +20,7 @@ window.addEventListener("load", function(){
         })
         .then(response => {
             userData = response.data;
+            console.log(userData);
 
             addCommentButtonEvents(userData);
         })

@@ -50,7 +50,7 @@ router.get("/:username", async function (req, res) {
                 res.redirect("/");
             } else {
     
-                let foundUser = await User.findOne({username: username}).exec();
+                let foundUser = await User.model.findOne({username: username}).exec();
 
                 if (!foundUser){
                     res.redirect("/");
@@ -94,7 +94,7 @@ router.post("/:username/updateImage", upload.single("profile"), async function (
                 } else {
                     //update user profile path
                     const file = req.file;
-                    let foundUser = await User.findOne({username: username}).exec(); 
+                    let foundUser = await User.model.findOne({username: username}).exec(); 
                     const profileImgName = "/profileImages/" + file.filename;
 
                     //delete their previous image from the server
@@ -132,7 +132,7 @@ router.post("/:username/updateInfo", async function (req, res) {
                 const displayName = req.body.displayName;
                 const bio = req.body.bio;
     
-                let foundUser = await User.findOne({username: username}).exec(); 
+                let foundUser = await User.model.findOne({username: username}).exec(); 
 
                 //double check they have given us an appropriate name
                 const lowerFormName = _.toLower(displayName);
@@ -171,7 +171,7 @@ router.post("/:username/updatePassword", async function (req, res) {
             if(!checkMatch(user, username)){
                 res.redirect("/");
             } else {
-                let foundUser = await User.findOne({username: username}).exec();
+                let foundUser = await User.model.findOne({username: username}).exec();
 
                 foundUser.changePassword(req.body.oldPassword, req.body.newPassword, function(err){
                     if(err){
@@ -205,7 +205,7 @@ router.post("/:username/delete", async function (req, res) {
                 res.redirect("/");
             } else {
     
-                let foundUser = await User.findOne({username: username})
+                let foundUser = await User.model.findOne({username: username})
                 .populate({
                     path: "userReviews", 
                     select:["ratings", "gameId"]
@@ -227,7 +227,7 @@ router.post("/:username/delete", async function (req, res) {
 
                 await Discussion.model.updateMany({}, {"$pull": {"comments": {"user": foundUser._id}}}).exec();
                
-                await User.deleteOne({username: username}).exec();
+                await User.model.deleteOne({username: username}).exec();
 
                 res.redirect("/");
             }

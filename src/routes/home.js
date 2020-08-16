@@ -63,7 +63,7 @@ router.post("/register", function (req, res) {
     const password = req.body.password;
 
     //add user to database and authenticate them if successful
-    User.register({ username: username, displayName: displayName, email: email }, password, function (err, user) {
+    User.model.register({ username: username, displayName: displayName, email: email }, password, function (err, user) {
         if (err) {
             console.log(err);
             return res.render("register", { errorMsg: "Username or Email is already in use." })
@@ -139,7 +139,7 @@ router.post("/forgot", async function (req, res) {
         } else {
             const userCredentials = _.toLower(req.body.username);
     
-            const user = await User.findOne({$or: [{username: userCredentials}, {email: userCredentials}]}).exec();
+            const user = await User.model.findOne({$or: [{username: userCredentials}, {email: userCredentials}]}).exec();
     
             if(!user){
                 return res.render("forgot_response", {
@@ -247,7 +247,7 @@ router.post("/reset/:token", async function (req, res) {
                 });
             }
     
-            const user = await User.findOne({_id: reset.user}).exec();
+            const user = await User.model.findOne({_id: reset.user}).exec();
     
             if(!user){
                 await Reset.model.deleteOne({token: token}).exec();
@@ -297,7 +297,8 @@ router.get("/getuserdata", async function (req, res) {
 
             const response = {
                 id: req.user._id,
-                username: req.user.username
+                username: req.user.username,
+                roles: req.user.roles
             };
 
             res.status(200).send(response);

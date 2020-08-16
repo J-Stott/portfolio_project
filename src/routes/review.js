@@ -77,7 +77,7 @@ router.post("/create", async function (req, res) {
     try {
         if (req.isAuthenticated()) {
 
-            let user = await User.findOne({ _id: req.user.id }).exec();
+            let user = await User.model.findOne({ _id: req.user.id }).exec();
             const igdbId = Number(req.body.igdbId);
             let game = await Game.model.findOne({igdbId: igdbId}).exec();
 
@@ -116,9 +116,12 @@ router.post("/create", async function (req, res) {
             reactions.review = reviewId;
             reactions.save();
 
-            //link review to discussion
-            newDiscussion.review = reviewId;
-            newDiscussion.save();
+            if(newDiscussion !== null){
+                //link review to discussion
+                newDiscussion.review = reviewId;
+                newDiscussion.save();
+            }
+
 
             //link review to user
             user.userReviews.unshift(reviewId);
@@ -129,7 +132,7 @@ router.post("/create", async function (req, res) {
                 let draftDelete = Draft.model.deleteOne({_id: req.body.draftId}).exec();
 
                 //remove draft ID from the user's review collection
-                let userUpdate = User.updateOne({ _id: req.user._id }, { $pull: { userDrafts: { $in: req.body.draftId } } }).exec();
+                let userUpdate = User.model.updateOne({ _id: req.user._id }, { $pull: { userDrafts: { $in: req.body.draftId } } }).exec();
 
                 await draftDelete;
                 await userUpdate;
@@ -244,17 +247,31 @@ router.post("/:reviewId/delete", async function (req, res) {
 
             //removes review and all review related data from other collections
 
-            let review = await Review.model.findOne({ _id: reviewId, author: req.user._id }).exec();
+            let review = null
+
+            if(User.isAdmin(req.user)){
+                review = await Review.model.findOne({ _id: reviewId}).exec();
+            } else {
+                review = await Review.model.findOne({ _id: reviewId, author: req.user._id }).exec();
+            }
+
 
             await Game.removeFromAverages(review);
 
-            let reviewDelete = Review.model.deleteOne({ _id: reviewId, author: req.user._id }).exec();
+            let reviewDelete = null
+
+            if(User.isAdmin(req.user)){
+                reviewDelete = Review.model.deleteOne({ _id: reviewId }).exec();
+            } else {
+                reviewDelete = Review.model.deleteOne({ _id: reviewId, author: req.user._id }).exec();
+            }
+
 
             let discussionDelete = Discussion.model.deleteOne({ review: reviewId }).exec();
 
             let reactionDelete = Reaction.deleteOne({ review: reviewId }).exec();
 
-            let userUpdate = User.updateOne({ _id: req.user._id }, { $pull: { userReviews: { $in: reviewId } } }).exec();
+            let userUpdate = User.model.updateOne({ _id: review.author }, { $pull: { userReviews: { $in: reviewId } } }).exec();
 
             await reviewDelete;
             await reactionDelete;
@@ -390,7 +407,13 @@ router.post("/:reviewId/comments/:comment_id/remove", async function (req, res) 
             const reviewId = req.params.reviewId;
             const commentId = req.params.comment_id;
 
-            const result = await Discussion.model.updateOne({review: reviewId}, {"$pull": {"comments": {"_id": commentId, "user": req.user._id}}}).exec();
+            let result = null;
+
+            if(User.isAdmin(req.user)){
+                result = await Discussion.model.updateOne({review: reviewId}, {"$pull": {"comments": {"_id": commentId}}}).exec();
+            } else {
+                result = await Discussion.model.updateOne({review: reviewId}, {"$pull": {"comments": {"_id": commentId, "user": req.user._id}}}).exec();
+            }
 
             console.log(result);
 
@@ -415,7 +438,7 @@ router.post("/:reviewId/comments/:comment_id/edit", async function (req, res) {
             const doc = await Discussion.model.findOne({review: reviewId}).exec();
             let comment = doc.comments.id(commentId);
 
-            if(String(comment.user) !== String(req.user._id)){
+            if(!User.isAdmin(req.user) && String(comment.user) !== String(req.user._id)){
                 return res.status(404).send({reason: "You are trying to edit a comment that isn't yours!"})
             }
 

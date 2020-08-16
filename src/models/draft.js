@@ -59,8 +59,22 @@ async function updateDraft(draftId, game, req){
     return update;
 }
 
+async function getSetNumberOfDrafts(findOptions = {}, skipNumber = 0, limit = 10, sortBy = {
+    created: "desc"
+}) {
+
+    return Draft.find(findOptions)
+        .populate({ path: "gameId", select: "displayName image linkName -_id" })
+        .populate({ path: "author", select: "displayName profileImg -_id" })
+        .sort(sortBy)
+        .skip(skipNumber)
+        .limit(limit)
+        .exec();
+}
+
 module.exports = {
     model: Draft,
     createDraft: createDraft,
-    updateDraft: updateDraft
+    updateDraft: updateDraft,
+    getSetNumberOfDrafts: getSetNumberOfDrafts
 };

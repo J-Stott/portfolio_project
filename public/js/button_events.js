@@ -32,6 +32,7 @@ export function setCommentPostEvent(button, container){
 
 //sets initial comment button events
 export function setCommentButtonEvents(element){
+    console.log(element);
     let editButton = element.querySelector(".comment-edit");
     let deleteButton = element.querySelector(".comment-delete");
 
@@ -70,7 +71,15 @@ export function setEditButtonEvents(element, clone){
 
 //checks for all comments based on user id and sets up button events on window load
 export function addCommentButtonEvents(userData){
-    let userComments = document.querySelectorAll(`[data-user-id="${userData.id}"]`);
+    let userComments = null
+    
+    if(userData.roles.includes("admin")){
+        console.log("admin");
+        userComments = document.querySelectorAll(`.comment-container`);
+    } else {
+        userComments = document.querySelectorAll(`[data-user-id="${userData.id}"]`);
+    }
+
 
     userComments.forEach((comment) => {
         setCommentButtonEvents(comment);

@@ -12,7 +12,7 @@ router.get("/:username", async function (req, res) {
     try {
         const username = _.toLower(req.params.username);
 
-        const userProfile = await User.findOne({username: username})
+        const userProfile = await User.model.findOne({username: username})
         .exec();
 
         if(!userProfile){
@@ -39,7 +39,7 @@ router.get("/:username/:index", async function (req, res) {
         const index = Number(req.params.index);
         const username = _.toLower(req.params.username);
 
-        const userProfile = await User.findOne({username: username})
+        const userProfile = await User.model.findOne({username: username})
         .exec();
 
         if(!userProfile){

@@ -25,7 +25,7 @@ export function createComment(container, comment){
     });
 
     let row = createElement("div", {
-        class: "row",
+        class: "row comment-container",
     });
 
     row.setAttribute("data-comment-id", comment._id);

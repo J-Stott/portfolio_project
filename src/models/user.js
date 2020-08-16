@@ -9,9 +9,7 @@ const userSchema = new mongoose.Schema({
     email: { type : String , unique : true, required : true, dropDups: true },
     profileImg: {type: String, default: "/profileImages/default.png"},
     bio: {type: String},
-    userReviews: [{type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
-    userDrafts: [{type: mongoose.Schema.Types.ObjectId, ref: "Draft" }],
-    isAdmin: {type: Boolean, default: false }
+    roles: [{type: String, enum: ["user", "admin", "super_admin"], default: ["user"]}] 
 });
 
 //allow user to also use email to login
@@ -33,4 +31,16 @@ passport.deserializeUser(function(id, done){
     });
 });
 
-module.exports = User;
+function isSuperAdmin(user){
+    return user.roles.includes("super_admin");
+}
+
+function isAdmin(user){
+    return user.roles.includes("super_admin") || user.roles.includes("admin");
+}
+
+module.exports = {
+    model: User,
+    isAdmin: isAdmin,
+    isSuperAdmin: isSuperAdmin,
+};
