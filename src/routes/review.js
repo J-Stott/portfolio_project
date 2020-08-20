@@ -149,7 +149,7 @@ router.get("/:reviewId", async function (req, res) {
         let review = await Review.model.findOne({ _id: reviewId })
         .populate({ path: "author", select: ["_id", "profileImg", "displayName"]})
         .populate({path: "reactions", select: "reaction -_id"})
-        .populate({path: "gameId", select: "image displayName -_id"})
+        .populate({path: "gameId", select: "image linkName displayName -_id"})
         .exec();
 
         if (!review) {
