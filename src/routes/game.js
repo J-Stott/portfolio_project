@@ -73,20 +73,12 @@ router.post("/:gameName", async function (req, res) {
         const gameName = req.params.gameName;
         const igdbId = req.body.igdbId;
 
-        const game = await Game.model.findOne({igdbId: igdbId}).exec();
+        const game = await Game.findOrCreateGameEntry(igdbId);
 
         if(game !== null){
             return res.redirect(`/games/${gameName}`);
         }
 
-        const gameData = await igdb.findGameByIgdbId(igdbId);
-
-        if(gameData.length === 0){
-            return gameData.redirect("/");
-        } 
-        
-        await Game.createGameEntry(gameData);
-        res.redirect(`/games/${gameName}`); 
     } catch(err) {
         console.log(err);
     } 

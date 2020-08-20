@@ -76,14 +76,10 @@ router.post("/create", async function (req, res) {
     try {
         if (req.isAuthenticated()) {
 
+            console.log("-- creating review --", req.user.displayName);
             let user = await User.model.findOne({ _id: req.user.id }).exec();
             const igdbId = Number(req.body.igdbId);
-            let game = await Game.model.findOne({igdbId: igdbId}).exec();
-
-            if(!game){
-                let gameData = await igdb.findGameByIgdbId(igdbId);
-                game = await Game.createGameEntry(gameData);
-            }
+            let game = await Game.findOrCreateGameEntry(igdbId);
 
             //find if user has already created a review for this game
             let existingReview = await Review.model.findOne({ author: user._id, gameId: game._id }).exec();
@@ -129,6 +125,7 @@ router.post("/create", async function (req, res) {
                 await draftDelete;
             }
 
+            console.log("-- created review --", req.user.displayName);
             res.redirect("/");
     
         } else {
@@ -166,7 +163,6 @@ router.get("/:reviewId", async function (req, res) {
             };
 
             let comments = await Discussion.getComments(reviewId);
-            console.log(comments);
 
             if(comments){
                 data.comments = comments;
@@ -215,7 +211,6 @@ router.post("/:reviewId/edit", async function (req, res) {
             await Game.removeFromAverages(review);
 
             review = await Review.updateReview(review, req);
-            console.log(review);
 
             await Game.addToAverages(review);
     
@@ -405,8 +400,6 @@ router.post("/:reviewId/comments/:comment_id/remove", async function (req, res) 
             } else {
                 result = await Discussion.model.updateOne({review: reviewId}, {"$pull": {"comments": {"_id": commentId, "user": req.user._id}}}).exec();
             }
-
-            console.log(result);
 
             res.status(200).send(result);
         } else {

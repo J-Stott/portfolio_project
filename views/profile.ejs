@@ -11,7 +11,7 @@
                         be reversed.</p>
                     <div class="row">
                         <div class="col-md-6 d-flex justify-content-center pb-md-0 pb-2">
-                            <form action="/profile/<%=user.displayName%>/delete" method="post">
+                            <form action="/profile/<%=profile.displayName%>/delete" method="post">
                                 <button class="btn btn-danger" type="submit">Delete Account</button>
                             </form>
                         </div>
@@ -33,12 +33,12 @@
         <div class="profile-section wrapper-style">
             <div class="row">
                 <div class="col-md-12">
-                    <form action="/profile/<%=user.displayName%>/updateImage" method="post"
+                    <form action="/profile/<%=profile.displayName%>/updateImage" method="post"
                     enctype="multipart/form-data">
                         <div class="form-row justify-content-start">
                             <div class="col-md-5 d-flex flex-column align-items-center">
                                 <h4 class="profile-section-heading">Profile Picture</h4>
-                                <img class="profile-picture mb-2" src="<%=user.profileImg%>" alt="profile" />
+                                <img class="profile-picture mb-2" src="<%=profile.profileImg%>" alt="profile" />
                             </div>
                             <div class="col-md-7 my-1">
                                 <div class="custom-file profile-image-margin">
@@ -62,13 +62,13 @@
         <div class="profile-section wrapper-style">
             <div class="row">
                 <div class="col-12">
-                    <form class="display-name-margin" action="/profile/<%=user.displayName%>/updateInfo" method="post">
+                    <form class="display-name-margin" action="/profile/<%=profile.displayName%>/updateInfo" method="post">
                         <div class="form-row">
                             <div class="col-md-5 d-flex justify-content-center">
                                 <h5 class="profile-section-heading">Display Name</h5>
                             </div>
                             <div class="col-md-7 my-1">
-                                <input class="form-control" type="text" name="displayName" id="" value="<%=user.displayName%>">
+                                <input class="form-control" type="text" name="displayName" id="" value="<%=profile.displayName%>">
                                 <p>Can alter the casing of your display name only</p>
                                 <% if(locals.userMessage) {%>
                                 <p class="warning-text"><%=userMessage%></p>
@@ -80,7 +80,7 @@
                                 <h5 class="profile-section-heading">Personal Bio</h5>
                             </div>
                             <div class="col-md-7 my-1">
-                                <textarea class="form-control" name="bio" id="" maxlength="300"><%=user.bio%></textarea>
+                                <textarea class="form-control" name="bio" id="" maxlength="300"><%=profile.bio%></textarea>
                                 <p class="mb-2">Max character limit: 300</p>
                                 <button type="submit" class="btn btn-light form-control">Update</button>
                             </div>

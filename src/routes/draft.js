@@ -35,21 +35,9 @@ router.post("/create", async function (req, res) {
             let user = await User.model.findOne({ _id: req.user.id }).exec();
 
             const igdbId = Number(req.body.igdbId);
-            let game = await Game.model.findOne({igdbId: igdbId}).exec();
-            
-            if(!game){
-                let gameData = await igdb.findGameByIgdbId(igdbId);
-                game = await Game.createGameEntry(gameData);
-                console.log("-- game created --");
-                console.log(game);
-            }
-    
+            let game = await Game.findOrCreateGameEntry(igdbId);
             const draft = await Draft.createDraft(user, game, req);
-
             const draftId = draft._id;
-    
-            user.userDrafts.push(draftId);
-            await user.save();
             res.redirect("/");
     
         } else {
@@ -100,18 +88,7 @@ router.post("/:draftId/edit", async function (req, res) {
             const draftId = req.params.draftId;
 
             const igdbId = Number(req.body.igdbId);
-            console.log("-- draft edit: igdbId--");
-            console.log(igdbId);
-            let game = await Game.model.findOne({igdbId: igdbId}).exec();
-            console.log("-- draft edit: found game --");
-            console.log(game);
-            
-            if(!game){
-                let gameData = await igdb.findGameByIgdbId(igdbId);
-                game = await Game.createGameEntry(gameData);
-                console.log("-- game created --");
-                console.log(game);
-            }
+            let game = await Game.findOrCreateGameEntry(igdbId);
     
             await Draft.updateDraft(draftId, game, req);
 
@@ -134,12 +111,7 @@ router.post("/:draftId/delete", async function (req, res) {
 
             //remove only if the author ids match
             let draftDelete = Draft.model.deleteOne({ _id: draftId, author: req.user._id }).exec();
-
-            let userUpdate = User.updateOne({ _id: req.user._id }, { $pull: { userDrafts: { $in: draftId } } }).exec();
-
             await draftDelete;
-            await userUpdate;
-
             res.redirect(`/drafts/${req.user.displayName}`);
 
         } else {

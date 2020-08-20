@@ -164,7 +164,7 @@
             <%if(user !== null) {%>
             <div class="row ">
                 <div class="col-12 mt-3">
-                    <textarea class="form-control" name="comment" id="comment-text" placeholder="Add comment here" rows="3" required></textarea>
+                    <textarea class="form-control" name="comment" id="comment-text" placeholder="Add comment here" rows="3"></textarea>
                 </div>
 
                 <div class="col-12 d-flex justify-content-md-end justify-content-center mt-3">
@@ -188,8 +188,8 @@
                         <%if(user !== null && (user.roles.includes("admin") || String(review.author._id) == String(user._id))){%>
                             
                             <div class="col-12 d-flex justify-content-md-end justify-content-center mt-3">
-                                <button class="btn btn-outline-light comment-edit">Edit Comment</button>
-                                <button class="btn btn-danger ml-2 comment-delete">Delete Comment</button>
+                                <button class="btn btn-outline-light comment-edit">Edit</button>
+                                <button class="btn btn-danger ml-2 comment-delete">Delete</button>
                             </div>
                             
                         <%}%>

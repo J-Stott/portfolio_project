@@ -24,9 +24,11 @@ export function setCommentPostEvent(button, container){
 
     button.addEventListener("click", function(){
         const comment = commentText.value;
-        let url = `${window.location.pathname}/comments/add`;
-        postComment(url, comment, container);
-        commentText.value = "";
+        if (/\S/.test(comment)) {
+            let url = `${window.location.pathname}/comments/add`;
+            postComment(url, comment, container);
+            commentText.value = "";
+        }
     });
 }
 

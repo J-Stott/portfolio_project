@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 const settings = require("../../settings");
+const igdb = require("../components/igdb_functions");
+
+let Mutex = require("async-mutex").Mutex;
+
+const mutex = new Mutex();
+
 
 //setup game schema
 const gameSchema = new mongoose.Schema({
@@ -28,34 +34,54 @@ function getAfterLastSlash(str){
     return str.substring(index + 1);
 }
 
-async function createGameEntry(gameData){
+async function findOrCreateGameEntry(idgbId){
     //create game data here
-    let imageUrl = settings.DEFAULT_GAME_IMAGE;
 
-    if("cover" in gameData){
-        imageUrl = gameData.cover.url
-        imageUrl = `https:${imageUrl.replace("t_thumb", "t_cover_big")}`;
+    const release = await mutex.acquire();
+
+    try{
+        console.log("--Looking for game--");
+        let game = await Game.findOne({igdbId: idgbId}).exec();
+        console.log(game);
+
+        if(game === null){
+            
+            let gameData = await igdb.findGameByIgdbId(idgbId);
+        
+            let imageUrl = settings.DEFAULT_GAME_IMAGE;
+    
+            if("cover" in gameData){
+                imageUrl = gameData.cover.url
+                imageUrl = `https:${imageUrl.replace("t_thumb", "t_cover_big")}`;
+            }
+    
+            let date = new Date();
+            if("first_release_date" in gameData){
+                date = new Date(gameData.first_release_date * 1000);
+            }
+    
+            const linkName = getAfterLastSlash(gameData.url);
+    
+            let newGame = new Game({
+                igdbId: gameData.id,
+                displayName: gameData.name,
+                linkName: linkName,
+                summary: gameData.summary,
+                releaseDate: date,
+                image: imageUrl
+            });
+    
+            game = await newGame.save();
+            console.log("--game created--");
+        }
+        
+        console.log("--returning game created--");
+        return game;
+        
+    } finally {
+        console.log("--releasing mutex--");
+        release();
     }
-
-    let date = new Date();
-    if("first_release_date" in gameData){
-        date = new Date(gameData.first_release_date * 1000);
-    }
-
-    const linkName = getAfterLastSlash(gameData.url);
-
-    let newGame = new Game({
-        igdbId: gameData.id,
-        displayName: gameData.name,
-        linkName: linkName,
-        summary: gameData.summary,
-        releaseDate: date,
-        image: imageUrl
-    });
-
-    let game = newGame.save();
-
-    return game;
 }
 
 //adds to the averages of a game
@@ -74,8 +100,6 @@ async function addToAverages(review){
     Object.keys(game.ratingAverages).forEach(function(key){ 
         game.ratingAverages[key] /= game.numReviews 
     });
-
-    console.log(game);
 
     game.save();
 }
@@ -98,15 +122,13 @@ async function removeFromAverages(review){
             game.ratingAverages[key] /= game.numReviews 
         });
     }
-    
-    console.log(game);
 
     game.save();
 }
 
 module.exports = {
     model: Game,
-    createGameEntry: createGameEntry,
+    findOrCreateGameEntry: findOrCreateGameEntry,
     addToAverages: addToAverages,
     removeFromAverages: removeFromAverages,
     getAfterLastSlash: getAfterLastSlash,

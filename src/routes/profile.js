@@ -12,7 +12,7 @@ const settings = require("../../settings");
 let upload = require("../components/profile_uploader");
 
 function checkMatch(userData, username){
-    if(userData.username === username /*|| userData.admin*/){
+    if(userData.username === username || User.isAdmin(userData)){
         return true;
     }
 
@@ -56,7 +56,8 @@ router.get("/:username", async function (req, res) {
                     res.redirect("/");
                 } else {
                     const data = {
-                        user: user
+                        user: user,
+                        profile: foundUser
                     }
 
                     checkAndSetMessage(req.session, data, "userMessage");
@@ -136,8 +137,6 @@ router.post("/:username/updateInfo", async function (req, res) {
 
                 //double check they have given us an appropriate name
                 const lowerFormName = _.toLower(displayName);
-
-                console.log(foundUser.username, "-", lowerFormName);
     
                 if (foundUser.username !== lowerFormName) {
                     req.session.userMessage = "Entered name does not match your username";

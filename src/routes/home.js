@@ -293,8 +293,6 @@ router.get("/getuserdata", async function (req, res) {
 
     try {
         if(req.isAuthenticated()){
-            console.log("user logged in");
-
             const response = {
                 id: req.user._id,
                 username: req.user.username,
@@ -303,7 +301,6 @@ router.get("/getuserdata", async function (req, res) {
 
             res.status(200).send(response);
         } else {
-            console.log("user not logged in");
             res.status(200).send(null);
         }
         
