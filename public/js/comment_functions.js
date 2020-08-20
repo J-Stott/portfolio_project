@@ -11,6 +11,12 @@ export function postComment(url, comment, container){
         })
         .then(response => {
             let commentData = response.data;
+
+            let defaultComment = document.querySelector(".default-comment");
+            if(defaultComment !== null){
+                defaultComment.remove();
+            }
+
             createComment(container, commentData);
         })
         .catch(err => {
