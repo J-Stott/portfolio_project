@@ -13,6 +13,28 @@ function createElement(elementType, attributes = null){
     return element;
 }
 
+function createCommentButtons(container){
+    let buttonCol = createElement("div", {
+        class: "col-12 d-flex justify-content-md-end justify-content-center mt-3"
+    });
+
+    let editButton = createElement("button", {
+        class: "btn btn-outline-light comment-edit"
+    });
+
+    editButton.innerText = "Edit Comment";
+
+    let deleteButton = createElement("button", {
+        class: "btn btn-danger ml-2 comment-delete"
+    });
+
+    deleteButton.innerText = "Delete Comment";
+
+    buttonCol.appendChild(editButton);
+    buttonCol.appendChild(deleteButton);
+    container.appendChild(buttonCol);
+}
+
 
 //comment functions
 //creates a new comment when user adds one
@@ -60,25 +82,7 @@ export function createComment(container, comment){
     commentCol.appendChild(commentPar);
     row.appendChild(commentCol);
 
-    let buttonCol = createElement("div", {
-        class: "col-12 d-flex justify-content-md-end justify-content-center mt-3"
-    });
-
-    let editButton = createElement("button", {
-        class: "btn btn-outline-light comment-edit"
-    });
-
-    editButton.innerText = "Edit Comment";
-
-    let deleteButton = createElement("button", {
-        class: "btn btn-danger ml-2 comment-delete"
-    });
-
-    deleteButton.innerText = "Delete Comment";
-
-    buttonCol.appendChild(editButton);
-    buttonCol.appendChild(deleteButton);
-    row.appendChild(buttonCol);
+    createCommentButtons(row);
 
     setCommentButtonEvents(row);
 
@@ -196,11 +200,11 @@ function createStars(review, container){
     });
 
     for(let i = 0; i < review.ratings.overall; i++){
-        starsContainer.innerHTML += `<i class="far fa-star star-highlight"></i> `;
+        starsContainer.innerHTML += `<i class="far fa-star star-highlight head-star-size"></i> `;
     }
 
     for(let i = 0; i < 5 - review.ratings.overall; i++){
-        starsContainer.innerHTML += `<i class="far fa-star star-lowlight"></i> `;
+        starsContainer.innerHTML += `<i class="far fa-star star-lowlight head-star-size"></i> `;
     }
     
     container.appendChild(starsContainer);

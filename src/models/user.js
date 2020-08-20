@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     email: { type : String , unique : true, required : true, dropDups: true },
     profileImg: {type: String, default: "/profileImages/default.png"},
     bio: {type: String},
+    numReviews: {type: Number, default: 0},
     roles: [{type: String, enum: ["user", "admin", "super_admin"], default: ["user"]}] 
 });
 
@@ -31,6 +32,16 @@ passport.deserializeUser(function(id, done){
     });
 });
 
+async function updateReviewCount(user, increase){
+    if(increase){
+        user.numReviews++;
+    } else {
+        user.numReviews--;
+    }
+
+    user.save();
+}
+
 function isSuperAdmin(user){
     return user.roles.includes("super_admin");
 }
@@ -43,4 +54,5 @@ module.exports = {
     model: User,
     isAdmin: isAdmin,
     isSuperAdmin: isSuperAdmin,
+    updateReviewCount: updateReviewCount
 };

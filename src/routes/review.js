@@ -8,7 +8,6 @@ const Reaction = require("../models/reaction");
 const Discussion = require("../models/discussion");
 const igdb = require("../components/igdb_functions");
 const Game = require("../models/game");
-const settings = require("../../settings");
 
 function getUserReaction(reaction, user){
 
@@ -111,6 +110,7 @@ router.post("/create", async function (req, res) {
             const reviewId = review._id;
 
             await Game.addToAverages(review);
+            await User.updateReviewCount(user, true);
 
             //link review to reaction
             reactions.review = reviewId;
@@ -121,21 +121,12 @@ router.post("/create", async function (req, res) {
                 newDiscussion.review = reviewId;
                 newDiscussion.save();
             }
-
-
-            //link review to user
-            user.userReviews.unshift(reviewId);
-            user.save();
     
             //remove draft from user and drafts collection
             if(req.body.draftId !== null){
                 let draftDelete = Draft.model.deleteOne({_id: req.body.draftId}).exec();
 
-                //remove draft ID from the user's review collection
-                let userUpdate = User.model.updateOne({ _id: req.user._id }, { $pull: { userDrafts: { $in: req.body.draftId } } }).exec();
-
                 await draftDelete;
-                await userUpdate;
             }
 
             res.redirect("/");
@@ -255,9 +246,6 @@ router.post("/:reviewId/delete", async function (req, res) {
                 review = await Review.model.findOne({ _id: reviewId, author: req.user._id }).exec();
             }
 
-
-            await Game.removeFromAverages(review);
-
             let reviewDelete = null
 
             if(User.isAdmin(req.user)){
@@ -271,8 +259,11 @@ router.post("/:reviewId/delete", async function (req, res) {
 
             let reactionDelete = Reaction.deleteOne({ review: reviewId }).exec();
 
-            let userUpdate = User.model.updateOne({ _id: review.author }, { $pull: { userReviews: { $in: reviewId } } }).exec();
+            const user = await User.model.findOne({_id: review.author }).exec();
+            let userUpdate = User.updateReviewCount(user, false);
+            
 
+            await Game.removeFromAverages(review);
             await reviewDelete;
             await reactionDelete;
             await userUpdate;

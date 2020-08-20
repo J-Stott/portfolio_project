@@ -58,15 +58,21 @@ body{
   margin: 0 auto;
 }
 
+/*HR styles*/
+.light {
+  border-color: #8a8f92;
+}
+
+.search-hr {
+  border-color: #cfd0d1;
+  margin: 0;
+}
+
 /*review styles*/
 
 .content-wrapper{
   padding: 20px;
   margin: 0 auto;
-}
-
-.light {
-  border-color: #8a8f92;
 }
 
 .review-content {
@@ -154,7 +160,7 @@ body{
 
 .modal-content {
   background-color: #51565c;
-  margin: 450px auto; 
+  margin: 300px auto; 
   padding: 20px;
   border: 1px solid #888;
   width: 60%; 
@@ -203,6 +209,10 @@ label.star:before {
 
 .star-lowlight{
   color: #8a8f92;
+}
+
+.head-star-size{
+  font-size: 20px;
 }
 
 .star-size{
@@ -286,6 +296,18 @@ label.star:before {
 
   .nav-search-results-container{
     max-width: 46%;
+  }
+
+  .game-art {
+    width: 171px;
+  }
+
+  .review-game-art {
+    width: 105px;
+  }
+
+  .star-size{
+    font-size: 20px;
   }
 }
 

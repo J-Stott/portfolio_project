@@ -37,10 +37,10 @@
                         <h5>By <a class="user-link" href="/users/<%=review.author.displayName%>"><%=review.author.displayName%></a></h5>
                         <div class="stars">
                             <%for(let i = 0; i < review.ratings.overall; i++){%>
-                                <i class="far fa-star star-highlight"></i>
+                                <i class="far fa-star star-highlight head-star-size"></i>
                             <%}%>
                             <%for(let i = 0; i < 5 - review.ratings.overall; i++){%>
-                                <i class="far fa-star star-lowlight"></i>
+                                <i class="far fa-star star-lowlight head-star-size"></i>
                             <%}%>
                         </div>
                         <p>Published on <%=review.created.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })%></p>

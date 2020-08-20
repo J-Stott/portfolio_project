@@ -9,11 +9,11 @@
             <div class="content-wrapper wrapper-style mb-4">
                 <div class="row">
                     <div class="col-lg-2 col-md-3 col-4 d-flex justify-content-center">
-                        <a class="user-link" href="/games/<%=review.gameId.linkName%>"><img class="review-game-art mb-2" src="<%=review.gameId.image%>" alt="profile" /></a>
+                        <a href="/games/<%=review.gameId.linkName%>"><img class="review-game-art mb-2" src="<%=review.gameId.image%>" alt="profile" /></a>
                     </div>
                     <div class="col-lg-10 col-md-9 col-8">
                         <h1 class="mb-4">
-                            <%=review.gameId.displayName%>
+                            <a class="user-link" href="/reviews/<%=review._id%>"><%=review.gameId.displayName%></a>
                         </h1>
                         <div class="row align-items-begin">
                             <div class="col-lg-1 col-md-2 col-3">
@@ -23,10 +23,10 @@
                                 <h5>By <a class="user-link" href="/users/<%=review.author.displayName%>"><%=review.author.displayName%></a></h5>
                                 <div class="stars">
                                     <%for(let i = 0; i < review.ratings.overall; i++){%>
-                                        <i class="far fa-star star-highlight"></i>
+                                        <i class="far fa-star star-highlight head-star-size"></i>
                                     <%}%>
                                     <%for(let i = 0; i < 5 - review.ratings.overall; i++){%>
-                                        <i class="far fa-star star-lowlight"></i>
+                                        <i class="far fa-star star-lowlight head-star-size"></i>
                                     <%}%>
                                 </div>
                                 <p>Published on <%=review.created.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })%></p>

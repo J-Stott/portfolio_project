@@ -47,6 +47,7 @@ async function createReview(req, user, game, reactions, discussion = null) {
     }
 
     let review = newReview.save();
+
     return review;
 }
 

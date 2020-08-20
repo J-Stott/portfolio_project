@@ -15,7 +15,7 @@ if(btn !== null){
     modal.style.display = "none";
   }
 
-  window.addEventListener("load", function(){
+  window.addEventListener("click", function(){
     if (event.target == modal) {
       modal.style.display = "none";
     }

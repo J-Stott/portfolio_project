@@ -57,7 +57,7 @@ function setReviewGameData(data, searchContainer){
     parent.setAttribute("class", "row align-items-center m-auto game");
 
     let imgDiv = document.createElement("div");
-    imgDiv.setAttribute("class", "col-md-2 col-4");
+    imgDiv.setAttribute("class", "col-lg-2 col-md-3 col-5");
 
     let img = document.createElement("img");
     img.setAttribute("src", data.image);
@@ -66,7 +66,7 @@ function setReviewGameData(data, searchContainer){
     imgDiv.appendChild(img);
 
     let textDiv = document.createElement("div");
-    textDiv.setAttribute("class", "col-md-10 col-8");
+    textDiv.setAttribute("class", "col-lg-10 col-md-9 col-7");
 
     let text = document.createElement("p");
     text.setAttribute("class", "search-game-text")
@@ -85,6 +85,11 @@ function setReviewGameData(data, searchContainer){
     });
 
     searchContainer.appendChild(parent);
+
+    let hr = document.createElement("hr");
+    hr.setAttribute("class", "search-hr");
+
+    parent.appendChild(hr);
 }
 
 /*creates panels for game searches. When clicked, will post to server and will either 
@@ -95,7 +100,7 @@ function setSearchGameData(data, searchContainer){
     parent.setAttribute("class", "row align-items-center m-auto game");
 
     let imgDiv = document.createElement("div");
-    imgDiv.setAttribute("class", "col-md-2 col-4");
+    imgDiv.setAttribute("class", "col-lg-2 col-md-3 col-5");
 
     let img = document.createElement("img");
     img.setAttribute("src", data.image);
@@ -104,7 +109,7 @@ function setSearchGameData(data, searchContainer){
     imgDiv.appendChild(img);
 
     let textDiv = document.createElement("div");
-    textDiv.setAttribute("class", "col-md-10 col-8 user-link");
+    textDiv.setAttribute("class", "col-lg-10 col-md-9 col-7 user-link");
 
     let text = document.createElement("p");
     text.setAttribute("class", "search-game-text")
@@ -130,6 +135,11 @@ function setSearchGameData(data, searchContainer){
     });
 
     searchContainer.appendChild(parent);
+
+    let hr = document.createElement("hr");
+    hr.setAttribute("class", "search-hr");
+
+    searchContainer.appendChild(hr);
 }
 
 //gets our game data from the igdb and our database
