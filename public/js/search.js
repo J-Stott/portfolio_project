@@ -186,7 +186,7 @@ navSearch.addEventListener("keyup", function(){
 navSearch.addEventListener("focusout", function(){
     setTimeout(() => {
         setSearchVisible(navSearchContainer, false);
-    },100)
+    },200)
 });
 
 //if we are on a creation/edit page, add event listeners

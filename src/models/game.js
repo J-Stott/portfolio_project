@@ -40,9 +40,7 @@ async function findOrCreateGameEntry(idgbId){
     const release = await mutex.acquire();
 
     try{
-        console.log("--Looking for game--");
         let game = await Game.findOne({igdbId: idgbId}).exec();
-        console.log(game);
 
         if(game === null){
             
@@ -72,14 +70,10 @@ async function findOrCreateGameEntry(idgbId){
             });
     
             game = await newGame.save();
-            console.log("--game created--");
         }
-        
-        console.log("--returning game created--");
         return game;
         
     } finally {
-        console.log("--releasing mutex--");
         release();
     }
 }
