@@ -284,13 +284,11 @@ router.get("/:reviewId/userRatings", async function (req, res) {
 
         if (req.isAuthenticated()) {
             const reviewId = req.params.reviewId;
-            const reactionName = req.params.reactionName;
-    
-            let reaction = await Reaction.findOne({review: reviewId},"userReactions")
-            .exec();
-    
+
+            let reaction = await Reaction.model.findOne({review: reviewId}, "userReactions")
+                    .exec();
             //check that a reaction exists for the logged in user
-            let userReaction = getUserReaction(reaction, req.user);
+            let userReaction = await Reaction.getUserReaction(reaction, req.user);
             
             if(userReaction !== null){
                 response.userReactions = userReaction.userReaction
@@ -314,44 +312,8 @@ router.post("/:reviewId/:reactionName", async function (req, res) {
             const reviewId = req.params.reviewId;
             const reactionName = req.params.reactionName;
 
-            let reaction = await Reaction.findOne({review: reviewId},"reaction userReactions")
-            .exec();
-
-            //check that a reaction exists for the logged in user
-            let userReaction = getUserReaction(reaction, req.user);
-            
-            if(userReaction === null){
-                //create users reaction, bump appropriate reaction and save
-                userReaction = { 
-                    user: req.user._id,
-                    userReaction: {
-                        informative: 0,
-                        funny: 0,
-                        troll: 0,
-                    }
-                };
-
-                userReaction.userReaction[reactionName] = 1;
-                reaction.userReactions.unshift(userReaction);
-                reaction.reaction[reactionName]++;
-                await reaction.save();
-            } else {
-
-                if(userReaction.userReaction[reactionName] == 0){
-                    reaction.reaction[reactionName]++;
-                    userReaction.userReaction[reactionName] = 1;
-                    await reaction.save();
-                } else {
-                    reaction.reaction[reactionName]--;
-                    userReaction.userReaction[reactionName] = 0;
-                    await reaction.save();
-                }
-            }
-            
-            const response = {
-                [reactionName]: reaction.reaction[reactionName],
-                userReactions: userReaction.userReaction,
-            }
+            console.log("-- attempting to get user reaction --")
+            const response = await Reaction.updateUserReaction(reviewId, reactionName, req.user);
 
             res.status(200).send(response);
         } else {
@@ -373,7 +335,6 @@ router.post("/:reviewId/comments/add", async function (req, res) {
             const discussion = await Discussion.addToDiscusssion(reviewId, req.user.id, comment);
 
             console.log(discussion);
-
 
             res.status(200).send(discussion);
         } else {

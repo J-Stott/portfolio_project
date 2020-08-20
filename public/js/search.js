@@ -179,7 +179,7 @@ navSearch.addEventListener("keyup", function(){
             getGameData(navSearch, (response) => {
                 displayGameSearch(response, navSearchContainer, setSearchGameData);
             });
-        }, 500);
+        }, 200);
     }
 });
 
@@ -207,7 +207,7 @@ if(gameTitle !== null){
                 getGameData(gameTitle, (response) => {
                     displayGameSearch(response, reviewSearchContainer, setReviewGameData);
                 });
-            }, 300);
+            }, 200);
         } else {
             clearInputs();
         }

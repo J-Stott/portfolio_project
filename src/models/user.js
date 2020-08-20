@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const passportLocalMongoose = require("passport-local-mongoose");
 const passport = require("passport");
 
+let Mutex = require("async-mutex").Mutex;
+
+const updateUserMutex = new Mutex();
+
 //setup user schema
 const userSchema = new mongoose.Schema({
     username: { type : String , unique : true, required : true, dropDups: true },
@@ -33,14 +37,22 @@ passport.deserializeUser(function(id, done){
 });
 
 async function updateReviewCount(user, increase){
-    if(increase){
-        user.numReviews++;
-    } else {
-        user.numReviews--;
-    }
 
-    user.save();
+    const release = await updateUserMutex.acquire();
+
+    try{
+        if(increase){
+            user.numReviews++;
+        } else {
+            user.numReviews--;
+        }
+    
+        await user.save();
+    } finally {
+        release();
+    }
 }
+
 
 function isSuperAdmin(user){
     return user.roles.includes("super_admin");

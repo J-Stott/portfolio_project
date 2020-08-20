@@ -4,7 +4,9 @@ const igdb = require("../components/igdb_functions");
 
 let Mutex = require("async-mutex").Mutex;
 
-const mutex = new Mutex();
+const gameCreateMutex = new Mutex();
+const addAveragesMutex = new Mutex();
+const removeAveragesMutex = new Mutex();
 
 
 //setup game schema
@@ -37,7 +39,7 @@ function getAfterLastSlash(str){
 async function findOrCreateGameEntry(idgbId){
     //create game data here
 
-    const release = await mutex.acquire();
+    const release = await gameCreateMutex.acquire();
 
     try{
         let game = await Game.findOne({igdbId: idgbId}).exec();
@@ -82,42 +84,59 @@ async function findOrCreateGameEntry(idgbId){
 async function addToAverages(review){
     const ratings = review.ratings;
 
-    let game = await Game.findOne({_id: review.gameId}).exec();
+    const release = await addAveragesMutex.acquire();
+    console.log("-- attempting to add to averages --");
 
-    Object.keys(game.ratingAverages).forEach(function(key){ 
-        game.ratingAverages[key] *= game.numReviews 
-        game.ratingAverages[key] += ratings[key];
-    });
+    try{
+        console.log("-- adding to averages --");
+        let game = await Game.findOne({_id: review.gameId}).exec();
 
-    game.numReviews++;
-    
-    Object.keys(game.ratingAverages).forEach(function(key){ 
-        game.ratingAverages[key] /= game.numReviews 
-    });
+        Object.keys(game.ratingAverages).forEach(function(key){ 
+            game.ratingAverages[key] *= game.numReviews 
+            game.ratingAverages[key] += ratings[key];
+        });
 
-    game.save();
+        game.numReviews++;
+        
+        Object.keys(game.ratingAverages).forEach(function(key){ 
+            game.ratingAverages[key] /= game.numReviews 
+        });
+
+        await game.save();
+        console.log("-- added to averages --");
+    } finally {
+        release();
+    }
 }
 
 //removes the averages for a game
 async function removeFromAverages(review){
     const ratings = review.ratings;
+    const release = await removeAveragesMutex.acquire();
 
-    let game = await Game.findOne({_id: review.gameId}).exec();
+    console.log("-- attempting to remove from averages --");
+    try{
+        console.log("-- remove from averages --");
+        let game = await Game.findOne({_id: review.gameId}).exec();
 
-    Object.keys(game.ratingAverages).forEach(function(key){ 
-        game.ratingAverages[key] *= game.numReviews 
-        game.ratingAverages[key] -= ratings[key];
-    });
-
-    game.numReviews--;
-    
-    if(game.numReviews > 1){
         Object.keys(game.ratingAverages).forEach(function(key){ 
-            game.ratingAverages[key] /= game.numReviews 
+            game.ratingAverages[key] *= game.numReviews 
+            game.ratingAverages[key] -= ratings[key];
         });
-    }
 
-    game.save();
+        game.numReviews--;
+        
+        if(game.numReviews > 1){
+            Object.keys(game.ratingAverages).forEach(function(key){ 
+                game.ratingAverages[key] /= game.numReviews 
+            });
+        }
+
+        await game.save();
+        console.log("-- removed from averages --");
+    } finally {
+        release();
+    }
 }
 
 module.exports = {
