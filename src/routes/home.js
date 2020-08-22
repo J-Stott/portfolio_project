@@ -273,7 +273,7 @@ router.post("/reset/:token", async function (req, res) {
     }
 });
 
-router.get("/privacy-policy", function (req, res) {
+router.get("/privacy", function (req, res) {
 
     try {
         let user = null;
@@ -283,6 +283,38 @@ router.get("/privacy-policy", function (req, res) {
         }
 
         res.render("privacy", {user: user});
+    } catch(err) {
+        console.log(err);
+    }
+    
+});
+
+router.get("/terms", function (req, res) {
+
+    try {
+        let user = null;
+
+        if (req.isAuthenticated()) {
+            user = req.user;
+        }
+
+        res.render("terms", {user: user});
+    } catch(err) {
+        console.log(err);
+    }
+    
+});
+
+router.get("/cookies", function (req, res) {
+
+    try {
+        let user = null;
+
+        if (req.isAuthenticated()) {
+            user = req.user;
+        }
+
+        res.render("cookies", {user: user});
     } catch(err) {
         console.log(err);
     }

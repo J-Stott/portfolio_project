@@ -36,11 +36,13 @@ passport.deserializeUser(function(id, done){
     });
 });
 
-async function updateReviewCount(user, increase){
+async function updateReviewCount(userId, increase){
 
     const release = await updateUserMutex.acquire();
 
     try{
+        let user = await User.findOne({_id: userId}).exec();
+
         if(increase){
             user.numReviews++;
         } else {

@@ -106,7 +106,7 @@ router.post("/create", async function (req, res) {
             const reviewId = review._id;
 
             await Game.addToAverages(review);
-            await User.updateReviewCount(user, true);
+            await User.updateReviewCount(user._id, true);
 
             //link review to reaction
             reactions.review = reviewId;
@@ -254,10 +254,8 @@ router.post("/:reviewId/delete", async function (req, res) {
 
             let reactionDelete = Reaction.deleteOne({ review: reviewId }).exec();
 
-            const user = await User.model.findOne({_id: review.author }).exec();
-            let userUpdate = User.updateReviewCount(user, false);
+            let userUpdate = User.updateReviewCount(review.author, false);
             
-
             await Game.removeFromAverages(review);
             await reviewDelete;
             await reactionDelete;
