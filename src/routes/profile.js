@@ -211,15 +211,15 @@ router.post("/:username/delete", async function (req, res) {
                     
                 deleteProfileImage(foundUser);
 
-                let reviews = await Review.model.find({}).exec();
+                let reviews = await Review.model.find({author: foundUser._id}).exec();
 
                 reviews.forEach((review) => {
                     Game.removeFromAverages(review);
+                    Discussion.model.deleteOne({review: review._id}).exec();
+                    review.remove();
                 });
 
-                await Review.model.deleteMany({_id: {$in: foundUser.userReviews}}).exec();
-
-                await Draft.model.deleteMany({_id: {$in: foundUser.userDrafts}}).exec();
+                await Draft.model.deleteMany({author: foundUser._id}).exec();
 
                 await Discussion.model.updateMany({}, {"$pull": {"comments": {"user": foundUser._id}}}).exec();
                

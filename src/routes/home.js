@@ -69,8 +69,12 @@ router.post("/register", function (req, res) {
             return res.render("register", { errorMsg: "Username or Email is already in use." })
         } else {
             passport.authenticate("local")(req, res, function () {
-                const username = req.user.displayName;
-                res.redirect(`/profile/${username}`);
+
+                user.roles = ["user"];
+                user.save().then(() => {
+                    const username = req.user.displayName;
+                    res.redirect(`/profile/${username}`);
+                });
             });
         }
     });

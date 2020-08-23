@@ -91,7 +91,7 @@ router.post("/create", async function (req, res) {
 
 
             //create new reaction
-            const newReaction = new Reaction();
+            const newReaction = new Reaction.model();
             let reactions = await newReaction.save();
 
             const createDiscussion = req.body.discussion;

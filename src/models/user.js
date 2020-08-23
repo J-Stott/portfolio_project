@@ -12,9 +12,9 @@ const userSchema = new mongoose.Schema({
     displayName: { type : String },
     email: { type : String , unique : true, required : true, dropDups: true },
     profileImg: {type: String, default: "/profileImages/default.png"},
-    bio: {type: String},
+    bio: {type: String, default: "A Regular Reviewer"},
     numReviews: {type: Number, default: 0},
-    roles: [{type: String, default: ["user"], enum: ["user", "admin", "super_admin"]}] 
+    roles: [{type: String, enum: ["user", "admin", "super_admin"], default: ["user"]}] 
 });
 
 //allow user to also use email to login

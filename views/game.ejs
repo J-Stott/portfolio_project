@@ -10,7 +10,7 @@
                         <img class="game-art" class="mb-2" src="<%=gameData.image%>" alt="profile" />
                     </div>
 
-                    <p>Reviews: </i><%= gameData.numReviews%></p>
+                    <p class="mt-3 mb-1 average">Reviews: </i><%= gameData.numReviews%></p>
                     <p class="mb-1 average">Gameplay: <i class="far fa-star star-highlight"></i> <%= gameData.ratingAverages.gameplay.toFixed(1)%></p>
                     <p class="mb-1 average">Visuals: <i class="far fa-star star-highlight"></i> <%= gameData.ratingAverages.visuals.toFixed(1)%></p>
                     <p class="mb-1 average">Audio: <i class="far fa-star star-highlight"></i> <%= gameData.ratingAverages.audio.toFixed(1)%></p>

@@ -5,5 +5,6 @@ module.exports = {
     DEFAULT_PROFILE_IMG: "/profileImages/default.png",
     DEFAULT_GAME_IMAGE: "/gameImages/default.png",
     NUM_REVIEWS_TO_GET: 10,
-    NUM_COMMENTS_TO_GET: 20
+    NUM_COMMENTS_TO_GET: 20,
+    IGDB_LIMIT: 50,
 };

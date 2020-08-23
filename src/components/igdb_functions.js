@@ -13,7 +13,7 @@ function getGameImageUrl(gameData){
     return imageUrl;
 }
 
-async function searchForGames(searchTerm, limit=50, offset=0){
+async function searchForGames(searchTerm, limit = settings.IGDB_LIMIT, offset = 0){
     return axios({
         url: "https://api-v3.igdb.com/games",
         method: 'POST',
@@ -27,31 +27,36 @@ async function searchForGames(searchTerm, limit=50, offset=0){
 
 //collates DB and api games and sorts them based on closeness to search term
 async function collateDbAndIgdbGames(Game, searchTerm){
+
     
-    let response = await searchForGames(searchTerm);
-
-    if(response.status !== 200){
-        return {
-            status: response.status,
-            statusText: response.statusText
-        }
-    }
-
-    const games = await Game.model.find({displayName: { $regex: searchTerm, $options: 'i' }})
-    .select("igdbId displayName image linkName")
-    .exec();
-
     // other way of searching text
     // const games = await Game.model.find({$text: {$search: searchTerm}})
     // .select("igdbId displayName image")
     // .exec();
 
+    const games = await Game.model.find({displayName: { $regex: searchTerm, $options: 'i' }})
+    .select("igdbId displayName image linkName")
+    .exec();
+
+    let responseData = null;
+
+    if(games.length < settings.IGDB_LIMIT){
+        response = await searchForGames(searchTerm);
+
+        if(response.status !== 200){
+            return {
+                status: response.status,
+                statusText: response.statusText
+            }
+        }
+
+        responseData = response.data;
+    }
+
     const ids = games.map((data) => {
         return data.igdbId;
     });
 
-    const responseData = response.data;
-    
     const gameData = [...games];
 
     responseData.forEach((data) => {
