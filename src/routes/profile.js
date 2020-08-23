@@ -204,19 +204,16 @@ router.post("/:username/delete", async function (req, res) {
                 res.redirect("/");
             } else {
     
-                let foundUser = await User.model.findOne({username: username})
-                .populate({
-                    path: "userReviews", 
-                    select:["ratings", "gameId"]
-                })
-                .exec(); 
+                let foundUser = await User.model.findOne({username: username}).exec(); 
 
                 console.log("-- Deleting User --");
                 console.log(foundUser);
                     
                 deleteProfileImage(foundUser);
 
-                foundUser.userReviews.forEach((review) => {
+                let reviews = await Review.model.find({}).exec();
+
+                reviews.forEach((review) => {
                     Game.removeFromAverages(review);
                 });
 

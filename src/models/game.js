@@ -85,10 +85,8 @@ async function addToAverages(review){
     const ratings = review.ratings;
 
     const release = await addAveragesMutex.acquire();
-    console.log("-- attempting to add to averages --");
 
     try{
-        console.log("-- adding to averages --");
         let game = await Game.findOne({_id: review.gameId}).exec();
 
         Object.keys(game.ratingAverages).forEach(function(key){ 
@@ -103,7 +101,6 @@ async function addToAverages(review){
         });
 
         await game.save();
-        console.log("-- added to averages --");
     } finally {
         release();
     }
@@ -114,9 +111,7 @@ async function removeFromAverages(review){
     const ratings = review.ratings;
     const release = await removeAveragesMutex.acquire();
 
-    console.log("-- attempting to remove from averages --");
     try{
-        console.log("-- remove from averages --");
         let game = await Game.findOne({_id: review.gameId}).exec();
 
         Object.keys(game.ratingAverages).forEach(function(key){ 
@@ -133,7 +128,7 @@ async function removeFromAverages(review){
         }
 
         await game.save();
-        console.log("-- removed from averages --");
+
     } finally {
         release();
     }

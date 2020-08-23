@@ -214,7 +214,7 @@ router.post("/:reviewId/edit", async function (req, res) {
 
             await Game.addToAverages(review);
     
-            res.redirect("/");
+            res.redirect(`/reviews/${reviewId}`);
         } else {
             res.redirect("/login");
         }
@@ -252,7 +252,7 @@ router.post("/:reviewId/delete", async function (req, res) {
 
             let discussionDelete = Discussion.model.deleteOne({ review: reviewId }).exec();
 
-            let reactionDelete = Reaction.deleteOne({ review: reviewId }).exec();
+            let reactionDelete = Reaction.model.deleteOne({ review: reviewId }).exec();
 
             let userUpdate = User.updateReviewCount(review.author, false);
             

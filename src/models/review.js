@@ -16,6 +16,7 @@ const reviewSchema = new mongoose.Schema({
     content: { type: String },
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     created: { type: Date, default: Date.now },
+    edited: { type: Date, default: null },
     reactions: { type: mongoose.Schema.Types.ObjectId, ref: "Reaction" },
     discussion: {
         type: mongoose.Schema.Types.ObjectId, ref: "Discussion"
@@ -56,6 +57,7 @@ async function updateReview(review, req) {
     //update review
     review.title = req.body.title;
     review.content = req.body.content;
+    review.edited = Date.now();
     review.ratings = {
         //if user hasn't entered a rating, presume 0
         gameplay: "gameplay" in req.body ? Number(req.body.gameplay) : 0,

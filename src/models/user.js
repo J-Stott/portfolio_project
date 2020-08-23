@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     profileImg: {type: String, default: "/profileImages/default.png"},
     bio: {type: String},
     numReviews: {type: Number, default: 0},
-    roles: [{type: String, enum: ["user", "admin", "super_admin"], default: ["user"]}] 
+    roles: [{type: String, default: ["user"], enum: ["user", "admin", "super_admin"]}] 
 });
 
 //allow user to also use email to login

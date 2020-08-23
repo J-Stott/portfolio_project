@@ -7,6 +7,9 @@ const gameName = document.querySelector("#gameName");
 const gameTitle = document.querySelector("#gameTitle");
 const reviewSearchContainer = document.querySelector(".search-results-container");
 
+
+const searchDelay = 200;
+const hideDelay = 200;
 let ignoreUnfocus = false;
 
 function setSearchVisible(searchContainer, visible){
@@ -179,14 +182,14 @@ navSearch.addEventListener("keyup", function(){
             getGameData(navSearch, (response) => {
                 displayGameSearch(response, navSearchContainer, setSearchGameData);
             });
-        }, 200);
+        }, searchDelay);
     }
 });
 
 navSearch.addEventListener("focusout", function(){
     setTimeout(() => {
         setSearchVisible(navSearchContainer, false);
-    },200)
+    }, hideDelay)
 });
 
 //if we are on a creation/edit page, add event listeners
@@ -207,7 +210,7 @@ if(gameTitle !== null){
                 getGameData(gameTitle, (response) => {
                     displayGameSearch(response, reviewSearchContainer, setReviewGameData);
                 });
-            }, 200);
+            }, searchDelay);
         } else {
             clearInputs();
         }

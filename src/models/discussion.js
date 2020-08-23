@@ -5,6 +5,8 @@ const discussionSchema = new mongoose.Schema({
     review: {type: mongoose.Schema.Types.ObjectId, ref: "Review"},
     comments: [{
         user: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
+        created: {type: Date, default: Date.now},
+        edited: {type: Date, default: null},
         comment: {type: String}
     }]
 });

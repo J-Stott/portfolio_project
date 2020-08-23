@@ -1,5 +1,6 @@
 import { editComment, deleteComment, postComment } from "./comment_functions.js"
 import { addEditBox, setCommentContent } from "./creation_functions.js";
+import { setupModal, setModalVisible } from "./modal_functions.js";
 
 //allows us to enable/disable comment buttons
 //don't want to have multiple edits open at once
@@ -45,9 +46,13 @@ export function setCommentButtonEvents(element){
 
     deleteButton.addEventListener("click", () => {
         //something with axios
-        const commentId = element.getAttribute("data-comment-id");
-        const url = `${window.location.pathname}/comments/${commentId}/remove`;
-        deleteComment(url, element);
+
+        setupModal("#review-modal", function() {
+            const commentId = element.getAttribute("data-comment-id");
+            const url = `${window.location.pathname}/comments/${commentId}/remove`;
+            deleteComment(url, element);
+            setModalVisible("#review-modal", false);
+        }, "WARNING - Are you sure you want to delete this comment?");
     });
 }
 

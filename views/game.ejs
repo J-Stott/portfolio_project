@@ -43,7 +43,10 @@
                                 <i class="far fa-star star-lowlight head-star-size"></i>
                             <%}%>
                         </div>
-                        <p>Published on <%=review.created.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })%></p>
+                        <p class="review-date">Published on <%=review.created.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })%></p>
+                        <%if(review.edited !== null) {%>
+                            <p class="review-date"><em>Last edited on <%=review.edited.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })%></p></em>
+                        <%}%>
                     </div>
                 </div>
                 <hr class="light" />

@@ -102,6 +102,10 @@ body{
   border: 3px solid #ffffff;
 }
 
+.review-date {
+  margin-bottom: 0.1rem;
+}
+
 /*profile styles*/
 
 .profile-section{

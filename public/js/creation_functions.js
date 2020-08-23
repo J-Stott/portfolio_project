@@ -211,11 +211,24 @@ function createStars(review, container){
 }
 
 function createDateParagraph(review, container){
-    let published = createElement("p");
+    let published = createElement("p", {
+        class: "review-date"
+    });
     let date = new Date(review.created);
     published.innerText = `Published on ${date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) }`;
 
     container.appendChild(published);
+
+    if(review.edited !== null){
+        let edited = createElement("p", {
+            class: "review-date"
+        });
+        let em = createElement("em");
+        let date = new Date(review.edited);
+        em.innerText = `Last edited on ${date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) }`;
+        edited.appendChild(em);
+        container.appendChild(edited);
+    }
 }
 
 //creates header for reviews on Index page
