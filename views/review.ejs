@@ -143,14 +143,14 @@
                 </div>
             </div>
                 
-            <%if(user !== null && (user.roles.includes("admin") || String(review.author._id) == String(user._id))){%>
+            <%if(review.admin !== undefined){%>
             <div class="row ">
                 <div class="col-12 d-flex justify-content-md-end justify-content-center mt-3">
 
-                        <%if(String(review.author._id) == String(user._id)){%>
+                        <%if(review.admin === "author"){%>
                         <a class="btn btn-outline-light mr-2" href="/reviews/<%=review._id%>/edit">Edit</a>
                         <%}%>
-                        <%if((user.roles.includes("admin") || String(review.author._id) == String(user._id))){%>
+                        <%if(review.admin === "author" || review.admin === "admin"){%>
                         <button class="btn btn-danger" type="submit" id="delete">Delete Review</button>
                         <%}%>
                 </div>
@@ -186,7 +186,7 @@
                         <div class="col-md-10 col-8">
                             <p class="comment"><%=comment.comment%></p>
                         </div>
-                        <%if(user !== null && (user.roles.includes("admin") || String(review.author._id) == String(user._id))){%>
+                        <%if(comment.admin){%>
                             
                             <div class="col-12 d-flex justify-content-md-end justify-content-center mt-3">
                                 <button class="btn btn-outline-light comment-edit">Edit</button>

@@ -77,6 +77,8 @@ router.post("/:gameName", async function (req, res) {
 
         if(game !== null){
             return res.redirect(`/games/${gameName}`);
+        }  else {
+            return res.sendStatus(404);
         }
 
     } catch(err) {

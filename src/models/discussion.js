@@ -31,7 +31,7 @@ async function addToDiscusssion(reviewId, userId, comment){
         populate: {
             path: "user",
             model: "User",
-            select: {"displayName": 1, "profileImg": 1}
+            select: {"displayName": 1, "profileImg": 1, "roles": 1}
         }
     }).execPopulate();
 
@@ -52,7 +52,7 @@ async function getComments(reviewId, skip = 0, limit = 20){
         populate: {
             path: "user",
             model: "User",
-            select: {"displayName": 1, "profileImg": 1}
+            select: {"displayName": 1, "profileImg": 1, "roles": 1}
         }
     })
     .exec();

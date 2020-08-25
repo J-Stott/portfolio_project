@@ -9,17 +9,44 @@ const Discussion = require("../models/discussion");
 const igdb = require("../components/igdb_functions");
 const Game = require("../models/game");
 
-function getUserReaction(reaction, user){
+function isAuthor(user, author){
+   return String(user._id) === String(author._id);
+}
 
-    let userReaction = reaction.userReactions.find((data) =>{
-        return String(data.user) === String(user._id);
-    });
+function setAdminableComments(user, comments){
 
-    if(userReaction === undefined){
-        return null;
+    if(user !== null){
+        if(User.isSuperAdmin(user)) {
+            comments.forEach((comment) => {
+                if(isAuthor(user, comment.user) || !User.isSuperAdmin(comment.user)){
+                    comment.admin = true;
+                }
+            });
+        } else if(User.isAdmin(user)) {
+            comments.forEach((comment) => {
+                if(isAuthor(user, comment.user) || !User.isAdmin(comment.user)){
+                    comment.admin = true;
+                }
+            });
+        } else {
+            comments.forEach((comment) => {
+                if(isAuthor(user, comment.user)){
+                    comment.admin = true;
+                }
+            });
+        }
     }
+}
 
-    return userReaction;
+function setAdminableReview(user, review){
+    console.log(user);
+    if(user !== null){
+        if(isAuthor(user, review.author)){
+            review.admin = "author";
+        } else if(User.isAdmin(user)) {
+            review.admin = "admin";
+        }
+    }
 }
 
 //review creation page
@@ -162,9 +189,12 @@ router.get("/:reviewId", async function (req, res) {
                 review: review 
             };
 
+            setAdminableReview(user, review);
+
             let comments = await Discussion.getComments(reviewId);
 
             if(comments){
+                setAdminableComments(user, comments);
                 data.comments = comments;
             }
 

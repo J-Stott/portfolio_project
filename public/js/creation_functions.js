@@ -1,4 +1,5 @@
-import {setCommentButtonEvents, setEditButtonEvents} from "./button_events.js"
+import {setCommentButtonEvents, setEditButtonEvents} from "./button_events.js";
+import {setupModal} from "./modal_functions.js";
 
 //gives us an element and applies any attributes we specify
 function createElement(elementType, attributes = null){
@@ -22,13 +23,13 @@ function createCommentButtons(container){
         class: "btn btn-outline-light comment-edit"
     });
 
-    editButton.innerText = "Edit Comment";
+    editButton.innerText = "Edit";
 
     let deleteButton = createElement("button", {
         class: "btn btn-danger ml-2 comment-delete"
     });
 
-    deleteButton.innerText = "Delete Comment";
+    deleteButton.innerText = "Delete";
 
     buttonCol.appendChild(editButton);
     buttonCol.appendChild(deleteButton);
@@ -283,6 +284,28 @@ export function createIndexHeader(review){
     return headRow;
 }
 
+//creates draft for reviews on user page
+export function createDraftHeader(review){
+    //headings
+    let headRow = createElement("div", {
+        class: "row"
+    });
+
+    createGameImage(review, headRow);
+
+    let titleContainer = createElement("div", {
+        class: "col-lg-10 col-md-9 col-8",
+    });
+
+    createTitleHeading(review, titleContainer);
+
+    createStars(review, titleContainer);
+
+    headRow.appendChild(titleContainer);
+
+    return headRow;
+}
+
 //creates header for reviews on user page
 export function createUserHeader(review){
     //headings
@@ -363,8 +386,8 @@ export function createContent(review){
         class: "review-content"
     });
 
-    if(review.content.length > 300) {
-        reviewContent.innerText = review.content.slice(0, 300) + " ...";
+    if(review.content.length > 500) {
+        reviewContent.innerText = review.content.slice(0, 500) + "...";
     } else {
         reviewContent.innerText = review.content
     }
@@ -392,6 +415,49 @@ export function createButton(review){
 
     button.innerText = "Read Review";
     buttonContainer.appendChild(button);
+    buttonRow.appendChild(buttonContainer);
+
+    return buttonRow;
+}
+
+//creates draft button
+export function createDraftButtons(draft){
+    let buttonRow = createElement("div", {
+        class: "row"
+    });
+
+    let buttonContainer = createElement("div", {
+        class: "col-12 d-flex justify-content-end"
+    });
+
+    let deleteButton = createElement("button", {
+        class: "btn btn-danger mr-2 delete-draft",
+        "data-draft-id": draft._id
+    });
+
+    deleteButton.innerText = "Delete Draft";
+
+    deleteButton.onclick = () => {
+        setupModal("#draft-modal", function(){
+            const form = document.createElement('form');
+            form.method = "POST";
+            form.action = `/drafts/${draft._id}/delete`;
+        
+            document.body.appendChild(form);
+            form.submit();
+        }, "WARNING - Are you sure you want to delete this draft?");
+    }
+
+    buttonContainer.appendChild(deleteButton);
+
+    let editButton = createElement("a", {
+        class: "btn btn-outline-light",
+        href: `/drafts/${draft._id}/edit`
+    });
+
+    editButton.innerText = "Edit Draft";
+    buttonContainer.appendChild(editButton);
+
     buttonRow.appendChild(buttonContainer);
 
     return buttonRow;

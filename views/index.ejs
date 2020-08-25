@@ -43,8 +43,8 @@
                     <div class="col-12">
                         <h2><%=review.title%></h2>
 
-                        <%if(review.content.length > 300){%>
-                            <p class="review-content"><%=review.content.slice(0, 300)%> ...</p>
+                        <%if(review.content.length > 500){%>
+                            <p class="review-content"><%=review.content.slice(0, 500)%>...</p>
                             <%}else{%>
                                 <p class="review-content"><%=review.content%></p>
                             <%}%>

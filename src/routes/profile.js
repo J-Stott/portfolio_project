@@ -5,6 +5,7 @@ const Review = require("../models/review");
 const Draft = require("../models/draft");
 const Game = require("../models/game");
 const Discussion = require("../models/discussion");
+const Reaction = require("../models/reaction");
 const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
@@ -216,6 +217,7 @@ router.post("/:username/delete", async function (req, res) {
                 reviews.forEach((review) => {
                     Game.removeFromAverages(review);
                     Discussion.model.deleteOne({review: review._id}).exec();
+                    Reaction.model.deleteOne({review: review._id}).exec();
                     review.remove();
                 });
 

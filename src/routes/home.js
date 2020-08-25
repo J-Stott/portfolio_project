@@ -117,6 +117,7 @@ router.post("/login", function (req, res, next) {
                     }
 
                     req.session.user = user;
+                    req.user = user;
                     res.redirect("/");
                 }
             });

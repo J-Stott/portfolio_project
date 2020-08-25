@@ -3,7 +3,7 @@ const router = express.Router();
 const Draft = require("../models/draft");
 const User = require("../models/user");
 const Game = require("../models/game");
-const igdb = require("../components/igdb_functions");
+const settings = require("../../settings");
 
 //get a users saved drafts
 router.get("/:username", async function (req, res) {
@@ -121,6 +121,30 @@ router.post("/:draftId/delete", async function (req, res) {
         console.log(err);
     }
 
+});
+
+router.get("/:username/:index", async function (req, res) {
+
+    try {
+        if(req.isAuthenticated()){
+            const index = Number(req.params.index);
+            
+            const userProfile = await User.model.findOne({_id: req.user._id})
+            .exec();
+    
+            if(!userProfile){
+                return res.sendStatus(404);
+            }
+    
+            const drafts = await Draft.getSetNumberOfDrafts({author: userProfile._id}, index * settings.NUM_REVIEWS_TO_GET);
+    
+            res.status(200).send(drafts);
+        }
+
+    } catch(err) {
+        console.log(err);
+    }
+    
 });
 
 module.exports = router;
